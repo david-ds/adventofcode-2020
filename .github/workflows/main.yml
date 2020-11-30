@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@v1
+
+      # setup supported languages
+
+      - uses: actions/setup-python@v1
+        with:
+          python-version: "3.7"
+      - uses: actions/setup-ruby@v1
+      - uses: actions/setup-go@v1
+        with:
+          go-version: "1.13.4"
+      - uses: actions/setup-java@v1
+        with:
+          java-version: "8"
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12.13.1"
+      - uses: denolib/setup-deno@v1.1.0
+        with:
+          deno-version: 0.x
+      - uses: julia-actions/setup-julia@v1
+        with:
+          version: 1.2.0
+      - name: vlang
+        id: cache-vlang
+        run: cd /tmp && git clone https://github.com/vlang/v && cd v && make && sudo ./v symlink
+
+      # install rust if not cached TODO
+      # - uses: actions/cache@v1
+      #   name: cache-cargo
+      #   id: cache-cargo
+      #   with:
+      #     path: ~/.cargo/.bin
+      #     key: ${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+      # - name: deps-cargo
+      #   if: steps.cache-cargo.outputs.cache-hit != 'true'
+      #   run: curl https://sh.rustup.rs -sSf -o rustup.sh && sh rustup.sh -y
+
+      # install npm packages if not cached
+      - uses: actions/cache@v1
+        name: cache-npm
+        id: cache-npm
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: deps-npm
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm install
+
+      # install python packages if not cached
+      - uses: actions/cache@v1
+        name: cache-python
+        id: cache-python
+        with:
+          path: ~/.local/lib/python3.7/site-packages
+          key: ${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+      - name: deps-python
+        if: steps.cache-python.outputs.cache-hit != 'true'
+        run: sudo apt-get install python3-setuptools && python3 -m pip install --user wheel && python3 -m pip install --user -r requirements.txt
+
+      # build
+      - name: build
+        run: ./build.sh

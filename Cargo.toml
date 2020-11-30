@@ -1,0 +1,86 @@
+[package]
+name = "adventofcode-2019"
+version = "0.1.0"
+authors = []
+
+[dependencies]
+
+[[bin]]
+name = "day-01-part-1-evqna"
+path = "./day-01/part-1/evqna.rs"
+
+[[bin]]
+name = "day-01-part-2-evqna"
+path = "./day-01/part-2/evqna.rs"
+
+[[bin]]
+name = "day-01-part-1-atauveron"
+path = "./day-01/part-1/atauveron.rs"
+
+[[bin]]
+name = "day-01-part-2-atauveron"
+path = "./day-01/part-2/atauveron.rs"
+
+[[bin]]
+name = "day-02-part-1-atauveron"
+path = "./day-02/part-1/atauveron.rs"
+
+[[bin]]
+name = "day-02-part-2-atauveron"
+path = "./day-02/part-2/atauveron.rs"
+
+[[bin]]
+name = "day-02-part-1-evqna"
+path = "./day-02/part-1/evqna.rs"
+
+[[bin]]
+name = "day-02-part-2-evqna"
+path = "./day-02/part-2/evqna.rs"
+
+[[bin]]
+name = "day-03-part-1-atauveron"
+path = "./day-03/part-1/atauveron.rs"
+
+[[bin]]
+name = "day-03-part-2-atauveron"
+path = "./day-03/part-2/atauveron.rs"
+
+[[bin]]
+name = "day-05-part-1-atauveron"
+path = "./day-05/part-1/atauveron.rs"
+
+[[bin]]
+name = "day-05-part-2-atauveron"
+path = "./day-05/part-2/atauveron.rs"
+
+[[bin]]
+name = "day-06-part-1-atauveron"
+path = "./day-06/part-1/atauveron.rs"
+
+[[bin]]
+name = "day-06-part-2-atauveron"
+path = "./day-06/part-2/atauveron.rs"
+
+[[bin]]
+name = "day-07-part-1-atauveron"
+path = "./day-07/part-1/atauveron.rs"
+
+[[bin]]
+name = "day-07-part-2-atauveron"
+path = "./day-07/part-2/atauveron.rs"
+
+[[bin]]
+name = "day-08-part-1-atauveron"
+path = "./day-08/part-1/atauveron.rs"
+
+[[bin]]
+name = "day-08-part-2-atauveron"
+path = "./day-08/part-2/atauveron.rs"
+
+[[bin]]
+name = "day-12-part-1-atauveron"
+path = "./day-12/part-1/atauveron.rs"
+
+[[bin]]
+name = "day-12-part-2-atauveron"
+path = "./day-12/part-2/atauveron.rs"
