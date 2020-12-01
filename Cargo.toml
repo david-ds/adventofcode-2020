@@ -2,5 +2,14 @@
 name = "adventofcode-2020"
 version = "0.1.0"
 authors = []
+edition="2018"
 
 [dependencies]
+
+[[bin]]
+name = "day-01-part-1-enizor"
+path = "./day-01/part-1/enizor.rs"
+
+[[bin]]
+name = "day-01-part-2-enizor"
+path = "./day-01/part-2/enizor.rs"
