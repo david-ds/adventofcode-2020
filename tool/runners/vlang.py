@@ -2,6 +2,7 @@ import errno
 import subprocess
 import tempfile
 
+from tool.runners.exceptions import CompilationError, RuntimeError
 from tool.runners.wrapper import SubmissionWrapper
 
 

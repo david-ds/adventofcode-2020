@@ -7,8 +7,8 @@ from os import walk
 from shutil import which
 
 # project
-from tool.runners import LANGUAGES, TOOL_BY_LANGUAGE, ext_by_language
 from tool.model import Problem, Submission, Input
+from tool.runners import LANGUAGES, TOOL_BY_LANGUAGE
 
 
 _DAY_PATH_PATTERN = "day-[0-9]*"
@@ -128,7 +128,7 @@ def get_submissions(
     submissions = []
     for _, _, files in walk(problem.path()):
         for filename in files:
-            submission, ext = filename.split('.', 1)
+            submission, ext = filename.split(".", 1)
             author = os.path.basename(submission)
             if (ext not in extensions) or filename.endswith("_test.go"):
                 continue

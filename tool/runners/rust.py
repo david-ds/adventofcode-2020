@@ -3,8 +3,8 @@ import os
 import subprocess
 import tempfile
 
-from tool.runners.wrapper import SubmissionWrapper
 from tool.runners.exceptions import CompilationError, RuntimeError
+from tool.runners.wrapper import SubmissionWrapper
 
 
 class SubmissionRs(SubmissionWrapper):

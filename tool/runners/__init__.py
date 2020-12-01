@@ -40,7 +40,7 @@ TOOL_BY_LANGUAGE = {
     "sh": "bash",
     "jl": "julia",
     "v": "v",
-    "zig": "zig"
+    "zig": "zig",
 }
 LANGUAGES = list(TOOL_BY_LANGUAGE.keys())
 

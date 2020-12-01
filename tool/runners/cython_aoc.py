@@ -3,12 +3,12 @@ import subprocess
 import shutil
 import importlib
 
-from tool.utils import BColor, resolve_path
-from tool.runners.python import SubmissionPy
 from tool.runners.exceptions import RuntimeError
+from tool.runners.python import SubmissionPy
+from tool.utils import BColor, resolve_path
 
 
-CYTHON_DEBUG = bool(os.getenv('CYTHON_DEBUG', ''))
+CYTHON_DEBUG = bool(os.getenv("CYTHON_DEBUG", ""))
 
 
 class SubmissionPyx(SubmissionPy):

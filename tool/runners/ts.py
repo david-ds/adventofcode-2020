@@ -1,6 +1,6 @@
-import errno
 import subprocess
 
+from tool.runners.exceptions import RuntimeError
 from tool.runners.wrapper import SubmissionWrapper
 
 
@@ -14,7 +14,9 @@ class SubmissionTs(SubmissionWrapper):
 
     def exec(self, input):
         try:
-            return subprocess.check_output(["./node_modules/.bin/ts-node", self.file, input]).decode()
+            return subprocess.check_output(
+                ["./node_modules/.bin/ts-node", self.file, input]
+            ).decode()
         except OSError as e:
             raise RuntimeError(e)
 
