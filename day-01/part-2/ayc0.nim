@@ -19,6 +19,9 @@ proc run(s: string): string =
         j = i + 1
         while j < n:
             y = array[j]
+            if x + y > 2020:
+                inc(j)
+                continue
             k = j + 1
             while k < n:
                 z = array[k]
