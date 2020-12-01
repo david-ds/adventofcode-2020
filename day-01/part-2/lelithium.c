@@ -26,9 +26,13 @@ int run(char *input)
     }
     for (int i1 = 0; i1 < parsed_total; i1++)
         for (int i2 = i1 + 1; i2 < parsed_total; i2++)
+        {
+            if (i1 + i2 >= 2020)
+                continue;
             for (int i3 = i2 + 1; i3 < parsed_total; i3++)
                 if (parsed[i1] + parsed[i2] + parsed[i3] == 2020)
                     return parsed[i1] * parsed[i2] * parsed[i3];
+        }
     return 0;
 }
 
