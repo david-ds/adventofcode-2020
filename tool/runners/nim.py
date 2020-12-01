@@ -15,6 +15,7 @@ class SubmissionNim(SubmissionWrapper):
             [
                 "nim",
                 "compile",
+                "--hints:off",
                 "-o:" + tmp.name,
                 file,
             ]
