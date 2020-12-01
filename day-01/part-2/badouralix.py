@@ -15,24 +15,12 @@ class BadouralixSubmission(SubmissionPy):
             # Fast loop as we know there is no duplicate
             for e in lentries:
                 sentries.remove(e)
-                subproduct = self.findsum(sentries, 2020 - e)
-                if subproduct is not None:
-                    return e * subproduct
+                for f in sentries:
+                    if (2020 - e - f) in sentries:
+                        return e * f * (2020 - e - f)
         else:
             # Slow loop when we detected at least one duplicated entry
             for i, e in enumerate(lentries):
-                subproduct = self.findsum(lentries[i:], 2020 - e)
-                if subproduct is not None:
-                    return e * subproduct
-
-    def findsum(self, entries, target):
-        """
-        :param entries: a list or a set of integers
-        :param target: an integer for which we want to find two entries that sum up to
-        :return: the product of ( the ? ) two entries or None if we could not find any
-        """
-        for e in entries:
-            if (target - e) in entries:
-                return e * (target - e)
-
-        return None
+                for j, f in enumerate(lentries[i + 1 :]):
+                    if (2020 - e - f) in lentries[i + j + 2 :]:
+                        return e * f * (2020 - e - f)
