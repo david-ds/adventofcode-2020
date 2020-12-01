@@ -82,3 +82,5 @@ def load_submission_runnable(path, language):
         return SubmissionTs(path)
     elif language == "v":
         return SubmissionV(path)
+    elif language == "zig":
+        return SubmissionZig(path)
