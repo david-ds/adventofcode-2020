@@ -1,25 +1,19 @@
 const std = @import("std");
 
-const testing = std.testing;
-const process = std.process;
-const fs = std.fs;
-const ChildProcess = std.ChildProcess;
-
 var a: *std.mem.Allocator = undefined;
+const stdout = std.io.getStdOut().writer(); //prepare stdout to write in
 
 fn run(input: [:0]u8) i64 {
-    var out: i64 = 0;
-    return out;
+    // your code here
+    return 0;
 }
 
 pub fn main() !void {
-    const stdout = std.io.getStdOut().writer(); //prepare stdout to write in
-
     var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator); // create memory allocator for strings
 
     defer arena.deinit(); // clear memory
 
-    var arg_it = process.args();
+    var arg_it = std.process.args();
 
     _ = arg_it.skip(); // skip over exe name
     a = &arena.allocator; // get ref to allocator
@@ -27,6 +21,7 @@ pub fn main() !void {
 
     const start: i128 = std.time.nanoTimestamp(); // start time
     const answer = run(input); // compute answer
-    const elapsed: i128 = (std.time.nanoTimestamp() - start); // compute function duration
-    try stdout.print("_duration:{}\n{}", .{ elapsed, answer }); // emit actual lines parsed by AOC
+    const elapsed_nano: f128 = @intToFloat(f128, std.time.nanoTimestamp() - start);
+    const elapsed_milli: f64 = @floatCast(f64, @divFloor(elapsed_nano, 1_000_000));
+    try stdout.print("_duration:{d}\n{}\n", .{ elapsed_milli, answer }); // emit actual lines parsed by AOC
 }
