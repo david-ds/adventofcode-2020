@@ -34,6 +34,9 @@ jobs:
       - uses: julia-actions/setup-julia@v1
         with:
           version: 1.2.0
+      - uses: jiro4989/setup-nim-action@v1
+        with:
+          nim-version: 1.4.2
       - name: vlang
         id: cache-vlang
         run: cd /tmp && git clone https://github.com/vlang/v && cd v && make && sudo ./v symlink
