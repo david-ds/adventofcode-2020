@@ -15,6 +15,10 @@ class SubmissionNim(SubmissionWrapper):
             [
                 "nim",
                 "compile",
+                "--hints:off", # no log during compilation
+                "-d:release", # optimized build
+                "--opt:speed", # optimized for speed
+                "--checks:off", # no runtime check
                 "-o:" + tmp.name,
                 file,
             ]
