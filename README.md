@@ -1,11 +1,11 @@
-# Advent of code 2020 solutions
+# Advent of code 2020 solutions <!-- omit in toc --> <!-- do not remove comment + use Markdown All in One in VSCode -->
 
-⁣    🌟  
-    🎄  
-   🎄🎄  
-  🎄🎄🎄  
- 🎄🎄🎄🎄  
-🎄🎄🎄🎄🎄  
+⁣    🌟
+    🎄
+   🎄🎄
+  🎄🎄🎄
+ 🎄🎄🎄🎄
+🎄🎄🎄🎄🎄
   🎁🎁🎁
 
 These are proposed solutions for the [Advent of Code 2020](http://adventofcode.com/2020).
@@ -13,6 +13,22 @@ These are proposed solutions for the [Advent of Code 2020](http://adventofcode.c
 The solutions are automatically tested with github-actions.
 
 [![Build Status](https://github.com/david-ds/adventofcode-2020/workflows/CI/badge.svg)](https://github.com/david-ds/adventofcode-2020/actions?query=branch%3Amaster)
+
+- [Usage](#usage)
+  - [Installation](#installation)
+  - [Examples](#examples)
+    - [Run last problem](#run-last-problem)
+    - [Run specific problems from specific users](#run-specific-problems-from-specific-users)
+- [Contribute](#contribute)
+  - [New submission with aoc](#new-submission-with-aoc)
+  - [New submission without aoc](#new-submission-without-aoc)
+- [Installing runners to try out other people code](#installing-runners-to-try-out-other-people-code)
+  - [Go](#go)
+  - [Rust](#rust)
+  - [Node](#node)
+  - [Deno](#deno)
+  - [Nim](#nim)
+- [History](#history)
 
 ## Usage
 
@@ -25,6 +41,16 @@ aoc commands are:
    run      Runs submissions
    create   Creates a new submission
    config   Configures user's parameters
+```
+
+### Installation
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+# And now aoc can work
+./aoc run
 ```
 
 ### Examples
@@ -87,18 +113,32 @@ ayoub    6448        4.84 ms  cpp
 -----  --------  -----------  ---
 ```
 
-You can use `-r` to run each submission on it's own input, or `-e` to print non-aggregated results.  
+You can use `-r` to run each submission on it's own input, or `-e` to print non-aggregated results.
 see `./aoc run -h` for full arguments description.
 
 ## Contribute
 
-For now we support `c`, `c++`, `java`, `javascript`, `typescript` , `go`, `python 3` (+ `cython`), `ruby`, `rust (stable)`, `julia` and `bash` scripts.
+To participate, you'll have to create your own files. For instance, if you want to code in `go` and participate the the day 3, you'll have to create those 3 files:
+
+```
+day-03/input/yourname.txt (input provided by advent of code)
+day-03/part-1/yourname.go
+day-03/part-2/yourname.go
+```
+
+You can add other functions & modules if you need to. Any external dependency should be added to the appropriate files (`requirements.txt`, `package.json`, and so on).
+
+Once you tested your solution you can submit it by making a PR and a GitHub action will check that your code generates the same outputs as others' code.
+
+For now we support `c`, `c++`, `java`, `javascript` (with node and deno), `typescript` (with deno) , `go`, `python 3` (+ `cython`), `ruby`, `rust (stable)`, `julia`, `bash`, and `nim` scripts.
+
+### New submission with aoc
 
 You can use `./aoc create` tool to create a new empty submission:
 
 ```
 usage: aoc create [-h] [-a AUTHOR] [-d DAY] [-p PART]
-                  [-l {c,cpp,go,java,js,ts,py,pyx,rb,rs,sh}]
+                  [-l {c,cpp,go,intcode,java,js,deno.js,deno.ts,nim,py,pyx,rb,sh}]
 
 Create a new submission
 
@@ -107,24 +147,24 @@ optional arguments:
                         submission author
   -d DAY, --day DAY     problem day
   -p PART, --part PART  problem part
-  -l {c,cpp,go,java,js,ts,py,pyx,rb,rs,sh}, --language {c,cpp,go,java,js,ts,py,pyx,rb,rs,sh}
+  -l {c,cpp,go,intcode,java,js,deno.js,deno.ts,nim,py,pyx,rb,sh}, --language {c,cpp,go,intcode,java,js,deno.js,deno.ts,nim,py,pyx,rb,sh}
                         submission language
 ```
 
 you can also use `./aoc config` to setup your local profile
 
 ```
-usage: aoc config [-h] username {c,cpp,go,java,js,ts,py,pyx,rb,rs,sh}
+usage: aoc config [-h] username {c,cpp,go,intcode,java,js,deno.js,deno.ts,nim,py,pyx,rb,sh}
 
 Configures user parameters
 
 positional arguments:
   username              prefered username
-  {c,cpp,go,java,js,ts,py,pyx,rb,rs,sh}
+  {c,cpp,go,intcode,java,js,deno.js,deno.ts,nim,py,pyx,rb,sh}
                         prefered programming language
 ```
 
-### Using python
+### New submission without aoc
 
 If you don't use `./aoc create` tool you should follow this convention:
 
@@ -133,22 +173,33 @@ day-[number]/part-[number]/[username].py    # your submission code
 day-[number]/input/[username].txt           # your input file
 ```
 
-Your submission code should inherit from the `SubmissionPy` class from `runners.python` module:
+Your submission code should follow templates written in the `tool/templates/` folder (there is one for each language).
 
-```python
-from tool.runners.python import SubmissionPy
+## Installing runners to try out other people code
 
-class MyAwesomeSubmission(SubmissionPy):
+### Go
 
-    def run(self, s):
-        # :param s: input in string format
-        # :return: solution flag
-        pass
-```
+`brew install go`
 
-You can add other functions & modules if you need to. Any external dependency should be added to `requirements.txt`.
+### Rust
 
-Once you tested your solution you can submit it by making a PR.
+Follow: https://www.rust-lang.org/tools/install
+
+### Node
+
+`brew install node`
+
+### Deno
+
+`brew install deno`
+
+or
+
+`curl -fsSL https://deno.land/x/install/install.sh | sh`
+
+### Nim
+
+`brew install nim`
 
 ## History
 
