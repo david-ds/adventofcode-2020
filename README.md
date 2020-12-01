@@ -92,7 +92,7 @@ see `./aoc run -h` for full arguments description.
 
 ## Contribute
 
-For now we support `c`, `c++`, `java`, `javascript`, `typescript` , `go`, `python 3` (+ `cython`), `ruby`, `rust (stable)` and `bash` scripts.
+For now we support `c`, `c++`, `java`, `javascript`, `typescript` , `go`, `python 3` (+ `cython`), `ruby`, `rust (stable)`, `julia` and `bash` scripts.
 
 You can use `./aoc create` tool to create a new empty submission:
 
