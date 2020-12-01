@@ -1,7 +1,7 @@
 function run(s)
     # Your code here    
     entries = split(s, "\n")
-    entries = map(x -> tryparse(Int, x), entries)
+    entries = map(x -> parse(Int, x), entries)
     for (idx1, el1) in enumerate(entries)
         for (idx2, el2) in enumerate(entries[idx1+1:end])
             if el1 + el2 > 2020
