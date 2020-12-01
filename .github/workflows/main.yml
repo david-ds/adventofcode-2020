@@ -37,7 +37,11 @@ jobs:
       - name: vlang
         id: cache-vlang
         run: cd /tmp && git clone https://github.com/vlang/v && cd v && make && sudo ./v symlink
-
+      - name: setup zig
+        with:
+          version: 0.7.0
+        id: cache-zig
+        uses: goto-bus-stop/setup-zig@v1
       # install rust if not cached TODO
       # - uses: actions/cache@v1
       #   name: cache-cargo

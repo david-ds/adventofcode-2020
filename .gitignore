@@ -21,3 +21,5 @@ workspace
 
 Pipfile
 Pipfile.lock
+
+zig-cache/
