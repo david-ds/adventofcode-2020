@@ -1,11 +1,11 @@
 import os
 import sys
 
-from distutils.core import setup
 from Cython.Build import cythonize
+from distutils.core import setup
 
 
-CYTHON_DEBUG = bool(os.getenv('CYTHON_DEBUG', ''))
+CYTHON_DEBUG = bool(os.getenv("CYTHON_DEBUG", ""))
 
 build_dir = sys.argv.pop()
 script_name = sys.argv.pop()

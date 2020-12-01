@@ -2,7 +2,6 @@ import collections
 
 
 class SubmissionIntcode:
-
     def __init__(self, file):
         with open(file, "r") as f:
             code_str = f.read()

@@ -4,8 +4,8 @@ import stat
 from subprocess import check_output, Popen, PIPE
 import tempfile
 
-from tool.runners.wrapper import SubmissionWrapper
 from tool.runners.exceptions import CompilationError, RuntimeError
+from tool.runners.wrapper import SubmissionWrapper
 
 
 class SubmissionGo(SubmissionWrapper):

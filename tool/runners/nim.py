@@ -1,11 +1,10 @@
 import errno
-import os
 import tempfile
-import stat
 import subprocess
 
+from tool.runners.exceptions import CompilationError
 from tool.runners.wrapper import SubmissionWrapper
-from tool.runners.exceptions import CompilationError, RuntimeError
+
 
 class SubmissionNim(SubmissionWrapper):
     def __init__(self, file):
@@ -16,7 +15,7 @@ class SubmissionNim(SubmissionWrapper):
             [
                 "nim",
                 "compile",
-                "-o:"+tmp.name,
+                "-o:" + tmp.name,
                 file,
             ]
         ).decode()

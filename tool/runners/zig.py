@@ -2,6 +2,7 @@ import errno
 import subprocess
 import tempfile
 
+from tool.runners.exceptions import CompilationError, RuntimeError
 from tool.runners.wrapper import SubmissionWrapper
 
 
@@ -11,7 +12,15 @@ class SubmissionZig(SubmissionWrapper):
         tmp = tempfile.NamedTemporaryFile(prefix="aoc")
         tmp.close()
         compile_output = subprocess.check_output(
-            ["zig", "build-exe", "-OReleaseFast", "--strip", "-lc", "-femit-bin=" + tmp.name, file]
+            [
+                "zig",
+                "build-exe",
+                "-OReleaseFast",
+                "--strip",
+                "-lc",
+                "-femit-bin=" + tmp.name,
+                file,
+            ]
         ).decode()
         if compile_output:
             raise CompilationError(compile_output)
