@@ -1,4 +1,4 @@
-# Advent of code 2019 solutions
+# Advent of code 2020 solutions
 
 ⁣    🌟  
     🎄  
@@ -8,11 +8,11 @@
 🎄🎄🎄🎄🎄  
   🎁🎁🎁
 
-These are proposed solutions for the [Advent of Code 2019](http://adventofcode.com/2019).
+These are proposed solutions for the [Advent of Code 2020](http://adventofcode.com/2020).
 
 The solutions are automatically tested with github-actions.
 
-[![Build Status](https://github.com/lypnol/adventofcode-2019/workflows/CI/badge.svg)](https://github.com/lypnol/adventofcode-2019/actions?query=branch%3Amaster)
+[![Build Status](https://github.com/david-ds/adventofcode-2020/workflows/CI/badge.svg)](https://github.com/david-ds/adventofcode-2020/actions?query=branch%3Amaster)
 
 ## Usage
 
@@ -152,6 +152,7 @@ Once you tested your solution you can submit it by making a PR.
 
 ## History
 
+- [Advent of Code 2019](https://github.com/lypnol/adventofcode-2019)
 - [Advent of Code 2018](https://github.com/badouralix/advent-of-code-2018)
 - [Advent of Code 2017](https://github.com/lypnol/adventofcode-2017)
 - [Advent of Code 2016](https://github.com/lypnol/adventofcode-2016)

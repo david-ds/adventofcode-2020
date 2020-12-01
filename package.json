@@ -1,21 +1,21 @@
 {
-  "name": "adventofcode-2019",
+  "name": "adventofcode-2020",
   "version": "0.1.0",
-  "description": "repository of proposed solutions to Advent Of Code 2019 edition",
+  "description": "repository of proposed solutions to Advent Of Code 2020 edition",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lypnol/adventofcode-2019.git"
+    "url": "git+https://github.com/david-ds/adventofcode-2020.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/lypnol/adventofcode-2019/issues"
+    "url": "https://github.com/david-ds/adventofcode-2020/issues"
   },
-  "homepage": "https://github.com/lypnol/adventofcode-2019#readme",
+  "homepage": "https://github.com/david-ds/adventofcode-2020#readme",
   "dependencies": {
     "lodash": ">=4.17.13",
     "ts-node": "^8.5.4",
