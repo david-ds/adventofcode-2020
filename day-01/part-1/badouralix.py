@@ -9,11 +9,14 @@ class BadouralixSubmission(SubmissionPy):
         """
         # Parse input and handle the weird edge case where 1010 appears twice
         entries = list(map(int, s.split()))
-        if entries.count(1010) == 2:
+        if entries.count(1010) >= 2:
             return 1010 * 1010
 
         # Yolo build a set out of the list of entries
         entries = set(entries)
+
+        # Yolo patch the set in case there is a single 1010 there
+        entries.discard(1010)
 
         # Find elements that sum up to 2020
         for e in entries:
