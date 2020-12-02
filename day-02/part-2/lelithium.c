@@ -10,12 +10,12 @@ int run(char *input)
     int valid_passwords = 0;
 
     int i = 0;
-    char min_len_acc[3] = {0};
-    char max_len_acc[4] = {0};
+    char first_pos_acc[3] = {0};
+    char last_pos_acc[3] = {0};
     int first_pos = 0;
     int last_pos = 0;
     char target_char = 0;
-    int is_valid_password = 0;
+    int valid_counter = 0;
     int current_state = 0; // 0: parse min, 1: parse max, 2: parse target, 3: parse password
 
     for (; *input != '\0'; ++input)
@@ -26,7 +26,7 @@ int run(char *input)
         {
             if (current_state == 1)
             {
-                last_pos = atoi(max_len_acc);
+                last_pos = atoi(last_pos_acc);
                 current_state = 2;
                 i = 0;
             }
@@ -35,22 +35,22 @@ int run(char *input)
         case '\0':
         case '\n':
         {
-            if (is_valid_password)
+            if (valid_counter == 1)
                 valid_passwords++;
             current_state = 0;
             // Reset accumulators
             for (int j = 0; j < 3; j++)
             {
-                min_len_acc[j] = 0;
-                max_len_acc[j] = 0;
+                first_pos_acc[j] = 0;
+                last_pos_acc[j] = 0;
             }
-            is_valid_password = 0;
+            valid_counter = 0;
             i = 0;
             break;
         }
         case '-':
         {
-            first_pos = atoi(min_len_acc);
+            first_pos = atoi(first_pos_acc);
             current_state = 1;
             i = 0;
             break;
@@ -67,12 +67,12 @@ int run(char *input)
             {
             case 0:
             {
-                min_len_acc[i++] = *input;
+                first_pos_acc[i++] = *input;
                 break;
             }
             case 1:
             {
-                max_len_acc[i++] = *input;
+                last_pos_acc[i++] = *input;
                 break;
             }
             case 2:
@@ -83,12 +83,8 @@ int run(char *input)
             case 3:
             {
                 i++;
-                if (i == first_pos || i == last_pos)
-                    if (*input == target_char)
-                        if (is_valid_password)
-                            is_valid_password = 0;
-                        else
-                            is_valid_password = 1;
+                if ((i == first_pos || i == last_pos) && *input == target_char)
+                    valid_counter++;
                 break;
             }
             default:
@@ -98,7 +94,7 @@ int run(char *input)
         }
         }
     }
-    if (is_valid_password)
+    if (valid_counter == 1)
         valid_passwords++;
     return valid_passwords;
 }

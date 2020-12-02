@@ -11,7 +11,7 @@ int run(char *input)
 
     int i = 0;
     char min_len_acc[3] = {0};
-    char max_len_acc[4] = {0};
+    char max_len_acc[3] = {0};
     int min_len = 0, max_len = 0;
     char target_char = 0;
     int password_acc = 0;
