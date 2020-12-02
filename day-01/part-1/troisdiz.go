@@ -34,6 +34,7 @@ func puzzle(input []int, target int) int {
     int_i := sorted_input[i]
     int_j := sorted_input[j]
     if int_i + int_j == target {
+        // fmt.Printf("Sum = %d | %d -- %d\n", sum, sorted_input[i], sorted_input[j])
         return int_i * int_j
     } else {
         return -1

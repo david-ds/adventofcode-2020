@@ -10,6 +10,37 @@ import (
 	"time"
 )
 
+func puzzle2(input []int, target int) (int, int) {
+
+    sorted_input := input
+
+    // fmt.Printf("    Puzzle2 Size of data %d, first elt : %d, last elt : %d, target : %d\n", len(sorted_input), sorted_input[0], sorted_input[len(sorted_input)-1], target)
+
+    i := 0
+    j := len(sorted_input) - 1
+
+    sum := sorted_input[i] + sorted_input[j]
+
+    for sum != target && i < j {
+        // fmt.Printf("Sum = %d | %d -- %d\n", sum, sorted_input[i], sorted_input[j])
+        if sum > target {
+            j = j - 1
+        } else {
+            i = i + 1
+        }
+        sum = sorted_input[i] + sorted_input[j]
+    }
+    int_i := sorted_input[i]
+    int_j := sorted_input[j]
+    if int_i + int_j == target {
+        // fmt.Printf("    Target = %d, Sum = %d | %d -- %d (%d, %d)\n", target, sum, sorted_input[i], sorted_input[j], i, j)
+        return i, j
+    } else {
+        // fmt.Printf("    Target = %d, Sum = %d | %d -- %d (%d, %d)\n", target, sum, sorted_input[i], sorted_input[j], -1, -1)
+        return -1, -1
+    }
+}
+
 func puzzle(input []int, target int) int {
   
     sorted_input := input
@@ -21,33 +52,25 @@ func puzzle(input []int, target int) int {
     j := 1
     k := len(sorted_input) - 1
 
-    sum := sorted_input[i] + sorted_input[j] + sorted_input[k]
+    sum := 0
 
-    for sum != target && i < j && j < k {
-        // fmt.Printf("Sum = %d | %d -- %d -- %d (%d, %d, %d)\n", sum, sorted_input[i], sorted_input[j], sorted_input[k], i, j, k)
-        if sum > target {
-            if j == k - 1 {
-                i = i + 1
-                j = i + 1
-            }
+    for j < k {
+        ti, tj := puzzle2(sorted_input[i:k], target - sorted_input[k])
+        if ti == -1 {
+            // fmt.Printf("No ok sum for k = %d\n", k)
             k = k - 1
         } else {
-            if j < k - 1 {
-                j = j + 1
-            } else {
-                i = i + 1
-                j = i + 1
-            }
+            j = i + tj
+            i = i + ti
+            sum = sorted_input[i] + sorted_input[j] + sorted_input[k]
+            // fmt.Printf("Sum = %d | %d -- %d -- %d (%d, %d, %d)\n", sum, sorted_input[i], sorted_input[j], sorted_input[k], i, j, k)
+            break
         }
-        sum = sorted_input[i] + sorted_input[j] + sorted_input[k]
     }
 
     // fmt.Printf("Sum = %d | %d -- %d -- %d (%d, %d, %d)\n", sum, sorted_input[i], sorted_input[j], sorted_input[k], i, j, k)
-    int_i := sorted_input[i]
-    int_j := sorted_input[j]
-    int_k := sorted_input[k]
-    if int_i + int_j + int_k == target {
-        return int_i * int_j * int_k
+    if sum == target {
+        return sorted_input[i] * sorted_input[j] * sorted_input[k]
     } else {
         return -1
     }
