@@ -16,6 +16,9 @@ _PART_PATH_PATTERN = "part-[0-9]*"
 supported_languages = []
 RANDOM_LANGUAGE = "random"
 
+def get_accepted_languages_references():
+    # We add random to permit this possibility in the CLI
+    return get_supported_languages() + [RANDOM_LANGUAGE]
 
 def get_supported_languages():
     global supported_languages
@@ -25,8 +28,7 @@ def get_supported_languages():
             for language in LANGUAGES
             if which(TOOL_BY_LANGUAGE[language]) is not None
         ]
-    # We add random to permit this possibility
-    return [RANDOM_LANGUAGE] + supported_languages
+    return supported_languages
 
 
 def get_latest_problem():
