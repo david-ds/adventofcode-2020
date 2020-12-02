@@ -2,6 +2,7 @@
 
 # stdlib
 import os.path
+import random
 import re
 import sys
 
@@ -120,6 +121,8 @@ aoc config <username> <language>""",
 
     if not language:
         language = CONFIG.language
+    if language == discovery.RANDOM_LANGUAGE:
+        language = random.choice(discovery.get_supported_languages())
 
     # Format author name
     author = author.lower()

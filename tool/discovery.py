@@ -14,6 +14,7 @@ from tool.runners import LANGUAGES, TOOL_BY_LANGUAGE
 _DAY_PATH_PATTERN = "day-[0-9]*"
 _PART_PATH_PATTERN = "part-[0-9]*"
 supported_languages = []
+RANDOM_LANGUAGE = "random"
 
 
 def get_supported_languages():
@@ -24,7 +25,8 @@ def get_supported_languages():
             for language in LANGUAGES
             if which(TOOL_BY_LANGUAGE[language]) is not None
         ]
-    return supported_languages
+    # We add random to permit this possibility
+    return [RANDOM_LANGUAGE] + supported_languages
 
 
 def get_latest_problem():
