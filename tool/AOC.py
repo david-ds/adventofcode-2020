@@ -13,7 +13,7 @@ COMMAND_RUN = "run"
 COMMAND_CREATE = "create"
 COMMAND_CONFIG = "config"
 
-SUPPORTED_LANGUAGES = discovery.get_supported_languages()
+SUPPORTED_LANGUAGES = discovery.get_accepted_languages_references()
 
 DAY_RANGE = [i for i in range(1, 26)]
 PART_RANGE = [1, 2]
