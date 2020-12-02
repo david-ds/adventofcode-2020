@@ -7,11 +7,8 @@ export PATH=$PATH:~/.cargo/bin:$GOROOT/bin
 export PYENV_VERSION=3.7
 
 run() {
-    echo $1
     echo $1 | grep "day-" | cut -d "/" -f1 | cut -d "-" -f2 | sort | uniq | xargs -I{} ./aoc run -fd {}
 }
-
-echo "$GITHUB_HEAD_REF"
 
 
 # In PRs, GITHUB_HEAD_REF is set the the name of the branch
@@ -20,11 +17,9 @@ echo "$GITHUB_HEAD_REF"
 # Note: we cannot use "git branch --show-current" as GitHub rewrites the history in actions
 if [ "$GITHUB_HEAD_REF" == "" ];
 then
-    echo "should be master"
     # if on master, check the diff of the last commit
     run "$(git --no-pager diff --name-only HEAD HEAD^ --)"
 else
-    echo "should be branch"
     # otherwise, check the diff with master
     run "$(git --no-pager diff --name-only origin/master --)"
 fi
