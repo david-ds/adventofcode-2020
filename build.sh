@@ -11,14 +11,14 @@ run() {
     echo $1 | grep "day-" | cut -d "/" -f1 | cut -d "-" -f2 | sort | uniq | xargs -I{} ./aoc run -fd {}
 }
 
-echo "$GITHUB_HEAD_REF"
+echo $GITHUB_HEAD_REF
 
 
 # In PRs, GITHUB_HEAD_REF is set the the name of the branch
 # This variable isn't set on regular commits and as we only allowed the CI to run on pushs only in master
 # checking if the variable is the empty string is the same as checking if the branch is master
 # Note: we cannot use "git branch --show-current" as GitHub rewrites the history in actions
-if [ "$GITHUB_HEAD_REF" != "" ];
+if [ $GITHUB_HEAD_REF == "" ];
 then
     echo "should be master"
     # if on master, check the diff of the last commit
