@@ -23,3 +23,6 @@ Pipfile
 Pipfile.lock
 
 zig-cache/
+
+# Vim files
+*.swp
