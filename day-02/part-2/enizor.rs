@@ -31,7 +31,7 @@ impl Policy {
     fn validate(&self, password: &str) -> bool {
         let mut res = false;
         for (pos, c) in password[..self.pos2].chars().enumerate() {
-            if pos == self.pos1 || pos == self.pos2 {
+            if (pos+1)== self.pos1 || (pos+1)== self.pos2 {
                 res ^= c == self.letter;
             }
         }
@@ -51,7 +51,8 @@ mod tests {
     fn run_test() {
         let small_input = "1-3 a: abcde
 1-3 b: cdefg
+1-5 g: cdefg
 2-9 c: ccccccccc";
-        assert_eq!(run(small_input), 1)
+        assert_eq!(run(small_input), 2)
     }
 }
