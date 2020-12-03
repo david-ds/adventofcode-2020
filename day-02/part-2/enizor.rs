@@ -31,7 +31,7 @@ impl Policy {
     fn validate(&self, password: &str) -> bool {
         let mut res = false;
         for (pos, c) in password[..self.pos2].chars().enumerate() {
-            if (pos+1)== self.pos1 || (pos+1)== self.pos2 {
+            if (pos + 1) == self.pos1 || (pos + 1) == self.pos2 {
                 res ^= c == self.letter;
             }
         }
