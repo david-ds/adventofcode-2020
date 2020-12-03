@@ -11,36 +11,38 @@ fn main() {
 
 const SLOPE_X: usize = 3;
 const SLOPE_Y: usize = 1;
-struct Toboggan<T> {
+struct Toboggan<'a> {
     width: usize,
-    counter: usize,
-    chars: T,
+    pos_x: usize,
+    pos_y: usize,
+    chars: &'a [u8],
 }
 
-fn parse_input<'a>(s: &'a str) -> Toboggan<impl Iterator<Item = char> + 'a> {
-    let width = s.find('\n').expect("No EOL!");
-    debug_assert!(width >= SLOPE_X);
-    let chars = s.chars().filter(|&c| c != '\n').skip(1);
+impl<'a> Toboggan<'a> {
+    fn parse_input(s: &'a str) -> Self {
+        let width = s.find('\n').expect("No EOL!");
+        debug_assert!(width >= SLOPE_X);
 
-    Toboggan {
-        width,
-        counter: 0,
-        chars,
+        Toboggan {
+            width,
+            pos_x: 0,
+            pos_y: 0,
+            chars: s.as_bytes(),
+        }
     }
 }
-impl<T: Iterator<Item = char>> Iterator for Toboggan<T> {
-    type Item = char;
+impl<'a> Iterator for Toboggan<'a> {
+    type Item = &'a u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let vertical =
-            SLOPE_Y + (self.counter / self.width) - ((self.counter + SLOPE_X) / self.width);
-        self.counter += SLOPE_X;
-        self.chars.nth(SLOPE_X + vertical * self.width - 1)
+        self.pos_x = (self.pos_x + SLOPE_X) % self.width;
+        self.pos_y += SLOPE_Y;
+        self.chars.get(self.pos_x + self.pos_y * (self.width + 1))
     }
 }
 
 fn run(input: &str) -> isize {
-    parse_input(input).filter(|&c| c == '#').count() as isize
+    Toboggan::parse_input(input).filter(|&&c| c == b'#').count() as isize
 }
 
 #[cfg(test)]

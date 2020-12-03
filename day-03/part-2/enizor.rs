@@ -9,39 +9,35 @@ fn main() {
     println!("{}", output);
 }
 
-struct Toboggan<T> {
+struct Toboggan<'a> {
     slope_x: usize,
     slope_y: usize,
     width: usize,
-    counter: usize,
-    chars: T,
+    pos_x: usize,
+    pos_y: usize,
+    chars: &'a [u8],
 }
 
-fn parse_input<'a>(
-    s: &'a str,
-    width: usize,
-    slope_x: usize,
-    slope_y: usize,
-) -> Toboggan<impl Iterator<Item = char> + 'a> {
-    debug_assert!(width >= slope_x);
-    let chars = s.chars().filter(|&c| c != '\n').skip(1);
-
-    Toboggan {
-        slope_x,
-        slope_y,
-        width,
-        counter: 0,
-        chars,
+impl<'a> Toboggan<'a> {
+    fn parse_input(s: &'a str, width: usize, slope_x: usize, slope_y: usize) -> Self {
+        debug_assert!(width >= slope_x);
+        Toboggan {
+            slope_x,
+            slope_y,
+            width,
+            pos_x: 0,
+            pos_y: 0,
+            chars: s.as_bytes(),
+        }
     }
 }
-impl<T: Iterator<Item = char>> Iterator for Toboggan<T> {
-    type Item = char;
+impl<'a> Iterator for Toboggan<'a> {
+    type Item = &'a u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let vertical = self.slope_y + (self.counter / self.width)
-            - ((self.counter + self.slope_x) / self.width);
-        self.counter += self.slope_x;
-        self.chars.nth(self.slope_x + vertical * self.width - 1)
+        self.pos_x = (self.pos_x + self.slope_x) % self.width;
+        self.pos_y += self.slope_y;
+        self.chars.get(self.pos_x + self.pos_y * (self.width + 1))
     }
 }
 
@@ -50,8 +46,8 @@ fn run(input: &str) -> isize {
     [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
         .iter()
         .map(|&(x, y)| {
-            parse_input(input, width, x, y)
-                .filter(|&c| c == '#')
+            Toboggan::parse_input(input, width, x, y)
+                .filter(|&&c| c == b'#')
                 .count()
         })
         .product::<usize>() as isize
