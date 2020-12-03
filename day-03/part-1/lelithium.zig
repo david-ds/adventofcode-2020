@@ -21,13 +21,13 @@ fn run(input: [:0]u8) i64 {
     var cur_y: usize = 0;
 
     while (all_lines_it.next()) |line| {
-        cur_y += 1;
         if (@mod(cur_y, SKIP_Y) == 0) {
             if (line[@mod(cur_x, LINE_LEN)] == '#') {
                 trees += 1;
             }
+            cur_x += SKIP_X;
         }
-        cur_x += SKIP_X;
+        cur_y += 1;
     }
     return trees;
 }
