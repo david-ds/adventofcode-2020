@@ -52,12 +52,12 @@ func puzzle(input [][]bool) int {
     height := len(input)
     width := len(input[0])
 
-    fmt.Printf("Height : %d, width : %d\n", height, width)
-    t1 := puzzleTest(input, height, width, 1, 1)
-    t2 := puzzleTest(input, height, width, 3, 1)
-    t3 := puzzleTest(input, height, width, 5, 1)
-    t4 := puzzleTest(input, height, width, 7, 1)
-    t5 := puzzleTest(input, height, width, 1, 2)
+    // fmt.Printf("Height : %d, width : %d\n", height, width)
+    var t1 int = puzzleTest(input, height, width, 1, 1)
+    var t2 int = puzzleTest(input, height, width, 3, 1)
+    var t3 int = puzzleTest(input, height, width, 5, 1)
+    var t4 int = puzzleTest(input, height, width, 7, 1)
+    var t5 int = puzzleTest(input, height, width, 1, 2)
 
     return t1 * t2 * t3 * t4 * t5
 }
