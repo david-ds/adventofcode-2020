@@ -14,13 +14,26 @@ def run_slope(s, skip_x, skip_y)
 end
 
 def run(s)
-    [
-        run_slope(s, 1, 1),
-        run_slope(s, 3, 1),
-        run_slope(s, 5, 1),
-        run_slope(s, 7, 1),
-        run_slope(s, 1, 2)
-    ].reduce(&:*)
+    trees = [0, 0, 0, 0, 0]
+    slopes = [
+        [1, 1],
+        [3, 1],
+        [5, 1],
+        [7, 1],
+        [1, 2],
+    ]
+    cur = [0, 0, 0, 0, 0]
+    s.map(&:chomp).each_with_index do |line, cur_y|
+        slopes.each_with_index do |(skip_x, skip_y), i|
+            if cur_y % skip_y == 0
+                if line[cur[i] % 31] == "#"
+                    trees[i] += 1
+                end
+                cur[i] += skip_x
+            end
+        end
+    end
+    trees.reduce(&:*)
 end
 
 
