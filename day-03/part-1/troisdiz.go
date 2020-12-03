@@ -36,7 +36,7 @@ func puzzle(input [][]bool, right int, down int) int {
     height := len(input)
     width := len(input[0])
 
-    fmt.Printf("Height : %d, width : %d\n", height, width)
+    //fmt.Printf("Height : %d, width : %d\n", height, width)
 
     var currentHeight, currentRight int
     var treeCount int
