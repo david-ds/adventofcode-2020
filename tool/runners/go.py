@@ -34,3 +34,6 @@ class SubmissionGo(SubmissionWrapper):
             else:
                 # subprocess exited with another error
                 raise RuntimeError(e)
+
+    def cleanup(self):
+        os.remove(self.executable)

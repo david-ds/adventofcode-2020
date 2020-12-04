@@ -1,4 +1,5 @@
 import errno
+import os
 import subprocess
 import tempfile
 
@@ -31,3 +32,6 @@ class SubmissionV(SubmissionWrapper):
             else:
                 # subprocess exited with another error
                 return RuntimeError(e)
+    
+    def cleanup(self):
+        os.remove(self.executable)

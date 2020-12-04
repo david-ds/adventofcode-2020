@@ -11,8 +11,8 @@ class SubmissionRs(SubmissionWrapper):
     def __init__(self, file):
         DEVNULL = open(os.devnull, "wb")
         SubmissionWrapper.__init__(self)
-        tmpdir = tempfile.TemporaryDirectory(prefix="aoc")
-        tmpdir.cleanup()
+        self.tmpdir = tempfile.TemporaryDirectory(prefix="aoc")
+        
         try:
             subprocess.check_output(
                 ["cargo", "test", "--bin", file.replace("/", "-")[:-3]], stderr=DEVNULL
@@ -22,13 +22,13 @@ class SubmissionRs(SubmissionWrapper):
 
         p = subprocess.Popen(
             ["cargo", "build", "--release", "--bin", file.replace("/", "-")[:-3]],
-            env={**os.environ, "CARGO_TARGET_DIR": tmpdir.name},
+            env={**os.environ, "CARGO_TARGET_DIR": self.tmpdir.name},
             stdout=DEVNULL,
             stderr=DEVNULL,
         ).wait()
         if p > 0:
             raise CompilationError("Could not compile " + file)
-        self.executable = tmpdir.name + "/release/" + file.replace("/", "-")[:-3]
+        self.executable = self.tmpdir.name + "/release/" + file.replace("/", "-")[:-3]
 
     def language(self):
         return "rs"
@@ -43,3 +43,7 @@ class SubmissionRs(SubmissionWrapper):
             else:
                 # subprocess exited with another error
                 raise RuntimeError(e)
+
+    def cleanup(self):
+        os.remove(self.executable)
+        self.tmpdir.cleanup()

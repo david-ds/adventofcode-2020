@@ -1,4 +1,5 @@
 import errno
+import os
 import tempfile
 import subprocess
 
@@ -40,3 +41,6 @@ class SubmissionNim(SubmissionWrapper):
             else:
                 # subprocess exited with another error
                 return None
+
+    def cleanup(self):
+        os.remove(self.executable)
