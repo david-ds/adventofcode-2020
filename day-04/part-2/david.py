@@ -24,9 +24,9 @@ class DavidSubmission(SubmissionPy):
         "iyr": lambda x: cls.is_integer_in_range(x, 2010, 2020),
         "eyr": lambda x: cls.is_integer_in_range(x, 2020, 2030),
         "hgt": lambda x: cls.is_valid_height(x),
-        "hcl": lambda x: len(x) == 7 and x[0] == "#" and all(c in list("0123456789abcdef") for c in x[1:]),
-        "ecl": lambda x: x in ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"],
-        "pid": lambda x: len(x) == 9 and all(c in list("0123456789") for c in x),
+        "hcl": lambda x: len(x) == 7 and x[0] == "#" and all(c in set("0123456789abcdef") for c in x[1:]),
+        "ecl": lambda x: x in {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"},
+        "pid": lambda x: len(x) == 9 and all(c in set("0123456789") for c in x),
     }
 
     @classmethod
