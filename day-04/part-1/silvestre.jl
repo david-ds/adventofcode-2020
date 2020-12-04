@@ -1,17 +1,17 @@
-function check(fields, required_fields)
-    return all(f in fields for f in required_fields)
+function check(fields::Set{String}, required_fields::Set{String})::Bool
+    return issubset(required_fields, fields)
 end
 
-function run(s)
+function run(s::String)::Int
     # Your code here
-    passports = split(s, "\n\n")
-    counter = 0
-    required_fields = Set(
+    passports::Array{String} = split(s, "\n\n")
+    counter::Int = 0
+    required_fields::Set{String} = Set{String}(
         ("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid")
     )
     for passport_str in passports
-        fields = split(replace(passport_str, '\n' => ' '), ' ')
-        fields = map(x -> split(x, ":")[1], fields)
+        tags::Array{String} = split(replace(passport_str, '\n' => ' '), ' ')
+        fields::Set{String} = Set{String}(map(x -> split(x, ':')[1], tags))
         if check(fields, required_fields)
             counter += 1
         end

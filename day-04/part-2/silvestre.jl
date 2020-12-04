@@ -41,7 +41,7 @@ function run(s::String)::Int
     counter::Int = 0
     for passport_str in passports
         tags::Array{String} = split(replace(passport_str, '\n' => ' '), ' ')
-        fields = Dict{String,String}(map(x -> split(x, ":"), tags))
+        fields::Dict{String,String} = Dict{String,String}(map(x -> split(x, ':'), tags))
         if check_constraints(fields)
             counter += 1
         end
