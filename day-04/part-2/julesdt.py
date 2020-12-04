@@ -14,13 +14,13 @@ class JulesdtSubmission(SubmissionPy):
             try:
                 if len(value) == 4 and 1920 <= int(value) <= 2002:
                     return True
-            except:
+            except ValueError:
                 pass
         elif key == "iyr":
             try:
                 if len(value) == 4 and 2010 <= int(value) <= 2020:
                     return True
-            except:
+            except ValueError:
                 pass
         elif key == "eyr":
             try:
@@ -33,7 +33,7 @@ class JulesdtSubmission(SubmissionPy):
                 if (value.endswith("in") and 59 <= int(value[:-2]) <= 76) \
                     or (value.endswith("cm") and 150 <= int(value[:-2]) <= 193):
                     return True
-            except:
+            except ValueError:
                 pass
         elif key == "hcl":
             if value.startswith('#') and len(value) == 7 and all([x in "1234567890abcdef" for x in value[1:]]):
@@ -45,7 +45,7 @@ class JulesdtSubmission(SubmissionPy):
             try:
                 if len(value) == 9 and int(value):
                     return True
-            except:
+            except ValueError:
                 pass
         return False
 
