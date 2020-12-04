@@ -1,7 +1,3 @@
-function check(fields::Set{String}, required_fields::Set{String})::Bool
-    return issubset(required_fields, fields)
-end
-
 function run(s::String)::Int
     # Your code here
     passports::Array{String} = split(s, "\n\n")
@@ -12,7 +8,7 @@ function run(s::String)::Int
     for passport_str in passports
         tags::Array{String} = split(replace(passport_str, '\n' => ' '), ' ')
         fields::Set{String} = Set{String}(map(x -> split(x, ':')[1], tags))
-        if check(fields, required_fields)
+        if issubset(required_fields, fields)
             counter += 1
         end
     end
