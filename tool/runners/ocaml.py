@@ -22,7 +22,7 @@ class SubmissionOCaml(SubmissionWrapper):
             f.write(self.dune())
         try:
             subprocess.check_output(
-            ["opam", "exec", "dune", "build", exe], stderr=DEVNULL
+            ["opam", "exec", "dune", "build"], stderr=DEVNULL
             ).decode()
         except subprocess.CalledProcessError as e:
             self.cleanup()
