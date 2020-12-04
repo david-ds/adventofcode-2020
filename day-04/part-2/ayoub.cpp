@@ -106,22 +106,14 @@ bool is_valid_pid(char *s, int& i) {
     return is_n_digits(s, i, 9);
 }
 
-void output_passpport(char *s, int start, int end) {
-    for (int i = start; i <= end; i++) cout << s[i];
-    cout << "\n";
-}
-
 int run(char* s) {
-    int i = 0, count = 0, pass = 0;
+    int i = 0, count = 0;
     int byr = 0, iyr = 0, eyr = 0, hgt = 0, hcl = 0, ecl = 0, pid = 0;
-    int last = 0;
     while (s[i]) {
         if (s[i] == '\n' && s[i+1] == '\n') {
             if (byr + iyr + eyr + hgt + hcl + ecl + pid == 7) count++;
             byr = 0; iyr = 0; eyr = 0; hgt = 0; hcl = 0; ecl = 0; pid = 0;
             i += 2;
-            pass++;
-            last = i;
             continue;
         }
         if (s[i+1] && s[i+2] && s[i+3]) {

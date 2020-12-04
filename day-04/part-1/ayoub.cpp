@@ -6,11 +6,11 @@ using namespace std;
 
 int run(char* s) {
     int i = 0, count = 0;
-    int byr = 0, iyr = 0, eyr = 0, hgt = 0, hcl = 0, ecl = 0, pid = 0, cid = 0;
+    int byr = 0, iyr = 0, eyr = 0, hgt = 0, hcl = 0, ecl = 0, pid = 0;
     while (s[i]) {
         if (s[i] == '\n' && s[i+1] == '\n') {
             if (byr + iyr + eyr + hgt + hcl + ecl + pid == 7) count++;
-            byr = 0; iyr = 0; eyr = 0; hgt = 0; hcl = 0; ecl = 0; pid = 0; cid = 0;
+            byr = 0; iyr = 0; eyr = 0; hgt = 0; hcl = 0; ecl = 0; pid = 0;
             i += 2;
             continue;
         }
@@ -22,7 +22,6 @@ int run(char* s) {
             else if (s[i] == 'h' && s[i+1] == 'c' && s[i+2] == 'l' && s[i+3] == ':') { hcl = 1; i += 4; }
             else if (s[i] == 'e' && s[i+1] == 'c' && s[i+2] == 'l' && s[i+3] == ':') { ecl = 1; i += 4; }
             else if (s[i] == 'p' && s[i+1] == 'i' && s[i+2] == 'd' && s[i+3] == ':') { pid = 1; i += 4; }
-            else if (s[i] == 'c' && s[i+1] == 'i' && s[i+2] == 'd' && s[i+3] == ':') { cid = 1; i += 4; }
             else i++;
             continue;
         }
