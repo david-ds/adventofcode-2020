@@ -14,138 +14,125 @@ fn run(input: &str) -> isize {
 
 const FIELDS_NB: usize = 7;
 
-fn validate_byr(value: &str) -> bool {
+fn validate_byr(value: &str) -> Validation {
     if value.len() != 4 {
-        false
+        Validation::Invalid
     } else {
         let v = value.parse().unwrap_or(0);
-        v >= 1920 && v <= 2002
-    }
-}
-
-fn validate_iyr(value: &str) -> bool {
-    if value.len() != 4 {
-        false
-    } else {
-        let v = value.parse().unwrap_or(0);
-        v >= 2010 && v <= 2020
-    }
-}
-
-fn validate_eyr(value: &str) -> bool {
-    if value.len() != 4 {
-        false
-    } else {
-        let v = value.parse().unwrap_or(0);
-        v >= 2020 && v <= 2030
-    }
-}
-
-fn validate_hgt(value: &str) -> bool {
-    let n = value.len();
-    if n <= 2 {
-        false
-    } else {
-        let v = value[..n - 2].parse().unwrap_or(0);
-        if &value[n - 2..] == "cm" {
-            v >= 150 && v <= 193
-        } else if &value[n - 2..] == "in" {
-            v >= 59 && v <= 76
+        if v >= 1920 && v <= 2002 {
+            Validation::Valid(0)
         } else {
-            false
+            Validation::Invalid
         }
     }
 }
 
-fn validate_hcl(value: &str) -> bool {
+fn validate_iyr(value: &str) -> Validation {
+    if value.len() != 4 {
+        Validation::Invalid
+    } else {
+        let v = value.parse().unwrap_or(0);
+        if v >= 2010 && v <= 2020 {
+            Validation::Valid(1)
+        } else {
+            Validation::Invalid
+        }
+    }
+}
+
+fn validate_eyr(value: &str) -> Validation {
+    if value.len() != 4 {
+        Validation::Invalid
+    } else {
+        let v = value.parse().unwrap_or(0);
+        if v >= 2020 && v <= 2030 {
+            Validation::Valid(2)
+        } else {
+            Validation::Invalid
+        }
+    }
+}
+
+fn validate_hgt(value: &str) -> Validation {
+    let n = value.len();
+    if n <= 2 {
+        Validation::Invalid
+    } else {
+        let v = value[..n - 2].parse().unwrap_or(0);
+        if (&value[n - 2..] == "cm" && v >= 150 && v <= 193)
+            || (&value[n - 2..] == "in" && v >= 59 && v <= 76)
+        {
+            Validation::Valid(3)
+        } else {
+            Validation::Invalid
+        }
+    }
+}
+
+fn validate_hcl(value: &str) -> Validation {
     let n = value.len();
     if n != 7 || value.as_bytes()[0] != b'#' {
-        false
+        Validation::Invalid
+    } else if value[1..]
+        .chars()
+        .all(|c| matches!(c, 'a'..='f' | '0'..='9'))
+    {
+        Validation::Valid(4)
     } else {
-        value[1..]
-            .chars()
-            .all(|c| matches!(c, 'a'..='f' | '0'..='9'))
+        Validation::Invalid
     }
 }
 
-fn validate_ecl(value: &str) -> bool {
-    matches!(value, "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth")
+fn validate_ecl(value: &str) -> Validation {
+    if matches!(value, "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth") {
+        Validation::Valid(5)
+    } else {
+        Validation::Invalid
+    }
 }
 
-fn validate_pid(value: &str) -> bool {
+fn validate_pid(value: &str) -> Validation {
     if value.len() != 9 {
-        false
+        Validation::Invalid
+    } else if value.chars().all(|c| matches!(c, '0'..='9')) {
+        Validation::Valid(6)
     } else {
-        value.chars().all(|c| matches!(c, '0'..='9'))
+        Validation::Invalid
     }
 }
 
-fn validate_field(line: &str) -> Option<usize> {
+enum Validation {
+    Valid(usize),
+    Invalid,
+    Unvalidated,
+}
+
+fn validate_field(line: &str) -> Validation {
     if let Some(pos) = line.find(':') {
         let (field, colon_value) = line.split_at(pos);
         let value = &colon_value[1..];
         match field {
-            "byr" => {
-                if validate_byr(value) {
-                    Some(0)
-                } else {
-                    None
-                }
-            }
-            "iyr" => {
-                if validate_iyr(value) {
-                    Some(1)
-                } else {
-                    None
-                }
-            }
-            "eyr" => {
-                if validate_eyr(value) {
-                    Some(2)
-                } else {
-                    None
-                }
-            }
-            "hgt" => {
-                if validate_hgt(value) {
-                    Some(3)
-                } else {
-                    None
-                }
-            }
-            "hcl" => {
-                if validate_hcl(value) {
-                    Some(4)
-                } else {
-                    None
-                }
-            }
-            "ecl" => {
-                if validate_ecl(value) {
-                    Some(5)
-                } else {
-                    None
-                }
-            }
-            "pid" => {
-                if validate_pid(value) {
-                    Some(6)
-                } else {
-                    None
-                }
-            }
-            _ => None,
+            "byr" => validate_byr(value),
+            "iyr" => validate_iyr(value),
+            "eyr" => validate_eyr(value),
+            "hgt" => validate_hgt(value),
+            "hcl" => validate_hcl(value),
+            "ecl" => validate_ecl(value),
+            "pid" => validate_pid(value),
+            _ => Validation::Unvalidated,
         }
     } else {
-        None
+        Validation::Unvalidated
     }
 }
 
 fn validate(passport: &str) -> bool {
     let mut bitset = SimpleBitSet::init(FIELDS_NB);
     for line in passport.split_whitespace() {
-        if let Some(flag) = validate_field(line) {
-            bitset.set(flag)
+        match validate_field(line) {
+            Validation::Valid(flag) => bitset.set(flag),
+            Validation::Invalid => return false,
+            Validation::Unvalidated => {}
         }
     }
     bitset.is_full()

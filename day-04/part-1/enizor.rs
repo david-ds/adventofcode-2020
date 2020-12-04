@@ -21,7 +21,8 @@ fn validate(passport: &str) -> bool {
         if let Some(field) = line.split(':').next() {
             for (i, &f) in FIELDS_STR.iter().enumerate() {
                 if field == f {
-                    bitset.set(i)
+                    bitset.set(i);
+                    break;
                 }
             }
         }
