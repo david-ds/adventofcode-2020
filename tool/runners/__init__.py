@@ -15,6 +15,7 @@ from tool.runners.cython_aoc import SubmissionPyx
 from tool.runners.python import SubmissionPy
 from tool.runners.ruby import SubmissionRb
 from tool.runners.rust import SubmissionRs
+from tool.runners.ocaml import SubmissionOCaml
 from tool.runners.ts import SubmissionTs
 from tool.runners.wrapper import SubmissionWrapper
 from tool.runners.julia import SubmissionJulia
@@ -33,6 +34,7 @@ TOOL_BY_LANGUAGE = {
     "deno.ts": "deno",
     "ts": "./node_modules/.bin/ts-node",
     "nim": "nim",
+    "ml": "dune",
     "py": "python",
     "pyx": "cython",
     "rb": "ruby",
@@ -82,6 +84,8 @@ def load_submission_runnable(path, language):
         return SubmissionJulia(path)
     elif language == "nim":
         return SubmissionNim(path)
+    elif language == "ml":
+        return SubmissionOCaml(path)
     elif language == "ts":
         return SubmissionTs(path)
     elif language == "v":
