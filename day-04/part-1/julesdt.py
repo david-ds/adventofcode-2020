@@ -24,8 +24,7 @@ class JulesdtSubmission(SubmissionPy):
             keys = line.split(' ')
             for key in keys:
                 key_value = key.split(':')[0]
-                if key_value != "cid":
-                    found_keys.add(key_value)
+                found_keys.add(key_value)
         if self.check(found_keys):
             counter += 1
         return counter
