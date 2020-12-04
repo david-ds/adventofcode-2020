@@ -10,8 +10,8 @@ class BadouralixSubmission(SubmissionPy):
         result = 0
 
         for line in s.split("\n\n"):
-            keyvalues = set(line.replace("\n", " ").replace(":", " ").split())
-            if {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"} <= keyvalues:
+            keys = {keyvalue.split(":")[0] for keyvalue in line.split()}
+            if {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"} <= keys:
                 result += 1
 
         return result
