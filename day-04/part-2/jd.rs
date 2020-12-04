@@ -1,8 +1,6 @@
 use std::env::args;
 use std::time::Instant;
 
-use regex::Regex;
-
 fn main() {
     let now = Instant::now();
     let output = run(&args().nth(1).expect("Please provide an input"));
@@ -29,7 +27,6 @@ struct Document {
     hair_color: String,
     eye_color: String,
     passport_id: String,
-    _country_id: String,
 }
 
 impl Document {
@@ -96,7 +93,11 @@ fn assert_int(string: &str, min: u32, max: u32) -> bool {
 }
 
 fn assert_id(string: &str) -> bool {
-    Regex::new(r"^\d{9}$").unwrap().is_match(string)
+    if string.len() == 9 {
+        string.chars().all(|c| matches!(c, '0'..='9'))
+    } else {
+        false
+    }
 }
 
 fn assert_color(string: &str) -> bool {
@@ -107,7 +108,17 @@ fn assert_color(string: &str) -> bool {
 }
 
 fn assert_hex_color(string: &str) -> bool {
-    Regex::new(r"#[0-9a-fA-F]{6}").unwrap().is_match(string)
+    if string.len() == 7 {
+        if string.as_bytes()[0] == b'#' {
+            string[1..]
+                .chars()
+                .all(|c| matches!(c, '0'..='9' |'a'..='f'))
+        } else {
+            false
+        }
+    } else {
+        false
+    }
 }
 
 fn assert_height(string: &str) -> bool {
@@ -128,20 +139,34 @@ mod tests {
 
     #[test]
     fn run_test() {
-        let input = "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
-byr:1937 iyr:2017 cid:147 hgt:183cm
+        let valid_input = "pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
+hcl:#623a2f
 
-iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884
-hcl:#cfa07d byr:1929
+eyr:2029 ecl:blu cid:129 byr:1989
+iyr:2014 pid:896056539 hcl:#a97842 hgt:165cm
 
-hcl:#ae17e1 iyr:2013
-eyr:2024
-ecl:brn pid:760753108 byr:1931
-hgt:179cm
+hcl:#888785
+hgt:164cm byr:2001 iyr:2015 cid:88
+pid:545766238 ecl:hzl
+eyr:2022
 
-hcl:#cfa07d eyr:2025 pid:166559648
-iyr:2011 ecl:brn hgt:59in";
+iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719";
 
-        assert_eq!(run(input), 2)
+        let invalid_input = "eyr:1972 cid:100
+hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926
+
+iyr:2019
+hcl:#602927 eyr:1967 hgt:170cm
+ecl:grn pid:012533040 byr:1946
+
+hcl:dab227 iyr:2012
+ecl:brn hgt:182cm pid:021572410 eyr:2020 byr:1992 cid:277
+
+hgt:59cm ecl:zzz
+eyr:2038 hcl:74454a iyr:2023
+pid:3556412378 byr:2007";
+
+        assert_eq!(run(valid_input), 4);
+        assert_eq!(run(invalid_input), 0)
     }
 }

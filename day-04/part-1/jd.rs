@@ -27,7 +27,6 @@ struct Document {
     hair_color: String,
     eye_color: String,
     passport_id: String,
-    _country_id: String,
 }
 
 impl Document {
