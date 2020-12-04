@@ -129,7 +129,7 @@ def print_results(results):
                         answer=result.answer,
                         end=BColor.ENDC,
                     ),
-                    "  {color}{msecs:8.2f} ms{end}".format(
+                    "  {color}{msecs:8.3f} ms{end}".format(
                         color=BColor.BOLD, msecs=result.duration, end=BColor.ENDC
                     ),
                     "  {color}{language}{end}".format(
