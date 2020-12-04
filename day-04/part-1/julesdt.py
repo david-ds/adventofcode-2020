@@ -14,18 +14,18 @@ class JulesdtSubmission(SubmissionPy):
         """
         
         counter = 0
-        found_keys = []
+        found_keys = set()
         for line in s.split('\n'):
             if len(line) == 0:
                 if self.check(found_keys):
                     counter += 1
-                found_keys = []
+                found_keys = set()
                 continue
             keys = line.split(' ')
             for key in keys:
                 key_value = key.split(':')[0]
                 if key_value != "cid":
-                    found_keys.append(key_value)
+                    found_keys.add(key_value)
         if self.check(found_keys):
             counter += 1
         return counter
