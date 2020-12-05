@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
-# stdlib
 import sys
-import datetime
+import time
 from collections import defaultdict
+
 from tabulate import tabulate
 
-# project
 import tool.discovery as discovery
 from tool.config import CONFIG
 from tool.model import Result, Submission
@@ -80,10 +79,10 @@ def run(
 
 
 def run_submission(problem, submission, input, previous=None):
-    start = datetime.datetime.now()
+    start = time.perf_counter()
     answer = str(submission.runnable.run(input.content))
-    end = datetime.datetime.now()
-    msecs = (end - start).total_seconds() * 1000
+    end = time.perf_counter()
+    msecs = (end - start) * 1000
     answer, msecs = duration_from_answer(answer, msecs)
     if problem.parser():
         answer = problem.parser().parse(answer)
