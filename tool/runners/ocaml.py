@@ -7,6 +7,7 @@ from tool.runners.exceptions import CompilationError, RuntimeError
 from tool.runners.wrapper import SubmissionWrapper
 
 
+
 class SubmissionOCaml(SubmissionWrapper):
     
     file = None
@@ -20,14 +21,10 @@ class SubmissionOCaml(SubmissionWrapper):
         self.cleanup()
         with open(self.dune_path(), "w") as f:
             f.write(self.dune())
-        try:
-            subprocess.check_output(
-            ["opam", "exec", "dune", "build"], stderr=DEVNULL
-            ).decode()
-        except subprocess.CalledProcessError as e:
-            self.cleanup()
-            raise CompilationError(e.output)
+        output = subprocess.run(["opam", "exec", "dune", "build"], capture_output=True)
         self.cleanup()
+        if output.returncode != 0:
+            raise CompilationError(output.stderr)
         self.executable = "_build/default/" + exe
 
     def cleanup(self):
