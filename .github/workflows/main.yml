@@ -57,12 +57,18 @@ jobs:
             ${{ runner.os }}-esy-0.6.7-
       - name: Esy install
         run: "esy install"
-      - name: Import Cache
+      - name: Import Esy Cache
         run: |
           esy import-dependencies _export_esy
           rm -rf _export_esy
       - name: Build esy dependencies
         run: "esy build"
+
+      - name: Export esy cache
+        run: |
+          esy cleanup .
+          esy export-dependencies
+        if: steps.restore-cache-esy.outputs.cache-hit != 'true'
       # install rust if not cached TODO
       # - uses: actions/cache@v1
       #   name: cache-cargo
