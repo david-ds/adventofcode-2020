@@ -21,13 +21,16 @@
   },
   "homepage": "https://github.com/david-ds/adventofcode-2020#readme",
   "dependencies": {
-    "@opam/dune": "^2.7",
+    "@opam/dune": "*",
     "@opam/angstrom": "*",
     "@opam/ppx_deriving": "*",
     "@opam/fmt": "*",
-    "ocaml": "^4.11.1000+flambda"
+    "ocaml": "4.11.1000"
+  },
+  "resolutions": {
+    "ocaml": "esy-ocaml/ocaml#c72768d"
   },
   "devDependencies": {
-    "ocaml": "^4.11.1000+flambda"
+    "ocaml": "4.11.0"
   }
 }
