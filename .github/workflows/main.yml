@@ -45,11 +45,22 @@ jobs:
           version: 0.7.0
         id: cache-zig
         uses: goto-bus-stop/setup-zig@v1
+      - name: Retrieve opam cache
+        uses: actions/cache@v2
+        if: runner.os != 'Windows'
+        id: cache-opam
+        with:
+          path: ~/.opam
+          key: v1-${{ runner.os }}-opam-${{ hashFiles('*.opam.locked') }}
+          restore-keys: |
+            v1-${{ runner.os }}-opam-
       - name: setup ocaml
         uses: avsm/setup-ocaml@v1
         with:
           ocaml-version: 4.11.1+flambda
-      - run: opam switch create . -y --deps-only
+      - name: Install Opam dependencies
+        if: steps.cache-opam.outputs.cache-hit != 'true'
+        run: opam install . --locked --ignore-constraints-on=ocaml
       # install rust if not cached TODO
       # - uses: actions/cache@v1
       #   name: cache-cargo
