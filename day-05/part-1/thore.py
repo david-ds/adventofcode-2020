@@ -21,6 +21,6 @@ class ThoreSubmission(SubmissionPy):
 
 
 def test_day5():
-    assert ThoreSubmission.get_seat_id("BFFFBBFRRR") == 567
-    assert ThoreSubmission.get_seat_id("FFFBBBFRRR") == 119
-    assert ThoreSubmission.get_seat_id("BBFFBBFRLL") == 820
+    assert ThoreSubmission().get_seat_id("BFFFBBFRRR") == 567
+    assert ThoreSubmission().get_seat_id("FFFBBBFRRR") == 119
+    assert ThoreSubmission().get_seat_id("BBFFBBFRLL") == 820
