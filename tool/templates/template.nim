@@ -1,8 +1,9 @@
-import os, times
+from times import cpuTime
+from os import paramStr
 
 proc run(s: string): string =
     # Your code here
-    return s
+    return ""
 
 
 var input: string = paramStr(1)
