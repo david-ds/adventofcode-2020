@@ -15,58 +15,27 @@ jobs:
 
       # Install missing language compilers and interpreters
       # The default image natively supports bash, c/c++, go, java, julia, node, python, ruby, rust
+      # For new languages, see https://github.com/actions/virtual-environments/tree/d18c405/images/linux first
+
       - uses: denolib/setup-deno@v2
         with:
           deno-version: v0.x
       - uses: jiro4989/setup-nim-action@v1
         with:
           nim-version: 1.4.2
-      - name: vlang
-        id: cache-vlang
-        run: cd /tmp && git clone https://github.com/vlang/v && cd v && make && sudo ./v symlink
-      - name: setup zig
+      # We need node in /opt/hostedtoolcache so that later we can yolo npm install -g
+      - uses: actions/setup-node@v1
+      - uses: goto-bus-stop/setup-zig@v1
         with:
           version: 0.7.0
-        id: cache-zig
-        uses: goto-bus-stop/setup-zig@v1
-      - name: Installing esy
-        run: npm install -g esy@0.6.7 --unsafe-perm
-      - name: Restore Esy Cache
-        id: restore-cache-esy
+      - name: Compile vlang
+        run: cd /tmp && git clone https://github.com/vlang/v && cd v && make && sudo ./v symlink
+
+      # Install missing dependencies
+
+      # Install npm packages if not cached
+      - name: cache-npm
         uses: actions/cache@v1
-        with:
-          path: _export
-          key: ${{ runner.os }}-esy-0.6.7-${{ hashFiles('esy.lock/index.json') }}
-          restore-keys: |
-            ${{ runner.os }}-esy-0.6.7-
-      - name: Esy install
-        run: "esy install"
-      - name: Import Esy Cache
-        run: |
-          esy import-dependencies _export
-          rm -rf _export
-      - name: Build esy dependencies
-        run: "esy build"
-
-      - name: Export esy cache
-        run: |
-          esy cleanup .
-          esy export-dependencies
-        if: steps.restore-cache-esy.outputs.cache-hit != 'true'
-      # install rust if not cached TODO
-      # - uses: actions/cache@v1
-      #   name: cache-cargo
-      #   id: cache-cargo
-      #   with:
-      #     path: ~/.cargo/.bin
-      #     key: ${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
-      # - name: deps-cargo
-      #   if: steps.cache-cargo.outputs.cache-hit != 'true'
-      #   run: curl https://sh.rustup.rs -sSf -o rustup.sh && sh rustup.sh -y
-
-      # install npm packages if not cached
-      - uses: actions/cache@v1
-        name: cache-npm
         id: cache-npm
         with:
           path: node_modules
@@ -75,9 +44,9 @@ jobs:
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm install
 
-      # install python packages if not cached
-      - uses: actions/cache@v1
-        name: cache-python
+      # Install python packages if not cached
+      - name: cache-python
+        uses: actions/cache@v1
         id: cache-python
         with:
           path: ~/.local/lib/python3.8/site-packages
@@ -86,6 +55,42 @@ jobs:
         if: steps.cache-python.outputs.cache-hit != 'true'
         run: sudo apt-get install python3-setuptools && python3 -m pip install --user wheel && python3 -m pip install --user -r requirements.txt
 
-      # build
-      - name: build
+      # Install ocaml packages if not cached
+      - name: install-esy
+        run: npm install -g esy@0.6.7 --unsafe-perm
+      - name: cache-esy
+        uses: actions/cache@v1
+        id: cache-esy
+        with:
+          path: _export
+          key: ${{ runner.os }}-esy-0.6.7-${{ hashFiles('esy.lock/index.json') }}
+          restore-keys: |
+            ${{ runner.os }}-esy-0.6.7-
+      - name: install-esy-again-but-not-the-same
+        run: "esy install"
+      - name: import-esy
+        run: |
+          esy import-dependencies _export
+          rm -rf _export
+      - name: deps-esy
+        run: "esy build"
+      - name: export-esy
+        if: steps.cache-esy.outputs.cache-hit != 'true'
+        run: |
+          esy cleanup .
+          esy export-dependencies
+
+      # Install rust if not cached TODO
+      # - name: cache-cargo
+      #   uses: actions/cache@v1
+      #   id: cache-cargo
+      #   with:
+      #     path: ~/.cargo/.bin
+      #     key: ${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
+      # - name: deps-cargo
+      #   if: steps.cache-cargo.outputs.cache-hit != 'true'
+      #   run: curl https://sh.rustup.rs -sSf -o rustup.sh && sh rustup.sh -y
+
+      # Build
+      - name: Build
         run: ./build.sh
