@@ -5,16 +5,16 @@ using namespace std;
 
 int run(char* s) {
     int i = -1, offset = 0;
-    int curr_r = 0, curr_c = 0;
+    int curr = 0;
     int max = 0;
     bool set[1024] = {false};
     while (s[++i]) {
         switch (s[i]) {
         case 'B':
-            curr_r += 1 << (6-((i-offset)%10));
+            curr += 1 << (9-((i-offset)%10));
             break;
         case 'R':
-            curr_c += 1 << (9-((i-offset)%10));
+            curr += 1 << (9-((i-offset)%10));
             break;
         case '\n':
             offset++;
@@ -23,10 +23,9 @@ int run(char* s) {
             break;
         }
         if ((i-offset+1) % 10 == 0) {
-            int curr = 8 * curr_r + curr_c;
             set[curr] = true;
             max = (curr>max)?curr:max;
-            curr_r = 0; curr_c = 0;
+            curr = 0;
         }
     }
     for (i = max; i >= 0; i--) {
