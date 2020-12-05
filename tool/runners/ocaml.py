@@ -21,7 +21,7 @@ class SubmissionOCaml(SubmissionWrapper):
         self.cleanup()
         with open(self.dune_path(), "w") as f:
             f.write(self.dune())
-        output = subprocess.run(["opam", "exec", "dune", "build"], capture_output=True)
+        output = subprocess.run(["esy"], capture_output=True)
         self.cleanup()
         if output.returncode != 0:
             raise CompilationError(output.stderr)
