@@ -23,8 +23,6 @@ jobs:
       - uses: jiro4989/setup-nim-action@v1
         with:
           nim-version: 1.4.2
-      # We need node in /opt/hostedtoolcache so that later we can yolo npm install -g
-      - uses: actions/setup-node@v1
       - uses: goto-bus-stop/setup-zig@v1
         with:
           version: 0.7.0
@@ -57,7 +55,7 @@ jobs:
 
       # Install ocaml packages if not cached
       - name: install-esy
-        run: npm install -g esy@0.6.7 --unsafe-perm
+        run: sudo npm install -g esy@0.6.7 --unsafe-perm
       - name: cache-esy
         uses: actions/cache@v1
         id: cache-esy
