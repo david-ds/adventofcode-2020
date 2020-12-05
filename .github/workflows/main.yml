@@ -51,7 +51,7 @@ jobs:
         id: restore-cache-esy
         uses: actions/cache@v1
         with:
-          path: _export_esy
+          path: _export
           key: ${{ runner.os }}-esy-0.6.7-${{ hashFiles('esy.lock/index.json') }}
           restore-keys: |
             ${{ runner.os }}-esy-0.6.7-
@@ -59,8 +59,8 @@ jobs:
         run: "esy install"
       - name: Import Esy Cache
         run: |
-          esy import-dependencies _export_esy
-          rm -rf _export_esy
+          esy import-dependencies _export
+          rm -rf _export
       - name: Build esy dependencies
         run: "esy build"
 
