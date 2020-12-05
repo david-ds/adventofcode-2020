@@ -19,6 +19,4 @@ class BadouralixSubmission(SubmissionPy):
 
             seats.add(seat)
 
-        return (
-            {seat for seat in range(min(seats), max(seats) + 1)}.difference(seats).pop()
-        )
+        return set(range(min(seats), max(seats) + 1)).difference(seats).pop()
