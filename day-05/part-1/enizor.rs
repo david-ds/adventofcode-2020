@@ -1,57 +1,49 @@
 use std::env::args;
 use std::time::Instant;
 
-fn main() -> Result<(), ()> {
+fn main() {
     let now = Instant::now();
-    let output = run(&args().nth(1).expect("Please provide an input"))?;
+    let output = run(&args().nth(1).expect("Please provide an input"));
     let elapsed = now.elapsed();
     println!("_duration:{}", elapsed.as_secs_f64() * 1000.);
     println!("{}", output);
-    Ok(())
 }
 
-fn run(input: &str) -> Result<usize, ()> {
+fn run(input: &str) -> usize {
     input
         .as_bytes()
         .split(|&c| c == b'\n')
-        .map(|s| Seat::from_str(s).expect("cannot parse").id())
+        .map(|s| Seat::from_str(s).id())
         .max()
-        .ok_or(())
+        .expect("Parsing error")
 }
 
 struct Seat {
-    row: usize,
-    col: usize,
+    row: u8,
+    col: u8,
 }
 
 impl Seat {
     fn id(&self) -> usize {
-        8 * self.row + self.col
+        8 * self.row as usize + self.col as usize
     }
 
-    fn from_str(bytes: &[u8]) -> Option<Self> {
+    fn from_str(bytes: &[u8]) -> Self {
         debug_assert!(bytes.len() == 10);
         let mut row = 0;
-        let mut mask = 1 << 6;
-        for &c in &bytes[..7] {
-            match c {
-                b'B' => row |= mask,
-                b'F' => {}
-                _ => return None,
-            }
-            mask >>= 1;
+        // let mut mask = 1 << 6;\
+        for (i, &c) in bytes[..7].iter().enumerate() {
+            // B = 0b01000010
+            // F = 0b01000110
+            row |= ((c ^ b'F') << 4) >> i;
         }
         let mut col = 0;
-        let mut mask = 1 << 2;
-        for &c in &bytes[7..10] {
-            match c {
-                b'R' => col |= mask,
-                b'L' => {}
-                _ => return None,
-            }
-            mask >>= 1;
+        for (i, &c) in bytes[7..10].iter().enumerate() {
+            // R = 0b01010010
+            // L = 0b01001100
+            col |= ((c & 0b00000010) << 1) >> i;
         }
-        Some(Seat { row, col })
+        Seat { row, col }
     }
 }
 
@@ -61,10 +53,10 @@ mod tests {
 
     #[test]
     fn parse_test() -> Result<(), ()> {
-        assert_eq!(Seat::from_str(b"FBFBBFFRLR").ok_or(())?.id(), 357);
-        assert_eq!(Seat::from_str(b"BFFFBBFRRR").ok_or(())?.id(), 567);
-        assert_eq!(Seat::from_str(b"FFFBBBFRRR").ok_or(())?.id(), 119);
-        assert_eq!(Seat::from_str(b"BBFFBBFRLL").ok_or(())?.id(), 820);
+        assert_eq!(Seat::from_str(b"FBFBBFFRLR").id(), 357);
+        assert_eq!(Seat::from_str(b"BFFFBBFRRR").id(), 567);
+        assert_eq!(Seat::from_str(b"FFFBBBFRRR").id(), 119);
+        assert_eq!(Seat::from_str(b"BBFFBBFRLL").id(), 820);
 
         Ok(())
     }
