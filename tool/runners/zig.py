@@ -1,6 +1,7 @@
 import errno
 import subprocess
 import tempfile
+import os, shutil
 
 from tool.runners.exceptions import CompilationError, RuntimeError
 from tool.runners.wrapper import SubmissionWrapper
@@ -22,9 +23,16 @@ class SubmissionZig(SubmissionWrapper):
                 file,
             ]
         ).decode()
+        self.cleanup_after(file)
         if compile_output:
+            self.cleanup_after(file)
             raise CompilationError(compile_output)
         self.executable = tmp.name
+        
+    def cleanup_after(self, file):
+        cache = os.path.dirname(file) + "/zig-cache"
+        if os.path.exists(cache):
+            shutil.rmtree(cache, ignore_errors=True)
 
     def language(self):
         return "zig"

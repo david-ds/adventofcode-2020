@@ -28,6 +28,7 @@ The solutions are automatically tested with github-actions.
   - [Node](#node)
   - [Deno](#deno)
   - [Nim](#nim)
+  - [OCaml](#ocaml)
 - [History](#history)
 
 ## Usage
@@ -124,7 +125,7 @@ You can add other functions & modules if you need to. Any external dependency sh
 
 Once you tested your solution you can submit it by making a PR and a GitHub action will check that your code generates the same outputs as others' code.
 
-For now we support `c`, `c++`, `java`, `javascript` (with node and deno), `typescript` (with deno) , `go`, `python 3` (+ `cython`), `ruby`, `rust (stable)`, `julia`, `bash`, `nim`, `v` and `zig` scripts.
+For now we support `c`, `c++`, `java`, `javascript` (with node and deno), `typescript` (with deno) , `go`, `python 3` (+ `cython`), `ruby`, `rust (stable)`, `julia`, `bash`, `nim`, `v`,`zig` and `ocaml`scripts.
 
 ### New submission with aoc
 
@@ -132,7 +133,7 @@ You can use `./aoc create` tool to create a new empty submission:
 
 ```
 usage: aoc create [-h] [-a AUTHOR] [-d DAY] [-p PART]
-                  [-l {c,cpp,go,intcode,java,js,deno.js,deno.ts,nim,py,pyx,rb,rs,sh,v,zig}]
+                  [-l {c,cpp,go,intcode,java,js,deno.js,deno.ts,ml,nim,py,pyx,rb,rs,sh,v,zig}]
 
 Create a new submission
 
@@ -141,20 +142,20 @@ optional arguments:
                         submission author
   -d DAY, --day DAY     problem day
   -p PART, --part PART  problem part
-  -l {c,cpp,go,intcode,java,js,deno.js,deno.ts,nim,py,pyx,rb,rs,sh,v,zig}, --language {c,cpp,go,intcode,java,js,deno.js,deno.ts,nim,py,pyx,rb,rs,sh,v,zig}
+  -l {c,cpp,go,intcode,java,js,deno.js,deno.ts,ml,nim,py,pyx,rb,rs,sh,v,zig}, --language {c,cpp,go,intcode,java,js,deno.js,deno.ts,ml,nim,py,pyx,rb,rs,sh,v,zig}
                         submission language
 ```
 
 you can also use `./aoc config` to setup your local profile
 
 ```
-usage: aoc config [-h] username {c,cpp,go,intcode,java,js,deno.js,deno.ts,nim,py,pyx,rb,rs,sh,v,zig}
+usage: aoc config [-h] username {c,cpp,go,intcode,java,js,deno.js,deno.ts,ml,nim,py,pyx,rb,rs,sh,v,zig}
 
 Configures user parameters
 
 positional arguments:
   username              prefered username
-  {c,cpp,go,intcode,java,js,deno.js,deno.ts,nim,py,pyx,rb,rs,sh,v,zig}
+  {c,cpp,go,intcode,java,js,deno.js,deno.ts,ml,nim,py,pyx,rb,rs,sh,v,zig}
                         prefered programming language
 ```
 
@@ -195,6 +196,16 @@ or
 
 `brew install nim`
 
+### OCaml
+
+This installs opam and creates and activates a local switch, the equivalent of a python virtualenv.
+
+```
+brew install gpatch # opam dependency
+brew install opam # install opam
+opam switch create . 4.11.1+flambda -y --deps-only # create local switch and install dependencies
+eval $(opam env) # use local switch
+```
 ## History
 
 - [Advent of Code 2019](https://github.com/lypnol/adventofcode-2019)

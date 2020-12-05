@@ -26,3 +26,9 @@ zig-cache/
 
 # Vim files
 *.swp
+
+# Ocaml
+_build
+_opam
+.merlin
+dune
