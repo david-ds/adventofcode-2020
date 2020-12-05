@@ -1,5 +1,5 @@
+use std::env::args;
 use std::time::Instant;
-use std::{env::args, str::FromStr};
 
 fn main() -> Result<(), ()> {
     let now = Instant::now();
@@ -12,8 +12,9 @@ fn main() -> Result<(), ()> {
 
 fn run(input: &str) -> Result<usize, ()> {
     input
-        .lines()
-        .map(|s| s.parse::<Seat>().expect("cannot parse").id())
+        .as_bytes()
+        .split(|&c| c == b'\n')
+        .map(|s| Seat::from_str(s).expect("cannot parse").id())
         .max()
         .ok_or(())
 }
@@ -27,21 +28,16 @@ impl Seat {
     fn id(&self) -> usize {
         8 * self.row + self.col
     }
-}
 
-impl FromStr for Seat {
-    type Err = ();
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        debug_assert!(s.len() == 10);
-        let bytes = s.as_bytes();
+    fn from_str(bytes: &[u8]) -> Option<Self> {
+        debug_assert!(bytes.len() == 10);
         let mut row = 0;
         let mut mask = 1 << 6;
         for &c in &bytes[..7] {
             match c {
                 b'B' => row |= mask,
                 b'F' => {}
-                _ => return Err(()),
+                _ => return None,
             }
             mask >>= 1;
         }
@@ -51,11 +47,11 @@ impl FromStr for Seat {
             match c {
                 b'R' => col |= mask,
                 b'L' => {}
-                _ => return Err(()),
+                _ => return None,
             }
             mask >>= 1;
         }
-        Ok(Seat { row, col })
+        Some(Seat { row, col })
     }
 }
 
@@ -65,10 +61,10 @@ mod tests {
 
     #[test]
     fn parse_test() -> Result<(), ()> {
-        assert_eq!("FBFBBFFRLR".parse::<Seat>()?.id(), 357);
-        assert_eq!("BFFFBBFRRR".parse::<Seat>()?.id(), 567);
-        assert_eq!("FFFBBBFRRR".parse::<Seat>()?.id(), 119);
-        assert_eq!("BBFFBBFRLL".parse::<Seat>()?.id(), 820);
+        assert_eq!(Seat::from_str(b"FBFBBFFRLR").ok_or(())?.id(), 357);
+        assert_eq!(Seat::from_str(b"BFFFBBFRRR").ok_or(())?.id(), 567);
+        assert_eq!(Seat::from_str(b"FFFBBBFRRR").ok_or(())?.id(), 119);
+        assert_eq!(Seat::from_str(b"BBFFBBFRLL").ok_or(())?.id(), 820);
 
         Ok(())
     }
