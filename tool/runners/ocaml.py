@@ -43,6 +43,7 @@ class SubmissionOCaml(SubmissionWrapper):
         dune = f"""(executable
     (name {name})
     (libraries angstrom fmt str)
+    (ocamlopt_flags -O3)
     (preprocess (pps ppx_deriving.std)))
         """
         return dune
