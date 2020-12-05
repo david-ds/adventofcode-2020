@@ -45,22 +45,30 @@ jobs:
           version: 0.7.0
         id: cache-zig
         uses: goto-bus-stop/setup-zig@v1
-      - name: Retrieve opam cache
-        uses: actions/cache@v2
-        if: runner.os != 'Windows'
-        id: cache-opam
+      - name: Installing esy
+        run: npm install -g esy@0.6.7 --unsafe-perm
+      - name: Restore Esy Cache
+        id: restore-cache-esy
+        uses: actions/cache@v1
         with:
-          path: ~/.opam
-          key: v1-${{ runner.os }}-opam-${{ hashFiles('*.opam.locked') }}
+          path: _export
+          key: ${{ runner.os }}-esy-0.6.7-${{ hashFiles('esy.lock/index.json') }}
           restore-keys: |
-            v1-${{ runner.os }}-opam-
-      - name: setup ocaml
-        uses: avsm/setup-ocaml@v1
-        with:
-          ocaml-version: 4.11.1+flambda
-      - name: Install Opam dependencies
-        if: steps.cache-opam.outputs.cache-hit != 'true'
-        run: opam install . --locked --ignore-constraints-on=ocaml
+            ${{ runner.os }}-esy-0.6.7-
+      - name: Esy install
+        run: "esy install"
+      - name: Import Esy Cache
+        run: |
+          esy import-dependencies _export
+          rm -rf _export
+      - name: Build esy dependencies
+        run: "esy build"
+
+      - name: Export esy cache
+        run: |
+          esy cleanup .
+          esy export-dependencies
+        if: steps.restore-cache-esy.outputs.cache-hit != 'true'
       # install rust if not cached TODO
       # - uses: actions/cache@v1
       #   name: cache-cargo

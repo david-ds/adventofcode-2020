@@ -198,13 +198,10 @@ or
 
 ### OCaml
 
-This installs opam and creates and activates a local switch, the equivalent of a python virtualenv.
+install esy, esy will take care of installing ocaml and building the dependencies on the first execution (might take a while)
 
 ```
-brew install gpatch # opam dependency
-brew install opam # install opam
-opam switch create . 4.11.1+flambda -y --deps-only # create local switch and install dependencies
-eval $(opam env) # use local switch
+npm install -g esy
 ```
 ## History
 
