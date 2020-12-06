@@ -10,23 +10,23 @@ fn main() {
 }
 
 fn run(input: &str) -> u32 {
-    const NEWLINE_MASK: u32 = 0xfffffffe;
-    let mut answered: u32 = 0; // First bit is used to tell if we just me a newline\
-    let mut previous_person: u32 = 0xfffffffe;
+    let mut answered: u32 = 0;
+    let mut previous_person: u32 = 0xffffffff;
+    let mut found_newline = false;
     let mut total = 0;
     for &b in input.as_bytes().iter().chain(&[b'\n', b'\n']) {
         if b == b'\n' {
-            if (answered & 1) == 1 {
+            if found_newline {
                 total += previous_person.count_ones();
-                answered = 0;
-                previous_person = 0xfffffffe;
+                previous_person = 0xffffffff;
             } else {
                 previous_person &= answered;
-                answered = 1;
+                answered = 0;
             }
+            found_newline = !found_newline;
         } else {
-            answered &= NEWLINE_MASK;
-            let c = b - 96;
+            found_newline = false;
+            let c = b - b'a';
             answered |= 1 << c;
         }
     }
