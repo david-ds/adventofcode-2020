@@ -12,19 +12,20 @@ func run(s string) interface{} {
 	groups := strings.Split(s, "\n\n")
 	count := 0
 	for _, group := range groups {
-		answerMap := map[rune]int{}
+		answerCounts := make([]int, 26)
 		grpSize := 1
 		for _, c := range group {
 			if c == '\n' {
 				grpSize += 1
 				continue
 			}
-			answerMap[c] += 1
+			answerCounts[c - 97] += 1
 		}
-		for _, val := range answerMap {
+		for _, val := range answerCounts {
 			if val == grpSize {
 				count += 1
 			}
+
 		}
 	}
 
