@@ -240,7 +240,8 @@ func main() {
 
 	// Start resolution
 	start := time.Now()
-	result := run(string(input))
+	// S'agirait pas de devoir trop réfléchir à la gestion de la termination ¯\_(ツ)_/¯.
+	result := run(string(input) + "\n\n\n\n\n\n")
 
 	// Print result
 	fmt.Printf("_duration:%f\n", time.Now().Sub(start).Seconds()*1000)
