@@ -9,7 +9,7 @@ fn main() {
     println!("{}", output);
 }
 
-fn run(input: &str) -> isize {
+fn run(input: &str) -> usize {
     input
         .lines()
         .map(|line| {
