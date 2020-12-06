@@ -9,7 +9,7 @@ fn main() {
     println!("{}", output);
 }
 
-fn run(input: &str) -> isize {
+fn run(input: &str) -> usize {
     let map = Map::from(input);
 
     vec![
@@ -20,7 +20,7 @@ fn run(input: &str) -> isize {
         Slope { x: 1, y: 2 },
     ]
     .iter()
-    .fold(1, |acc, s| acc * map.count_tiles(Tile::Tree, s)) as isize
+    .fold(1, |acc, s| acc * map.count_tiles(Tile::Tree, s))
 }
 
 #[derive(PartialEq, Clone, Copy)]
@@ -42,8 +42,7 @@ impl Map {
     pub fn from(string: &str) -> Self {
         Self {
             tiles: string
-                .trim_end()
-                .split("\n")
+                .lines()
                 .map(|line| {
                     line.chars()
                         .map(|c| match c {

@@ -9,23 +9,15 @@ fn main() {
     println!("{}", output);
 }
 
-fn run(input: &str) -> isize {
-    validate_entries(&parse_input(input)) as isize
-}
-
-fn parse_input(input: &str) -> Vec<&str> {
-    input.split("\n").collect()
-}
-
-fn validate_entries(entries: &[&str]) -> usize {
-    entries
-        .iter()
+fn run(input: &str) -> usize {
+    input
+        .lines()
         .fold(0, |acc, entry| acc + is_valid_entry(entry) as usize)
 }
 
 fn is_valid_entry(entry: &str) -> bool {
-    let tokens: Vec<&str> = entry.split(": ").collect();
-    Rule::from(tokens[0]).check(tokens[1])
+    let mut tokens = entry.split(": ");
+    Rule::from(tokens.next().unwrap()).check(tokens.next().unwrap())
 }
 
 struct Rule {

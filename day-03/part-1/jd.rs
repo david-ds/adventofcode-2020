@@ -9,9 +9,9 @@ fn main() {
     println!("{}", output);
 }
 
-fn run(input: &str) -> isize {
+fn run(input: &str) -> usize {
     let map = Map::from(input);
-    map.count_tiles(Tile::Tree, &Slope { x: 3, y: 1 }) as isize
+    map.count_tiles(Tile::Tree, &Slope { x: 3, y: 1 })
 }
 
 #[derive(PartialEq, Clone, Copy)]
@@ -33,8 +33,7 @@ impl Map {
     pub fn from(string: &str) -> Self {
         Self {
             tiles: string
-                .trim_end()
-                .split("\n")
+                .lines()
                 .map(|line| {
                     line.chars()
                         .map(|c| match c {

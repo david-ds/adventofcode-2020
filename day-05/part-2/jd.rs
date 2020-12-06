@@ -9,7 +9,7 @@ fn main() {
     println!("{}", output);
 }
 
-fn run(input: &str) -> isize {
+fn run(input: &str) -> usize {
     let mut hash_map: [bool; 1024] = [false; 1024];
 
     input
@@ -22,6 +22,7 @@ fn run(input: &str) -> isize {
                 'L' => (row, col << 1),
                 _ => (row, col),
             });
+
             8 * row + col
         })
         .for_each(|id| {
@@ -30,7 +31,7 @@ fn run(input: &str) -> isize {
 
     for id in 1..1023 {
         if !hash_map[id] && hash_map[id - 1] && hash_map[id + 1] {
-            return id as isize;
+            return id;
         }
     }
 

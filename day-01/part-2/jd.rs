@@ -9,13 +9,13 @@ fn main() {
     println!("{}", output);
 }
 
-fn run(input: &str) -> isize {
-    find_triple_product(&mut parse_input(input), 2020) as isize
+fn run(input: &str) -> u64 {
+    find_triple_product(&mut parse_input(input), 2020)
 }
 
 fn parse_input(input: &str) -> Vec<u64> {
     input
-        .split("\n")
+        .lines()
         .map(|line| line.parse::<u64>().expect("could not parse uint"))
         .collect()
 }

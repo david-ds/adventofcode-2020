@@ -9,13 +9,11 @@ fn main() {
     println!("{}", output);
 }
 
-fn run(input: &str) -> isize {
+fn run(input: &str) -> usize {
     input
         .split("\n\n")
-        .collect::<Vec<&str>>()
-        .iter()
         .map(|doc| Document::from(doc))
-        .fold(0, |acc, doc| acc + (doc.is_passport() as isize))
+        .fold(0, |acc, doc| acc + (doc.is_passport() as usize))
 }
 
 #[derive(Default)]
@@ -33,15 +31,7 @@ impl Document {
     fn from(string: &str) -> Self {
         let mut doc = Document::default();
 
-        for token in string
-            .split("\n")
-            .collect::<Vec<&str>>()
-            .iter()
-            .map(|line| line.split(" ").collect::<Vec<&str>>())
-            .flatten()
-            .collect::<Vec<&str>>()
-            .iter()
-        {
+        for token in string.split("\n").map(|line| line.split(" ")).flatten() {
             let tokens = token.split(":").collect::<Vec<&str>>();
             let value = tokens[1].to_string();
             match tokens[0] {
