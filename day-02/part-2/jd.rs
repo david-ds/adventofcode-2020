@@ -28,8 +28,8 @@ struct Rule {
 
 impl Rule {
     fn from(entry: &str) -> Self {
-        let tokens: Vec<&str> = entry.split(" ").collect();
-        let numbers: Vec<&str> = tokens[0].split("-").collect();
+        let tokens: Vec<&str> = entry.split(' ').collect();
+        let numbers: Vec<&str> = tokens[0].split('-').collect();
 
         Self {
             character: tokens[1].chars().next().unwrap(),
@@ -40,8 +40,8 @@ impl Rule {
 
     fn check(&self, password: &str) -> bool {
         let password = password.as_bytes();
-        return (password[self.first - 1] == self.character as u8)
-            ^ (password[self.second - 1] == self.character as u8);
+        (password[self.first - 1] == self.character as u8)
+            ^ (password[self.second - 1] == self.character as u8)
     }
 }
 

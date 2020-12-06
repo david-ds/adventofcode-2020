@@ -22,14 +22,14 @@ fn parse_input(input: &str) -> Vec<u64> {
 
 fn find_couple_product(numbers: &mut [u64], goal: u64) -> u64 {
     // This enables O(log n) search using dichotomy.
-    numbers.sort();
+    numbers.sort_unstable();
 
     for (index, entry) in numbers.iter().enumerate() {
         let remainder = goal.checked_sub(*entry);
 
         // Since the list has only positive numbers we can skip negative remainders
         if let Some(remainder) = remainder {
-            if let Some(_) = dichotomy(&numbers[index + 1..], remainder) {
+            if dichotomy(&numbers[index + 1..], remainder).is_some() {
                 return entry * remainder;
             }
         }
@@ -46,11 +46,11 @@ pub fn dichotomy<T: PartialEq + PartialOrd>(array: &[T], searched: T) -> Option<
     let middle = array.len() / 2;
 
     if array[middle] == searched {
-        return Some(middle);
+        Some(middle)
     } else if array[middle] > searched {
-        return dichotomy(&array[..middle], searched);
+        dichotomy(&array[..middle], searched)
     } else {
-        return dichotomy(&array[middle + 1..], searched);
+        dichotomy(&array[middle + 1..], searched)
     }
 }
 

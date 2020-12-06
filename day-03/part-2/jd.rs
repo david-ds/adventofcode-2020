@@ -63,7 +63,7 @@ impl Map {
         while y + slope.y < self.tiles.len() {
             y += slope.y;
             x += slope.x;
-            x = x % self.tiles[y].len();
+            x %= self.tiles[y].len();
 
             if self.tiles[y][x] == tile {
                 count += 1;

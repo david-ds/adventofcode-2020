@@ -31,8 +31,8 @@ impl Document {
     fn from(string: &str) -> Self {
         let mut doc = Document::default();
 
-        for token in string.split("\n").map(|line| line.split(" ")).flatten() {
-            let tokens = token.split(":").collect::<Vec<&str>>();
+        for token in string.split('\n').map(|line| line.split(' ')).flatten() {
+            let tokens = token.split(':').collect::<Vec<&str>>();
             let value = tokens[1].to_string();
             match tokens[0] {
                 "byr" => {
@@ -75,7 +75,7 @@ impl Document {
 }
 
 fn assert_int(string: &str, min: u32, max: u32) -> bool {
-    if let Some(year) = string.parse::<u32>().ok() {
+    if let Ok(year) = string.parse::<u32>() {
         return year <= max && year >= min;
     }
 
@@ -91,10 +91,7 @@ fn assert_id(string: &str) -> bool {
 }
 
 fn assert_color(string: &str) -> bool {
-    match string {
-        "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth" => true,
-        _ => false,
-    }
+    matches!(string, "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth")
 }
 
 fn assert_hex_color(string: &str) -> bool {

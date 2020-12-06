@@ -31,8 +31,8 @@ impl Document {
     fn from(string: &str) -> Self {
         let mut doc = Document::default();
 
-        for token in string.split("\n").map(|line| line.split(" ")).flatten() {
-            let tokens = token.split(":").collect::<Vec<&str>>();
+        for token in string.split('\n').map(|line| line.split(' ')).flatten() {
+            let tokens = token.split(':').collect::<Vec<&str>>();
             let value = tokens[1].to_string();
             match tokens[0] {
                 "byr" => {
