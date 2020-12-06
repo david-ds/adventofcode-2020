@@ -23,11 +23,12 @@ jobs:
       - uses: jiro4989/setup-nim-action@v1
         with:
           nim-version: 1.4.2
+      - uses: nocturlab/setup-vlang-action@v1
+        with:
+          v-version: latest
       - uses: goto-bus-stop/setup-zig@v1
         with:
           version: 0.7.0
-      - name: Compile vlang
-        run: cd /tmp && git clone https://github.com/vlang/v && cd v && make && sudo ./v symlink
 
       # Install missing dependencies
 
