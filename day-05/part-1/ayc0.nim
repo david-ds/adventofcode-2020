@@ -1,7 +1,7 @@
 from times import cpuTime
 from os import paramStr
 from strutils import split
-from bitops import rotateLeftBits
+from bitops import rotateLeftBits, rotateRightBits, bitand
 
 type Seat = tuple
     row: uint8
@@ -18,14 +18,16 @@ proc analyze(boardingPass: string): Seat =
     var column = 0b0'u8
 
     for letter in boardingPass[0 .. 6]:
-        row = rotateLeftBits(row, 1)
-        if letter == 'B':
-            row = row + 0b1'u8
+        # F 70 01000110
+        # B 66 01000010
+        # so letter and 0b100'u8 will return 100 for F and 0 for B
+        row = rotateLeftBits(row, 1) + 0b1'u8 - rotateRightBits(uint8(letter) and 0b100'u8, 2)
 
     for letter in boardingPass[7 .. 9]:
-        column = rotateLeftBits(column, 1)
-        if letter == 'R':
-            column = column + 0b1'u8
+        # L 76 01001100
+        # R 82 01010010
+        # so letter and 0b10'u8 will return 10 for R and 0 for L
+        column = rotateLeftBits(column, 1) + rotateRightBits(uint8(letter) and 0b10'u8, 1)
 
     return (row, column)
 

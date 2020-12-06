@@ -26,8 +26,13 @@ jobs:
       - uses: goto-bus-stop/setup-zig@v1
         with:
           version: 0.7.0
-      - name: Compile vlang
-        run: cd /tmp && git clone https://github.com/vlang/v && cd v && make && sudo ./v symlink
+      # TODO: switch back to nocturlab/setup-vlang-action@v1 once https://github.com/nocturlab/setup-vlang-action/issues/72 is fixed
+      - name: Install vlang
+        run: |
+          wget -P /tmp https://github.com/vlang/v/releases/latest/download/v_linux.zip
+          unzip -d /tmp /tmp/v_linux.zip
+          sudo /tmp/v/v symlink
+          # We can not remove /tmp/v/ as /usr/local/bin/v needs some files in there
 
       # Install missing dependencies
 
