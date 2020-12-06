@@ -31,6 +31,8 @@
     "ocaml": "esy-ocaml/ocaml#c72768d"
   },
   "devDependencies": {
-    "ocaml": "4.11.0"
+    "ocaml": "4.11.0",
+    "@opam/ocaml-lsp-server": "*",
+    "@opam/ocamlformat": "0.15.1"
   }
 }
