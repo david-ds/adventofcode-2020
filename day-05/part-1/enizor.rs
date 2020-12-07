@@ -9,42 +9,32 @@ fn main() {
     println!("{}", output);
 }
 
-fn run(input: &str) -> usize {
-    input
-        .as_bytes()
-        .split(|&c| c == b'\n')
-        .map(|s| Seat::from_str(s).id())
-        .max()
-        .expect("Parsing error")
+fn run(input: &str) -> u16 {
+    let bytes = input
+        .as_bytes();
+    let mut cur = 0;
+    let mut max = 0;
+    while cur < bytes.len()-10 {
+        max = max.max(parse_seat(&bytes[cur..cur+10]));
+        cur += 11;
+    }
+    max
 }
 
-struct Seat {
-    row: u8,
-    col: u8,
-}
-
-impl Seat {
-    fn id(&self) -> usize {
-        8 * self.row as usize + self.col as usize
+fn parse_seat(bytes: &[u8]) -> u16 {
+    debug_assert!(bytes.len() == 10);
+    let mut id : u16 = 0;
+    for (i, &c) in bytes[..7].iter().enumerate() {
+        // B = 0b01000010
+        // F = 0b01000110
+        id |= (((c ^ b'F') as u16) << 7) >> i;
     }
-
-    fn from_str(bytes: &[u8]) -> Self {
-        debug_assert!(bytes.len() == 10);
-        let mut row = 0;
-        // let mut mask = 1 << 6;\
-        for (i, &c) in bytes[..7].iter().enumerate() {
-            // B = 0b01000010
-            // F = 0b01000110
-            row |= ((c ^ b'F') << 4) >> i;
-        }
-        let mut col = 0;
-        for (i, &c) in bytes[7..10].iter().enumerate() {
-            // R = 0b01010010
-            // L = 0b01001100
-            col |= ((c & 0b00000010) << 1) >> i;
-        }
-        Seat { row, col }
+    for (i, &c) in bytes[7..10].iter().enumerate() {
+        // R = 0b01010010
+        // L = 0b01001100
+        id |= (((c & 0b00000010)as u16) << 1) >> i;
     }
+    id
 }
 
 #[cfg(test)]
@@ -53,10 +43,10 @@ mod tests {
 
     #[test]
     fn parse_test() -> Result<(), ()> {
-        assert_eq!(Seat::from_str(b"FBFBBFFRLR").id(), 357);
-        assert_eq!(Seat::from_str(b"BFFFBBFRRR").id(), 567);
-        assert_eq!(Seat::from_str(b"FFFBBBFRRR").id(), 119);
-        assert_eq!(Seat::from_str(b"BBFFBBFRLL").id(), 820);
+        assert_eq!(parse_seat(b"FBFBBFFRLR"), 357);
+        assert_eq!(parse_seat(b"BFFFBBFRRR"), 567);
+        assert_eq!(parse_seat(b"FFFBBBFRRR"), 119);
+        assert_eq!(parse_seat(b"BBFFBBFRLL"), 820);
 
         Ok(())
     }

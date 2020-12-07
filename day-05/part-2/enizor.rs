@@ -11,9 +11,13 @@ fn main() {
 
 fn run(input: &str) -> usize {
     let mut plane = Plane::new();
-    for bytes in input.as_bytes().split(|&c| c == b'\n') {
-        let seat = Seat::from_str(bytes);
+    let bytes = input
+        .as_bytes();
+    let mut cur = 0;
+    while cur < bytes.len()-10 {
+        let seat = Seat::from_str(&bytes[cur..cur+10]);
         plane.add_seat(seat);
+        cur += 11;
     }
     plane.find_seat()
 }
