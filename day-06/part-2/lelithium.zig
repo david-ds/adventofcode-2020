@@ -34,14 +34,16 @@ fn run(input: [:0]u8) u32 {
     var questions: u26 = 0;
     var group_questions: u26 = 0;
     var all_lines_it = std.mem.split(input, "\n");
+    comptime var offset: u5 = 0;
     while (all_lines_it.next()) |line| {
         if (line.len == 0) {
             // Group analysis
-            for ([_]u5{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 }) |offset| {
+            inline while (offset < 26) : (offset += 1) {
                 if ((group_questions & (@as(u26, 1) << offset)) != 0) {
                     out += 1;
                 }
             }
+            offset = 0;
             group_questions = 0;
             is_first = true;
         } else {
@@ -60,7 +62,7 @@ fn run(input: [:0]u8) u32 {
             }
         }
     }
-    for ([_]u5{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25 }) |offset| {
+    inline while (offset < 26) : (offset += 1) {
         if ((group_questions & (@as(u26, 1) << offset)) != 0) {
             out += 1;
         }
