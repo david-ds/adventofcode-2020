@@ -11,15 +11,11 @@ class JulesdtSubmission(SubmissionPy):
         while len(colors_to_check) > 0:
             color = colors_to_check.pop()
             visited.add(color)
-            if color in self.results:
-                return self.results[color]
             for sub_color in self.rules[color].keys():
                 if "shiny gold" == sub_color:
-                    self.results[color] = True
                     return True
                 if sub_color not in visited:
                     colors_to_check.add(sub_color)
-        self.results[color] = False
         return False
         
 
@@ -28,7 +24,6 @@ class JulesdtSubmission(SubmissionPy):
         :param s: input in string format
         :return: solution flag
         """
-        self.results = {}
         self.rules = {}
         for line in s.split('\n'):
             bag_color, contains = line.split(" bags contain ")
