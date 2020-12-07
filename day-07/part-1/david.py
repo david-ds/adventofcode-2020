@@ -42,4 +42,4 @@ class DavidSubmission(SubmissionPy):
                 if next_bag not in result:
                     q.put(next_bag)
 
-        return len(result)
+        return len(result - {"shiny gold"})
