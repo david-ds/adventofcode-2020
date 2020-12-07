@@ -13,16 +13,16 @@ class SubmissionRs(SubmissionWrapper):
         SubmissionWrapper.__init__(self)
         tmpdir = tempfile.TemporaryDirectory(prefix="aoc")
         tmpdir.cleanup()
-        try:
-            subprocess.check_output(
-                ["cargo", "test", "--bin", file.replace("/", "-")[:-3]], stderr=DEVNULL
-            ).decode()
-        except subprocess.CalledProcessError as e:
-            raise CompilationError(e.output)
+        # try:
+        #     subprocess.check_output(
+        #         ["cargo", "test", "--bin", file.replace("/", "-")[:-3]], stderr=DEVNULL
+        #     ).decode()
+        # except subprocess.CalledProcessError as e:
+        #     raise CompilationError(e.output)
 
         p = subprocess.Popen(
             ["cargo", "build", "--release", "--bin", file.replace("/", "-")[:-3]],
-            env={**os.environ, "CARGO_TARGET_DIR": tmpdir.name},
+            env={**os.environ, "CARGO_TARGET_DIR": tmpdir.name, "RUSTFLAGS": "-C target-cpu=native"},
             stdout=DEVNULL,
             stderr=DEVNULL,
         ).wait()

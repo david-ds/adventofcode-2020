@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"math"
 	"os"
+	"sort"
 	"strings"
 	"time"
 )
@@ -18,22 +19,20 @@ func run(s string) interface{} {
 	}
 
 	ids := strings.Split(s, "\n")
-	seats := map[int]int8{}
-	max := 0
-	for _, id := range ids {
+	seats := make([]int, 2048)
+	for i, id := range ids {
 		curr := 0
-		for i, c := range id {
-			curr += correspondances[c] * int(math.Pow(2, float64(9-i)))
+		for j, c := range id {
+			curr += correspondances[c] * int(math.Pow(2, float64(9-j)))
 		}
-		seats[curr] = 1
-		if curr > max {
-			max = curr
-		}
+		seats[i] = curr
 	}
 
-	for i := 1; i <= max; i++ {
-		if seats[i] == 0 && seats[i - 1] == 1 && seats[i +1] == 1 {
-			return i
+	sort.Ints(seats)
+
+	for i := 0; i < len(seats) - 1; i++ {
+		if seats[i + 1] - seats[i] == 2 {
+			return seats[i] + 1
 		}
 	}
 
