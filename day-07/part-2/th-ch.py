@@ -27,8 +27,7 @@ class ThChSubmission(SubmissionPy):
                     rules[color]["contained"][bag_color] = int(number)
 
         nb_by_color = {}
-        roots = set(color for color, edges in rules.items() if not edges["contained"])
-        to_visit = deque(roots)
+        to_visit = deque([own_color])
         while to_visit:
             color = to_visit.popleft()
             has_all_children = True
