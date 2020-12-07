@@ -10,12 +10,11 @@ fn main() {
 }
 
 fn run(input: &str) -> u16 {
-    let bytes = input
-        .as_bytes();
+    let bytes = input.as_bytes();
     let mut cur = 0;
     let mut max = 0;
-    while cur < bytes.len()-10 {
-        max = max.max(parse_seat(&bytes[cur..cur+10]));
+    while cur <= bytes.len() - 10 {
+        max = max.max(parse_seat(&bytes[cur..cur + 10]));
         cur += 11;
     }
     max
@@ -23,7 +22,7 @@ fn run(input: &str) -> u16 {
 
 fn parse_seat(bytes: &[u8]) -> u16 {
     debug_assert!(bytes.len() == 10);
-    let mut id : u16 = 0;
+    let mut id: u16 = 0;
     for (i, &c) in bytes[..7].iter().enumerate() {
         // B = 0b01000010
         // F = 0b01000110
@@ -32,7 +31,7 @@ fn parse_seat(bytes: &[u8]) -> u16 {
     for (i, &c) in bytes[7..10].iter().enumerate() {
         // R = 0b01010010
         // L = 0b01001100
-        id |= (((c & 0b00000010)as u16) << 1) >> i;
+        id |= (((c & 0b00000010) as u16) << 1) >> i;
     }
     id
 }

@@ -11,11 +11,10 @@ fn main() {
 
 fn run(input: &str) -> usize {
     let mut plane = Plane::new();
-    let bytes = input
-        .as_bytes();
+    let bytes = input.as_bytes();
     let mut cur = 0;
-    while cur < bytes.len()-10 {
-        let seat = Seat::from_str(&bytes[cur..cur+10]);
+    while cur <= bytes.len() - 10 {
+        let seat = Seat::from_str(&bytes[cur..cur + 10]);
         plane.add_seat(seat);
         cur += 11;
     }
@@ -34,6 +33,7 @@ impl Seat {
 
     fn from_str(bytes: &[u8]) -> Self {
         debug_assert!(bytes.len() == 10);
+        assert!(bytes.iter().all(|&x| x != b'\n'));
         let mut row = 0;
         // let mut mask = 1 << 6;\
         for (i, &c) in bytes[..7].iter().enumerate() {
@@ -46,6 +46,9 @@ impl Seat {
             // R = 0b01010010
             // L = 0b01001100
             col |= ((c & 0b00000010) << 1) >> i;
+        }
+        if row == 29 {
+            dbg!((bytes, row, col));
         }
         Seat { row, col }
     }
@@ -75,6 +78,7 @@ impl Plane {
     }
 
     fn find_seat(&self) -> usize {
+        // dbg!((self.min_row, self.max_row, self.seats));
         self.seats[((self.min_row + 1) as usize)..self.max_row as usize]
             .iter()
             .enumerate()
