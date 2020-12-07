@@ -47,9 +47,6 @@ impl Seat {
             // L = 0b01001100
             col |= ((c & 0b00000010) << 1) >> i;
         }
-        if row == 29 {
-            dbg!((bytes, row, col));
-        }
         Seat { row, col }
     }
 }
@@ -78,7 +75,6 @@ impl Plane {
     }
 
     fn find_seat(&self) -> usize {
-        // dbg!((self.min_row, self.max_row, self.seats));
         self.seats[((self.min_row + 1) as usize)..self.max_row as usize]
             .iter()
             .enumerate()
