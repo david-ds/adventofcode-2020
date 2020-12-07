@@ -8,11 +8,11 @@ class JulesdtSubmission(SubmissionPy):
     def can_hold_gold_bag(self, color):
         colors_to_check = set([color])
         visited = set()
-        if color in self.results:
-            return self.results[color]
         while len(colors_to_check) > 0:
             color = colors_to_check.pop()
             visited.add(color)
+            if color in self.results:
+                return self.results[color]
             for sub_color in self.rules[color].keys():
                 if "shiny gold" == sub_color:
                     self.results[color] = True

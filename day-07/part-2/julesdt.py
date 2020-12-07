@@ -5,12 +5,12 @@ from tool.runners.python import SubmissionPy
 
 class JulesdtSubmission(SubmissionPy):
 
-    def count_number_of_bag_of_color(self, color):
+    def count_number_of_bag_for_color(self, color):
         counter = 0
         if color in self.results:
             return self.results[color]
         for sub_color in self.rules[color].keys():
-            counter += self.rules[color][sub_color] * (1 + self.count_number_of_bag_of_color(sub_color))
+            counter += self.rules[color][sub_color] * (1 + self.count_number_of_bag_for_color(sub_color))
         self.results[color] = counter
         return counter
         
@@ -34,4 +34,4 @@ class JulesdtSubmission(SubmissionPy):
                 if bag_color not in self.rules:
                     self.rules[bag_color] = {}
                 self.rules[bag_color][color] = int(count)
-        return self.count_number_of_bag_of_color("shiny gold")
+        return self.count_number_of_bag_for_color("shiny gold")
