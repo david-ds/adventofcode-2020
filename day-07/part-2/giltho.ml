@@ -63,8 +63,6 @@ let run input =
   count_for_container "shiny gold" - 1
 
 let () =
-  print_newline ();
-  print_newline ();
   let input = Sys.argv.(1) in
   let start = Sys.time () *. 1000. in
   let result = run input in
