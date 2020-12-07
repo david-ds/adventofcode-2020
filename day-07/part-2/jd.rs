@@ -47,7 +47,7 @@ impl<'a> Graph<'a> {
         let separator_index = line.find(SEPARATOR).unwrap();
         let container_id = self.id(&line[..separator_index]);
 
-        &line[separator_index + SEPARATOR.len()..]
+        line[separator_index + SEPARATOR.len()..]
             .split(", ")
             .filter(|bag| *bag != NULL)
             .for_each(|bag| {
