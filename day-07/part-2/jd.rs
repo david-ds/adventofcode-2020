@@ -30,7 +30,7 @@ struct Graph<'a> {
 
 #[derive(Default, Debug)]
 struct Node {
-    children: HashMap<usize, usize>,
+    children: Vec<(usize, usize)>,
 }
 
 impl<'a> Graph<'a> {
@@ -57,7 +57,7 @@ impl<'a> Graph<'a> {
 
                 self.nodes[container_id]
                     .children
-                    .insert(bag_id, bag[..start_index].parse::<usize>().unwrap());
+                    .push((bag_id, bag[..start_index].parse::<usize>().unwrap()));
             });
     }
 
