@@ -28,8 +28,8 @@ struct Rule {
 
 impl Rule {
     fn from(entry: &str) -> Self {
-        let tokens: Vec<&str> = entry.split(" ").collect();
-        let numbers: Vec<&str> = tokens[0].split("-").collect();
+        let tokens: Vec<&str> = entry.split(' ').collect();
+        let numbers: Vec<&str> = tokens[0].split('-').collect();
 
         Self {
             character: tokens[1].chars().next().unwrap(),
