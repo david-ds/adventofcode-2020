@@ -41,21 +41,16 @@ class BadouralixSubmission(SubmissionPy):
 
         while ip not in visited and ip < size:
             visited.add(ip)
-            accumulator, ip = self.step(program, accumulator, ip)
+            operation, argument = program[ip]
+
+            if operation == "acc":
+                accumulator += argument
+                ip += 1
+            elif operation == "jmp":
+                ip += argument
+            elif operation == "nop":
+                ip += 1
+            else:
+                raise Exception(f"Operation {operation} at {ip} is not implemented")
 
         return accumulator, (ip == size)
-
-    def step(self, program, accumulator, ip):
-        operation, argument = program[ip]
-
-        if operation == "acc":
-            accumulator += argument
-            ip += 1
-        elif operation == "jmp":
-            ip += argument
-        elif operation == "nop":
-            ip += 1
-        else:
-            raise Exception(f"Operation {operation} at {ip} is not implemented")
-
-        return accumulator, ip
