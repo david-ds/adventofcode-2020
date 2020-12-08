@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
     }
 
     clock_t start = clock();
-    auto answer = run(argv[1]);
+    int answer = run(argv[1]);
     
     cout << "_duration:" << float( clock () - start ) * 1000.0 /  CLOCKS_PER_SEC << "\n";
     cout << answer << "\n";
