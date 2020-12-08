@@ -4,11 +4,23 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+    "strings"
 	"time"
 )
 
 func run(s string) interface{} {
 	// Your code goes here
+    var sumQuestions int
+    for _, group := range strings.Split(s, "\n\n") {
+        groupQuestions := make(map[string]int)
+        for _, line := range strings.Split(group, "\n") {
+            for _, question := range line {
+                groupQuestions[string(question)] = 1
+            }
+        }
+        sumQuestions += len(groupQuestions)
+    }
+    return sumQuestions
 }
 
 func main() {
