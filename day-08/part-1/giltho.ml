@@ -22,40 +22,25 @@ let find_infinite_loop cmds =
   in
   loop init_state
 
-module Parser = struct
-  open Angstrom
-
-  let integer =
-    take_while1 (function '0' .. '9' -> true | _ -> false) >>| int_of_string
-
-  let positive = char '+' *> integer
-
-  let negative = char '-' *> integer >>| fun i -> -i
-
-  let argument = negative <|> positive
-
-  let cmd =
-    string "jmp"
-    >>= (fun _ -> char ' ' *> argument >>| fun i -> Jmp i)
-    <|> ( string "nop" >>= fun _ ->
-          char ' ' *> argument >>| fun i -> Nop i )
-    <|> ( string "acc" >>= fun _ ->
-          char ' ' *> argument >>| fun i -> Acc i )
-
-  let cmds = sep_by1 (char '\n') cmd >>| Array.of_list
-end
-
-let run input =
-  let prg =
-    Angstrom.parse_string ~consume:All Parser.cmds input |> function
-    | Ok x -> x
-    | Error s -> failwith s
+let parse input =
+  let parse_line l =
+    match String.split_on_char ' ' l with
+    | [ "jmp"; b ] -> Jmp (int_of_string b)
+    | [ "nop"; b ] -> Nop (int_of_string b)
+    | [ "acc"; b ] -> Acc (int_of_string b)
+    | _ -> failwith "Impossible"
   in
+  let lst = String.split_on_char '\n' input in
+  lst |> List.map parse_line |> Array.of_list
+
+let run ~start input =
+  let prg = parse input in
+  Printf.printf "_parsing_time:%f\n" ((Sys.time () *. 1000.) -. start);
   find_infinite_loop prg
 
 let () =
   let input = Sys.argv.(1) in
   let start = Sys.time () *. 1000. in
-  let result = run input in
+  let result = run ~start input in
   let end_ = Sys.time () *. 1000. in
   Printf.printf "_duration:%f\n%d\n" (end_ -. start) result

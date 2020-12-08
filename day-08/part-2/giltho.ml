@@ -50,35 +50,19 @@ let find_and_fix cmds =
   in
   loop init_state
 
-module Parser = struct
-  open Angstrom
-
-  let integer =
-    take_while1 (function '0' .. '9' -> true | _ -> false) >>| int_of_string
-
-  let positive = char '+' *> integer
-
-  let negative = char '-' *> integer >>| fun i -> -i
-
-  let argument = negative <|> positive
-
-  let cmd =
-    string "jmp"
-    >>= (fun _ -> char ' ' *> argument >>| fun i -> Jmp i)
-    <|> ( string "nop" >>= fun _ ->
-          char ' ' *> argument >>| fun i -> Nop i )
-    <|> ( string "acc" >>= fun _ ->
-          char ' ' *> argument >>| fun i -> Acc i )
-
-  let cmds = sep_by1 (char '\n') cmd >>| Array.of_list
-end
+let parse input =
+  let parse_line l =
+    match String.split_on_char ' ' l with
+    | [ "jmp"; b ] -> Jmp (int_of_string b)
+    | [ "nop"; b ] -> Nop (int_of_string b)
+    | [ "acc"; b ] -> Acc (int_of_string b)
+    | _ -> failwith "Impossible"
+  in
+  let lst = String.split_on_char '\n' input in
+  lst |> List.map parse_line |> Array.of_list
 
 let run input =
-  let prg =
-    Angstrom.parse_string ~consume:All Parser.cmds input |> function
-    | Ok x -> x
-    | Error s -> failwith s
-  in
+  let prg = parse input in
   find_and_fix prg
 
 let () =
