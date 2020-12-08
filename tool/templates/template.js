@@ -1,13 +1,15 @@
+const { performance } = require("perf_hooks");
+
 /**
  * @param {string} s puzzle input in string format
  * @returns {string} solution flag
  */
-const run = s => {
+const run = (s) => {
   // Your code goes here
 };
 
-let start = Date.now();
-let answer = run(process.argv[2]);
+const start = performance.now();
+const answer = run(process.argv[2]);
 
-console.log("_duration:" + (Date.now() - start).toString());
+console.log(`_duration:${performance.now() - start}`);
 console.log(answer);
