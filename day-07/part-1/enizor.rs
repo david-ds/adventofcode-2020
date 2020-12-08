@@ -23,15 +23,15 @@ fn run(input: &str) -> usize {
 }
 
 #[derive(Default, Debug, Clone)]
-struct Bag {
-    name: String,
-    children: Vec<String>,
+struct Bag<'a> {
+    name: &'a str,
+    children: Vec<&'a str>,
 }
 
-impl Bag {
-    fn parse(input: &str) -> Option<Self> {
+impl<'a> Bag<'a> {
+    fn parse(input: &'a str) -> Option<Self> {
         let cur_name = input.find(" bags").expect("Cannot parse bag name");
-        let name = (&input[..cur_name]).to_owned();
+        let name = &input[..cur_name];
         let mut start_cur = cur_name + 14;
         start_cur += 1 + input[start_cur..]
             .find(|c: char| !c.is_ascii_digit())
@@ -44,7 +44,7 @@ impl Bag {
         while let Some(end_offset) = input[start_cur..].find(" bag") {
             end_cur = start_cur + end_offset;
             let child = &input[start_cur..end_cur];
-            children.push(child.to_owned());
+            children.push(child);
             if let Some(next_start) = input[end_cur..].find(", ") {
                 start_cur = end_cur
                     + next_start
@@ -61,27 +61,24 @@ impl Bag {
 }
 
 #[derive(Default)]
-struct BagList {
-    parents: HashMap<String, Vec<String>>,
+struct BagList<'a> {
+    parents: HashMap<&'a str, Vec<&'a str>>,
 }
 
-impl BagList {
-    fn add_bag(&mut self, new_bag: Bag) {
-        // self.propagate_children(&mut new_bag);
-        // let name = new_bag.name.clone();
-        // let should_propagate = new_bag.can_hold_shiny_gold;
+impl<'a> BagList<'a> {
+    fn add_bag<'b: 'a>(&mut self, new_bag: Bag<'b>) {
         for child in new_bag.children {
             self.parents
                 .entry(child)
                 .or_insert(Vec::new())
-                .push(new_bag.name.clone());
+                .push(new_bag.name);
         }
     }
 
-    fn propagate(&self, bag: &str, set: &mut HashSet<String>) {
+    fn propagate<'b>(&'a self, bag: &'a str, set: &'b mut HashSet<&'a str>) {
         if let Some(parents) = self.parents.get(bag) {
             for parent in parents {
-                if set.insert(parent.clone()) {
+                if set.insert(parent.as_ref()) {
                     self.propagate(parent.as_ref(), set);
                 }
             }

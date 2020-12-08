@@ -20,15 +20,15 @@ fn run(input: &str) -> usize {
 }
 
 #[derive(Default, Debug, Clone)]
-struct Bag {
-    name: String,
-    children: Vec<(usize, String)>,
+struct Bag<'a> {
+    name: &'a str,
+    children: Vec<(usize, &'a str)>,
 }
 
-impl Bag {
-    fn parse(input: &str) -> Option<Self> {
+impl<'a> Bag<'a> {
+    fn parse(input: &'a str) -> Option<Self> {
         let cur_name = input.find(" bags").expect("Cannot parse bag name");
-        let name = (&input[..cur_name]).to_owned();
+        let name = &input[..cur_name];
         if input.find("no other").is_some() {
             return None;
         }
@@ -45,7 +45,7 @@ impl Bag {
             number = input[start_cur..color_cur - 1].parse().unwrap();
             end_cur = start_cur + end_offset;
             let child = &input[color_cur..end_cur];
-            children.push((number, child.to_owned()));
+            children.push((number, child));
             if let Some(next_start) = input[end_cur..].find(", ") {
                 start_cur = end_cur + next_start + 2;
                 color_cur = start_cur
@@ -62,12 +62,12 @@ impl Bag {
 }
 
 #[derive(Default)]
-struct BagList {
-    bags: HashMap<String, Vec<(usize, String)>>,
+struct BagList<'a> {
+    bags: HashMap<&'a str, Vec<(usize, &'a str)>>,
 }
 
-impl BagList {
-    fn add_bag(&mut self, new_bag: Bag) {
+impl<'a> BagList<'a> {
+    fn add_bag(&mut self, new_bag: Bag<'a>) {
         // self.propagate_children(&mut new_bag);
         // let name = new_bag.name.clone();
         // let should_propagate = new_bag.can_hold_shiny_gold;
