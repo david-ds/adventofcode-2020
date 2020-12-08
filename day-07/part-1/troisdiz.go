@@ -4,11 +4,93 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+    "strconv"
+    "strings"
 	"time"
 )
 
+type BagRegister struct {
+    bags map[string]*Bag
+    count int
+}
+
+func (reg *BagRegister) getOrCreateBag(name string) *Bag {
+    bagPtr, ok := reg.bags[name]
+    if !ok {
+        var bag = Bag { name: name }
+        bagPtr = &bag
+        reg.bags[name] = bagPtr
+    }
+    return bagPtr
+}
+
+type InsideBag struct {
+    childBag *Bag
+    quantity int
+}
+
+type Bag struct {
+    name string
+    mustContain []InsideBag
+    possibleContainers []*Bag
+}
+
+func (bag *Bag) addContent(containedBag *Bag, quantity int) {
+    bag.mustContain = append(bag.mustContain, InsideBag { childBag: containedBag, quantity: quantity })
+    containedBag.possibleContainers = append(containedBag.possibleContainers, bag)
+}
+
+func parseRule(rule string) (string, []string, []int) {
+
+    containSplit := strings.Split(rule, " bags contain ") 
+    containerName := containSplit[0]
+   
+    var subNames []string
+    var subCounts []int
+    for _, subBagStr := range strings.Split(containSplit[1], ", ") {
+        //fmt.Printf("l51 : %v\n", subBagStr)
+        subBagItemsStr := strings.Split(subBagStr, " ")
+        //fmt.Printf("l53 : %v\n", subBagItemsStr)
+        count, _ := strconv.Atoi(subBagItemsStr[0])
+        name := subBagItemsStr[1] + " " + subBagItemsStr[2]
+
+        subNames = append(subNames, name)
+        subCounts = append(subCounts, count)
+    }
+    return containerName, subNames, subCounts
+}
+
 func run(s string) interface{} {
-	// Your code goes here
+
+    var reg BagRegister = BagRegister { bags: make(map[string]*Bag) }
+
+    for _, rule := range strings.Split(s, "\n") {
+        containerName, subNames, subCounts := parseRule(rule)
+        containerBag := reg.getOrCreateBag(containerName)
+
+        for idx, name := range subNames {
+            subBag := reg.getOrCreateBag(name)
+            containerBag.addContent(subBag, subCounts[idx])
+        }
+    }
+
+    rootBag := reg.getOrCreateBag("shiny gold")
+    seenBags := make(map[string]int)
+    var bagDeque []*Bag
+    seenBags[rootBag.name] = 1
+    bagDeque = append(bagDeque, rootBag)
+    for len(bagDeque) != 0 {
+        current := bagDeque[0]
+        bagDeque = bagDeque[1:]
+        for _, subBag := range current.possibleContainers {
+            _, ok := seenBags[subBag.name]
+            if !ok {
+                seenBags[subBag.name] = 1
+                bagDeque = append(bagDeque, subBag)
+            }
+        }
+    }
+    return len(seenBags)-1
 }
 
 func main() {
