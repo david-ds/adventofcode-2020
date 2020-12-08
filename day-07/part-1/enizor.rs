@@ -81,8 +81,9 @@ impl BagList {
     fn propagate(&self, bag: &str, set: &mut HashSet<String>) {
         if let Some(parents) = self.parents.get(bag) {
             for parent in parents {
-                set.insert(parent.clone());
-                self.propagate(parent.as_ref(), set);
+                if set.insert(parent.clone()) {
+                    self.propagate(parent.as_ref(), set);
+                }
             }
         }
     }
