@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -14,9 +13,6 @@ type Bag struct {
 	color   string
 	contain int
 }
-
-var linePattern = regexp.MustCompile(`^(?P<bag>\w+ \w+) bags? contain((?: \d+ \w+ \w+ bags?,?)+| no other bags?).$`)
-var bagPattern = regexp.MustCompile(`(\d+) (\w+ \w+) bags?`)
 
 func run(s string) interface{} {
 	lines := strings.Split(s, "\n")
