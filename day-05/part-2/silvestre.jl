@@ -6,7 +6,7 @@ end
 function run(s)
     # Your code here
     seat_ids = sort([seat_id(line) for line in split(s, '\n')])
-    for idx in range(1, stop=length(seat_ids), step=1)
+    for idx in 1:length(seat_ids)
         if seat_ids[idx + 1] != seat_ids[idx] + 1
             return seat_ids[idx] + 1
         end
