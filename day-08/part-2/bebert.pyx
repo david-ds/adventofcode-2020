@@ -3,25 +3,27 @@ cimport cython
 DEF NOP = 0
 DEF JMP = 1
 DEF ACC = 2
+DEF MAX_INPUT_LEN = 800
 DEF MAGIC_VALUE = 9999999
 
 @cython.boundscheck(False)  # Deactivate bounds checking
 @cython.wraparound(False)   # Deactivate negative indexing
-cpdef int run(s: str):
-    cdef char instructions[1000]
-    cdef short value[1000]
-    cdef bint free[1000]
+cpdef int run(str s):
+    cdef char instructions[MAX_INPUT_LEN]
+    cdef short value[MAX_INPUT_LEN]
+    cdef bint free[MAX_INPUT_LEN]
     cdef int size = 0
     cdef str line
+    cdef str instruction_str
     for line in s.strip().splitlines():
-        line_split = line.split(' ')
-        if line_split[0] == 'nop':
+        instruction_str = line[:3]
+        if instruction_str == 'nop':
             instructions[size] = NOP
-        elif line_split[0] == 'jmp':
+        elif instruction_str == 'jmp':
             instructions[size] = JMP
-        elif line_split[0] == 'acc':
+        elif instruction_str == 'acc':
             instructions[size] = ACC
-        value[size] = int(line_split[1])
+        value[size] = int(line[4:])
         free[size] = True
         size += 1
 
@@ -31,19 +33,19 @@ cpdef int run(s: str):
         if instructions[i] == NOP:
             instructions[i] = JMP
             res = run_program(instructions, value, free, size)
+            if res != MAGIC_VALUE:
+                return res
             instructions[i] = NOP
             for j in range(size):
                 free[j] = True
-            if res != MAGIC_VALUE:
-                return res
         elif instructions[i] == JMP:
             instructions[i] = NOP
             res = run_program(instructions, value, free, size)
+            if res != MAGIC_VALUE:
+                return res
             instructions[i] = JMP
             for j in range(size):
                 free[j] = True
-            if res != MAGIC_VALUE:
-                return res
     return 0
 
 
