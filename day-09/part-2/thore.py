@@ -12,22 +12,26 @@ class ThoreSubmission(SubmissionPy):
         numbers = [int(line) for line in s.splitlines()]
         invalid_number = self.find_invalid_number(numbers, maxlen=maxlen)
 
-        for i in range(len(numbers)):
-            range_sum = numbers[i]
-            j = i + 1
-            while range_sum < invalid_number:
-                range_sum += numbers[j]
+        i, j = 0, 1
+        sum_i_j = numbers[0]  # keep track of sum(numbers[i:j])
+        while sum_i_j != invalid_number:
+            if sum_i_j < invalid_number:
+                sum_i_j += numbers[j]
                 j += 1
-            if range_sum == invalid_number:
-                return min(numbers[i:j]) + max(numbers[i:j])
+            elif sum_i_j > invalid_number:
+                sum_i_j -= numbers[i]
+                i += 1
+                # no need to reset j since for i < k < j we have
+                # sum(numbers[i:k]) <= sum(numbers[i:j-1]) < invalid_number
+        return min(numbers[i:j]) + max(numbers[i:j])
 
     @staticmethod
     def find_invalid_number(numbers, maxlen):
-        for i in range(maxlen + 1, len(numbers)):
-            if numbers[i] not in [
-                x + y for x, y in combinations(numbers[i - maxlen : i], 2)
-            ]:
-                return numbers[i]
+        for i in range(maxlen, len(numbers)):
+            n = numbers[i]
+            previous = numbers[i - maxlen : i]
+            if not any(n - m in previous and n - m != m for m in previous):
+                return n
 
 
 def test_day9_part2():

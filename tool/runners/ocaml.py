@@ -24,7 +24,7 @@ class SubmissionOCaml(SubmissionWrapper):
         output = subprocess.run(["esy"], capture_output=True)
         self.cleanup()
         if output.returncode != 0:
-            raise CompilationError(output.stderr)
+            raise CompilationError(output.stdout + output.stderr)
         self.executable = "_build/default/" + exe
 
     def cleanup(self):

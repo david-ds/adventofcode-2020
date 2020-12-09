@@ -10,11 +10,11 @@ class ThoreSubmission(SubmissionPy):
         :return: solution flag
         """
         numbers = [int(line) for line in s.splitlines()]
-        for i in range(maxlen + 1, len(numbers)):
-            if numbers[i] not in [
-                x + y for x, y in combinations(numbers[i - maxlen : i], 2)
-            ]:
-                return numbers[i]
+        for i in range(maxlen, len(numbers)):
+            n = numbers[i]
+            previous = numbers[i - maxlen : i]
+            if not any(n - m in previous and n - m != m for m in previous):
+                return n
 
 
 def test_day9_part1():
