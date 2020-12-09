@@ -35,7 +35,8 @@ func run(s string) interface{} {
 		numbers[i] = value
 		i += 1
 	}
-	return findSet(invalid, i, &numbers)
+	start, end := findSet(invalid, &numbers)
+	return sumMaxAndMin(&numbers, start, end)
 }
 
 func isSumOfPrevious(value int, numbers *[]int, i int) bool {
@@ -49,30 +50,35 @@ func isSumOfPrevious(value int, numbers *[]int, i int) bool {
 	return false
 }
 
-func findSet(invalid int, indexOfInvalid int, numbers *[]int) int {
-	var sum int
-	var min, max int
-	for index, v1 := range (*numbers)[0:indexOfInvalid] {
-		sum = v1
-		min, max = v1, v1
-		for i := index+1; i < indexOfInvalid; i++ {
-			number := (*numbers)[i]
-			sum += number
-			if number > max {
-				max = number
-			}
-			if number < min {
-				min = number
-			}
-			if sum == invalid {
-				return min + max
-			}
-			if sum > invalid {
-				break
-			}
+func findSet(invalid int, numbers *[]int) (int, int) {
+	start, end := 0, 1
+	sum := (*numbers)[start] + (*numbers)[end]
+	for {
+		if sum == invalid {
+			return start, end
+		}
+		if sum < invalid {
+			end += 1
+			sum += (*numbers)[end]
+		}
+		if sum > invalid {
+			sum -= (*numbers)[start]
+			start += 1
 		}
 	}
-	return -1
+}
+
+func sumMaxAndMin(numbers *[]int, start int, end int) int {
+	min, max := (*numbers)[start], (*numbers)[start]
+	for _, v := range (*numbers)[start+1:end+1] {
+		if v < min {
+			min = v
+		}
+		if v > max {
+			max = v
+		}
+	}
+	return min + max
 }
 
 func main() {
