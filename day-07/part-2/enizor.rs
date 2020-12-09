@@ -29,7 +29,7 @@ impl<'a> Bag<'a> {
     fn parse(input: &'a str) -> Option<Self> {
         let cur_name = input.find(" bags").expect("Cannot parse bag name");
         let name = &input[..cur_name];
-        if input.find("no other").is_some() {
+        if input.contains("no other") {
             return None;
         }
         let mut start_cur = cur_name + 14;

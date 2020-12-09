@@ -19,7 +19,7 @@ fn validate_byr(value: &str) -> Validation {
         Validation::Invalid
     } else {
         let v = value.parse().unwrap_or(0);
-        if v >= 1920 && v <= 2002 {
+        if (1920..=2002).contains(&v) {
             Validation::Valid(0)
         } else {
             Validation::Invalid
@@ -32,7 +32,7 @@ fn validate_iyr(value: &str) -> Validation {
         Validation::Invalid
     } else {
         let v = value.parse().unwrap_or(0);
-        if v >= 2010 && v <= 2020 {
+        if (2010..=2020).contains(&v) {
             Validation::Valid(1)
         } else {
             Validation::Invalid
@@ -45,7 +45,7 @@ fn validate_eyr(value: &str) -> Validation {
         Validation::Invalid
     } else {
         let v = value.parse().unwrap_or(0);
-        if v >= 2020 && v <= 2030 {
+        if (2020..=2030).contains(&v) {
             Validation::Valid(2)
         } else {
             Validation::Invalid

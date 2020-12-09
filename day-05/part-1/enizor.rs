@@ -41,12 +41,10 @@ mod tests {
     use super::*;
 
     #[test]
-    fn parse_test() -> Result<(), ()> {
+    fn parse_test() {
         assert_eq!(parse_seat(b"FBFBBFFRLR"), 357);
         assert_eq!(parse_seat(b"BFFFBBFRRR"), 567);
         assert_eq!(parse_seat(b"FFFBBBFRRR"), 119);
         assert_eq!(parse_seat(b"BBFFBBFRLL"), 820);
-
-        Ok(())
     }
 }
