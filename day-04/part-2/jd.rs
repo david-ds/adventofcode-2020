@@ -91,7 +91,10 @@ fn assert_id(string: &str) -> bool {
 }
 
 fn assert_color(string: &str) -> bool {
-    matches!(string, "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth")
+    matches!(
+        string,
+        "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth"
+    )
 }
 
 fn assert_hex_color(string: &str) -> bool {

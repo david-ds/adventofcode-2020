@@ -37,7 +37,7 @@ impl<'a> Bag<'a> {
             .find(|c: char| !c.is_ascii_digit())
             .unwrap();
         let mut end_cur: usize;
-        if input[start_cur..].find("other").is_some() {
+        if input[start_cur..].contains("other") {
             return None;
         }
         let mut children = Vec::new();
@@ -68,10 +68,8 @@ struct BagList<'a> {
 impl<'a> BagList<'a> {
     fn add_bag<'b: 'a>(&mut self, new_bag: Bag<'b>) {
         for child in new_bag.children {
-            self.parents
-                .entry(child)
-                .or_insert(Vec::new())
-                .push(new_bag.name);
+            let var_name = self.parents.entry(child).or_default();
+            var_name.push(new_bag.name);
         }
     }
 
