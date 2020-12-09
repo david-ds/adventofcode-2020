@@ -12,28 +12,20 @@ import (
 const RANGE = 25
 
 func run(s string) interface{} {
-	sequence := make([]int, 2048)
-	memory := make(map[int]int)
-	var fault int
-	var lastIndex int
+	sequence := [2048]int{0}
 	for i, n := range strings.Split(s, "\n") {
 		sequence[i], _ = strconv.Atoi(n)
 	}
 
-	for i := 0; i < RANGE; i++ {
-		for j := i+1; j < RANGE; j++ {
-			memory[sequence[i] + sequence[j]] = i
-		}
-	}
+	var fault int
+	var lastIndex int
 
 	for i, val := range sequence[RANGE:] {
-		index := i + RANGE
-		if memory[val] < index - RANGE {
+		if !searchVal(&sequence, val, i) {
 			fault = val
-			lastIndex = val
+			lastIndex = i + RANGE
 			break
 		}
-		addLastNumber(memory, &sequence, index)
 	}
 
 	for i := 0; i < lastIndex; i++ {
@@ -61,17 +53,15 @@ func run(s string) interface{} {
 	return 0
 }
 
-func addLastNumber(memory map[int]int, sequence *[]int, index int) {
-	for i := index - RANGE + 1; i < index; i++ {
-		sum := (*sequence)[i] + (*sequence)[index]
-		if val, ok := memory[sum]; ok {
-			if i > val {
-				memory[sum] = i
+func searchVal(sequence *[2048]int, val int, i int) bool {
+	for j, a := range (*sequence)[i:i + RANGE - 1] {
+		for _, b := range (*sequence)[j+1:i + RANGE] {
+			if a + b == val {
+				return true
 			}
-		} else {
-			memory[sum] = i
 		}
 	}
+	return false
 }
 
 func main() {
