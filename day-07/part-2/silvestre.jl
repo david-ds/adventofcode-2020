@@ -1,14 +1,16 @@
 function parse_rules(s)
     rules = Dict{String,Vector{Tuple{String,Int}}}()
-    for line in split(s, '\n')
+    for line in readlines(IOBuffer(s))
         outer, inners = split(line, " bags contain ")
         if startswith(inners, "no other bags.")
             continue
         end
+        inners = string(inners)
+        inners = replace(inners, r"(bags?|\.)" => "")
         for inner in split(inners, ", ")
-            parts = split(inner, ' ')
+            parts = split(strip(inner), ' ', limit=2)
             n = parse(Int, parts[1])
-            formatted_inner = join(parts[2:end - 1], ' ')
+            formatted_inner = parts[2]
             if outer in keys(rules)
                 push!(rules[outer], (formatted_inner, n))
             else

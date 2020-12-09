@@ -6,9 +6,9 @@ end
 
 function parse_rules(s)
     rules = Dict{String,Vector{String}}()
-    for line in split(s, '\n')
+    for line in readlines(IOBuffer(s))
         outer, inners = split(line, " bags contain ")
-        if startswith(inners, "no other bags.")
+        if inners == "no other bags."
             continue
         end
         for inner in split(inners, ", ")
