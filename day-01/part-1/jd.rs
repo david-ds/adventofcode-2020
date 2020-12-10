@@ -38,7 +38,7 @@ fn find_couple_product(numbers: &mut [u64], goal: u64) -> u64 {
     0
 }
 
-pub fn dichotomy<T: PartialEq + PartialOrd>(array: &[T], searched: T) -> Option<usize> {
+fn dichotomy<T: PartialEq + PartialOrd>(array: &[T], searched: T) -> Option<usize> {
     if array.is_empty() {
         return None;
     }
@@ -49,8 +49,10 @@ pub fn dichotomy<T: PartialEq + PartialOrd>(array: &[T], searched: T) -> Option<
         Some(middle)
     } else if array[middle] > searched {
         dichotomy(&array[..middle], searched)
+    } else if let Some(i) = dichotomy(&array[middle + 1..], searched) {
+        Some(middle + i + 1)
     } else {
-        dichotomy(&array[middle + 1..], searched)
+        None
     }
 }
 
