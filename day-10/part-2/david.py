@@ -9,7 +9,6 @@ class DavidSubmission(SubmissionPy):
         :param s: input in string format
         :return: solution flag
         """
-        # Your code goes here
         l = sorted([int(x) for x in s.split("\n")])
         l = [l[0]] + l + [l[-1]+3]
         n = len(l)
@@ -24,7 +23,3 @@ class DavidSubmission(SubmissionPy):
                 cache[i] += cache[i-3]
 
         return cache[n-1]
-            
-            
-            
-

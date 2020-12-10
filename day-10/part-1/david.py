@@ -9,7 +9,6 @@ class DavidSubmission(SubmissionPy):
         :param s: input in string format
         :return: solution flag
         """
-        # Your code goes here
         l = sorted([int(x) for x in s.split("\n")])
         l = [0] + l + [l[-1]+3]
         diffs = defaultdict(int)
@@ -18,6 +17,3 @@ class DavidSubmission(SubmissionPy):
             diffs[l[i+1]-l[i]] += 1
 
         return diffs[3] * diffs[1]
-            
-            
-
