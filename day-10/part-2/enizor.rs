@@ -1,6 +1,6 @@
 #![feature(min_const_generics)]
-use std::{env::args, fmt::Debug};
 use std::time::Instant;
+use std::{env::args, fmt::Debug};
 
 fn main() {
     let now = Instant::now();
@@ -18,7 +18,7 @@ fn run(input: &str) -> usize {
         adapters.set(adapter);
         max_adapter = max_adapter.max(adapter);
     }
-    adapters.set(max_adapter+3);
+    adapters.set(max_adapter + 3);
     let mut buffer = Buffer::<usize, 3>::default();
     buffer.push(1);
     buffer.push(0);
@@ -28,44 +28,15 @@ fn run(input: &str) -> usize {
         let multiplier = buffer.get(0);
         buffer.push(0);
         for i in 1..=3 {
-            if adapters.get(jolt+i) {
-                *buffer.get_mut(i-1) += multiplier;
+            if adapters.get(jolt + i) {
+                *buffer.get_mut(i - 1) += multiplier;
             }
         }
         jolt += 1;
     }
     buffer.get(2)
 }
-// 1 4 5 6 7 9 10 13
-// buffer de 3
 
-// 1 4 5 6 => 1
-// 4 5 6 7 - 9 10 => n5 + n6+ n7
-//     => n6+ n7 + n8 + n6 + n7
-//     => 2n6 + 2 n7
-// 6 => 7 9
-//     => 2*(n7 + n9) + 2 n7
-//     => 2n9 + 4n7
-// 7 9 10
-//     => 4n9 + 4 n10 + 2n9
-//     => 6n9 + 4 n10
-// 9 10
-//     => 10 n10
-
-
-
-// 1 4 5 6 7 9 10 13
-// 1 4 5 6 7 10 13
-// 1 4 5 6 9 10 13
-// 1 4 5 7 9 10 13
-// 1 4 5 7 10 13
-
-// 1 4 6 7 9 10 13
-// 1 4 6 7 10 10 13
-// 1 4 6 9 10 13
-
-// 1 4 7 9 10 13
-// 1 4 7 10 13
 type Internal = usize;
 
 const MAX_ADAPTER: usize = std::u8::MAX as usize;
@@ -108,9 +79,9 @@ impl SimpleBitSet {
 }
 
 #[derive(Debug)]
-struct Buffer<T: Default + Sized + Copy+ Debug, const N: usize> {
+struct Buffer<T: Default + Sized + Copy + Debug, const N: usize> {
     inner: [T; N],
-    end_range: usize
+    end_range: usize,
 }
 
 impl<T: Default + Sized + Copy + Debug, const N: usize> Buffer<T, N> {
@@ -127,15 +98,18 @@ impl<T: Default + Sized + Copy + Debug, const N: usize> Buffer<T, N> {
     }
 
     fn get(&self, index: usize) -> T {
-        self.inner[(self.end_range+index)%N]
+        self.inner[(self.end_range + index) % N]
     }
 
     fn get_mut(&mut self, index: usize) -> &mut T {
-        &mut self.inner[(self.end_range+index)%N]
+        &mut self.inner[(self.end_range + index) % N]
     }
 
     fn debug(&self) {
-        dbg!(self.inner[self.end_range..N].iter().chain(self.inner[..self.end_range].iter()).collect::<Vec<&T>>());
+        dbg!(self.inner[self.end_range..N]
+            .iter()
+            .chain(self.inner[..self.end_range].iter())
+            .collect::<Vec<&T>>());
     }
 }
 

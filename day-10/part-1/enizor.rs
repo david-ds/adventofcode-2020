@@ -18,11 +18,11 @@ fn run(input: &str) -> isize {
         max_adapter = max_adapter.max(adapter);
     }
     let mut jolt = 0;
-    let mut t = [0;3];
+    let mut t = [0; 3];
     t[2] = 1;
     for value in 0..=max_adapter {
         if set.get(value) {
-            t[value-jolt-1] += 1;
+            t[value - jolt - 1] += 1;
             jolt = value;
         }
     }
