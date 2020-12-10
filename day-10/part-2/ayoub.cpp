@@ -27,7 +27,7 @@ uint64_t run(char* s) {
     size++;
     sort(l, l+size);
 
-    uint64_t f, f_1, f_2, f_3;
+    uint64_t f(0), f_1, f_2, f_3;
     f_3 = 1;
     f_2 = f_3;
     if (l[1] <= 3) f_2 += 1;
