@@ -6,24 +6,19 @@ class DavidSubmission(SubmissionPy):
     PREAMBLE_SIZE = 25
 
     def find_target(self, data):
-        d = defaultdict(int)
-        for i in range(self.PREAMBLE_SIZE):
-            d[data[i]] += 1
+        candidates = set(data[:self.PREAMBLE_SIZE])
 
         for n in range(self.PREAMBLE_SIZE, len(data)):
             valid = False
             for k in range(n-self.PREAMBLE_SIZE, n):
-                if data[n]-data[k] in d:
-                    # handle special case where 2*data[k] = data[n]
-                    if 2*data[k] == data[n] and d[data[k]] == 1:
-                        continue
+                if data[n]-data[k] in candidates:
                     valid = True
                     break
             if not valid:
                 return data[n]
 
-            d[data[n]] = n
-            del d[data[n-self.PREAMBLE_SIZE]]
+            candidates.add(data[n])
+            candidates.remove(data[n-self.PREAMBLE_SIZE])
 
     def run(self, s):
         """
