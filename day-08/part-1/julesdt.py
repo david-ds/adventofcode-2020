@@ -16,7 +16,6 @@ class JulesdtSubmission(SubmissionPy):
             instruction = splitted[0]
             value = int(splitted[1])
             instructions.append((instruction, value))
-        visited_indices = set()
         i = 0
         while i < len(instructions):
             command = instructions[i]
