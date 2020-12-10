@@ -58,6 +58,9 @@ func findSumRange(numbers []int, invalidNb int) (int, int) {
             if sum == invalidNb {
                 return i, j
             }
+            if sum > invalidNb {
+                break
+            }
         }
     }
     return -1, -1
