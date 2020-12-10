@@ -10,20 +10,13 @@ class BadouralixSubmission(SubmissionPy):
         adapters = set(map(int, s.split()))
         adapters.add(0)
 
-        return self.arrangements(adapters, 0, {(max(adapters) + 3): 1})
+        arrangements = [0] * (1 + max(adapters) + 3)
+        arrangements[-1] = 1
 
-    def arrangements(self, adapters, adapter, cache):
-        if adapter in cache:
-            return cache[adapter]
+        for i in range(len(arrangements) - 3, -1, -1):
+            if i in adapters:
+                arrangements[i] = (
+                    arrangements[i + 1] + arrangements[i + 2] + arrangements[i + 3]
+                )
 
-        if adapter not in adapters:
-            arrangements = 0
-        else:
-            arrangements = (
-                self.arrangements(adapters, adapter + 1, cache)
-                + self.arrangements(adapters, adapter + 2, cache)
-                + self.arrangements(adapters, adapter + 3, cache)
-            )
-
-        cache[adapter] = arrangements
-        return cache[adapter]
+        return arrangements[0]
