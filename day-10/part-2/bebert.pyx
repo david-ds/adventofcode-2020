@@ -41,11 +41,11 @@ cpdef long run(s):
     multipliers[3] = 2
     multipliers[4] = 4
     multipliers[5] = 7
-    multipliers[6] = 12
+    multipliers[6] = 13
 
     cdef long res = 1
     cdef int n
-    for i in range(2, 8):
+    for i in range(3, 7):
         for n in range(streaks[i]):
             res *= multipliers[i]
 
