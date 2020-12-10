@@ -37,7 +37,7 @@ impl Checker {
         let mut queue = VecDeque::<isize>::with_capacity(preamble.len());
         preamble.iter().for_each(|&number| queue.push_back(number));
 
-        Self { queue: queue }
+        Self { queue }
     }
 
     fn ingest(&mut self, number: isize) -> bool {
@@ -82,12 +82,10 @@ fn dichotomy<T: PartialEq + PartialOrd>(array: &[T], searched: T) -> Option<usiz
         Some(middle)
     } else if array[middle] > searched {
         dichotomy(&array[..middle], searched)
+    } else if let Some(i) = dichotomy(&array[middle + 1..], searched) {
+        Some(middle + i + 1)
     } else {
-        if let Some(i) = dichotomy(&array[middle + 1..], searched) {
-            Some(middle + i + 1)
-        } else {
-            None
-        }
+        None
     }
 }
 

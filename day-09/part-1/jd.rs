@@ -33,7 +33,7 @@ impl Checker {
         let mut queue = VecDeque::<isize>::with_capacity(preamble.len());
         preamble.iter().for_each(|&number| queue.push_back(number));
 
-        Self { queue: queue }
+        Self { queue }
     }
 
     fn ingest(&mut self, number: isize) -> bool {
