@@ -18,58 +18,29 @@ func puzzle(numbers []int) int64 {
     copy(sortedNumbers[1:], numbers)
     sortedNumbers[len(sortedNumbers)-1] = sortedNumbers[len(sortedNumbers)-2] + 3
 
-    var diffs []int
-
-    for i := 1; i < len(sortedNumbers); i++ {
-        previous := sortedNumbers[i-1]
-        current := sortedNumbers[i]
-        diffs = append(diffs, current - previous)
-    }
-
-    return 1 + countPossibleRemoves(diffs)
+    return countPossibleRemoves(sortedNumbers, 1)
 }
 
-func countPossibleRemoves(numbers []int) int64 {
-    fmt.Printf("count from diffs : %v\n", numbers)
+func countPossibleRemoves(numbers []int, startPoint int) int64 {
+    // fmt.Printf("Possible removes of %v\n", numbers)
     if len(numbers) <= 1 {
         return 0
     }
-    var count int64 = 0
-    for i := 1; i < len(numbers); i++ {
-        previous := numbers[i-1]
-        current := numbers[i]
 
-        if (current == 1 && previous == 2) || (current == 2 && previous == 1) {
-            
-            newNumbers := make([]int, len(numbers)-1)
-            if i > 2 {
-                copy(newNumbers, numbers[:i-1])
-            }
-            newNumbers[i-1] = previous + current
-            copy(newNumbers[i:], numbers[i:])
-            count += 1
-            //fmt.Printf("Merge %d and %d at current = %d\n", previous, current, i)
-            count += countPossibleRemoves(newNumbers)
-        }
-    }
-    for i := 2; i < len(numbers); i++ {
+    var count int64 = 1
+    for i := startPoint; i < len(numbers)-1; i++ {
+        
         previous := numbers[i-1]
-        current := numbers[i]
+        // current := numbers[i]
+        next := numbers[i+1]
 
-        if (current == 1 && previous == 2) || (current == 2 && previous == 1) {
-            
+        if next - previous <= 3 {
+            // current can be removed
             newNumbers := make([]int, len(numbers)-1)
-            if i > 2 {
-                copy(newNumbers, numbers[:i-1])
-            }
-            newNumbers[i-1] = previous + current
-            copy(newNumbers[i:], numbers[i:])
-            //fmt.Printf("Merge %d and %d at current = %d\n", previous, current, i)
-            count += countPossibleRemoves(newNumbers)
+            copy(newNumbers, numbers[0:i])
+            copy(newNumbers[i:], numbers[i+1:])
+            count += countPossibleRemoves(newNumbers, i)
         }
-    }
-    if count == 1 {
-        fmt.Printf("No more remove : %v\n", numbers)
     }
     return count
 }
