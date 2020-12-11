@@ -10,7 +10,7 @@ class DavidSubmission(SubmissionPy):
         :return: solution flag
         """
         l = sorted([int(x) for x in s.split("\n")])
-        l = [l[0]] + l + [l[-1]+3]
+        l = [0] + l + [l[-1]+3]
         n = len(l)
         cache = [0] * n
         cache[0] = 1
