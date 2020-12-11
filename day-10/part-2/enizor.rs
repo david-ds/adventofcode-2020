@@ -105,6 +105,7 @@ impl<T: Default + Sized + Copy + Debug, const N: usize> Buffer<T, N> {
         &mut self.inner[(self.end_range + index) % N]
     }
 
+    #[allow(dead_code)]
     fn debug(&self) {
         dbg!(self.inner[self.end_range..N]
             .iter()
