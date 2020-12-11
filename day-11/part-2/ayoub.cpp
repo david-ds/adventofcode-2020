@@ -1,11 +1,14 @@
 #include <iostream>
 #include <ctime>
 
-#define WIDTH 96
-#define HEIGHT 99
-#define MAX_DIAG 140
+#define MAX_WIDTH 100
+#define MAX_HEIGHT 100
+#define MAX_DIAG 150
 
 using namespace std;
+
+int width = 0;
+int height = 0;
 
 void get_adj(char *s, int i, int j, int* adj, int* size) {
     int u[8] = {-1, -1, -1,  0,  0,  1,  1,  1},
@@ -13,14 +16,14 @@ void get_adj(char *s, int i, int j, int* adj, int* size) {
     *size = 0;
     for (int k = 0; k < 8; k++) {
         int max_f = MAX_DIAG;
-        if (u[k] == 0) max_f = WIDTH;
-        else if (v[k] == 0) max_f = HEIGHT;
+        if (u[k] == 0) max_f = width;
+        else if (v[k] == 0) max_f = height;
         for (int f = 1; f < max_f; f++) {
             if (i+u[k]*f < 0) break;
-            if (i+u[k]*f >= HEIGHT) break;
+            if (i+u[k]*f >= height) break;
             if (j+v[k]*f < 0) break;
-            if (j+v[k]*f >= WIDTH) break;
-            int curr = (i+u[k]*f)*(WIDTH+1)+(j+v[k]*f);
+            if (j+v[k]*f >= width) break;
+            int curr = (i+u[k]*f)*(width+1)+(j+v[k]*f);
             if (s[curr] == 'L' || s[curr] == '#') {
                 adj[*size] = curr; (*size)++;
                 break;
@@ -51,7 +54,7 @@ int simulate(char *s, int *nodes, int nodes_size, int *adj, int* changed, int oc
     for (int k = 0; k < nodes_size; k++) {
         int curr = nodes[k];
         if (s[curr] == '.') continue;
-        int i = curr/(WIDTH+1), j = curr%(WIDTH+1);
+        int i = curr/(width+1), j = curr%(width+1);
         get_adj(s, i, j, adj, &size);
         if (s[curr] == 'L') {
             if (all_empty(s, adj, size)) {changed[changed_size] = curr; changed_size++;}
@@ -73,11 +76,18 @@ int simulate(char *s, int *nodes, int nodes_size, int *adj, int* changed, int oc
 }
 
 int run(char* s) {
+    int i = 0;
+    while (s[i]) {
+        if (s[i] == '\n' && width == 0) width = i;
+        if (s[i] == '\n' && s[i+1] != '\n') height++;
+        i++;
+    }
+    height++;
     int occupied = 0, new_occupied = 0;
-    int nodes[WIDTH*HEIGHT], nodes_size = 0, changed[WIDTH*HEIGHT], adj[WIDTH*HEIGHT];
-    for (int i = 0; i < HEIGHT; i++) {
-        for (int j = 0; j < WIDTH; j++) {
-            int curr = i*(WIDTH+1)+j;
+    int nodes[MAX_WIDTH*MAX_HEIGHT], nodes_size = 0, changed[MAX_WIDTH*MAX_HEIGHT], adj[MAX_WIDTH*MAX_HEIGHT];
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            int curr = i*(width+1)+j;
             if (s[curr] == '.') continue;
             nodes[nodes_size] = curr; nodes_size++;
         }
