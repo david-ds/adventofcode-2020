@@ -62,8 +62,8 @@ func runMap(source *[][]uint8, target *[][]uint8) (bool, int) {
 		for j, val := range (*source)[i] {
 			switch val {
 			case EMPTY:
-				count := countOccupied(source, i, j)
-				if count == 0 {
+				hasOccupied := checkOccupiedForEmpty(source, i, j)
+				if !hasOccupied {
 					(*target)[i][j] = OCCUPIED
 					modified = true
 					occupiedCount += 1
@@ -71,8 +71,8 @@ func runMap(source *[][]uint8, target *[][]uint8) (bool, int) {
 					(*target)[i][j] = EMPTY
 				}
 			case OCCUPIED:
-				count := countOccupied(source, i, j)
-				if count >= 5 {
+				tooMuchOccupied := countOccupied(source, i, j)
+				if tooMuchOccupied {
 					(*target)[i][j] = EMPTY
 					modified = true
 				} else {
@@ -86,7 +86,7 @@ func runMap(source *[][]uint8, target *[][]uint8) (bool, int) {
 	return modified, occupiedCount
 }
 
-func countOccupied(source *[][]uint8, i int, j int) int {
+func countOccupied(source *[][]uint8, i int, j int) bool {
 	count := 0
 	if checkInDirection(source, i, j, +1, 0) {
 		count += 1
@@ -102,18 +102,59 @@ func countOccupied(source *[][]uint8, i int, j int) int {
 	}
 	if checkInDirection(source, i, j, +1, +1) {
 		count += 1
+		if count >= 5 {
+			return true
+		}
 	}
 	if checkInDirection(source, i, j, +1, -1) {
 		count += 1
+		if count >= 5 {
+			return true
+		}
 	}
 	if checkInDirection(source, i, j, -1, +1) {
 		count += 1
+		if count >= 5 {
+			return true
+		}
 	}
 	if checkInDirection(source, i, j, -1, -1) {
 		count += 1
+		if count >= 5 {
+			return true
+		}
 	}
 
-	return count
+	return false
+}
+
+func checkOccupiedForEmpty(source *[][]uint8, i int, j int) bool {
+	if checkInDirection(source, i, j, +1, 0) {
+		return true
+	}
+	if checkInDirection(source, i, j, 0, +1) {
+		return true
+	}
+	if checkInDirection(source, i, j, -1, 0) {
+		return true
+	}
+	if checkInDirection(source, i, j, 0, -1) {
+		return true
+	}
+	if checkInDirection(source, i, j, +1, +1) {
+		return true
+	}
+	if checkInDirection(source, i, j, +1, -1) {
+		return true
+	}
+	if checkInDirection(source, i, j, -1, +1) {
+		return true
+	}
+	if checkInDirection(source, i, j, -1, -1) {
+		return true
+	}
+
+	return false
 }
 
 func checkInDirection(source *[][]uint8, i int, j int, iOffset int, jOffset int) bool {

@@ -61,8 +61,8 @@ func runMap(source *[][]uint8, target *[][]uint8) (bool, int) {
 		for j, val := range (*source)[i] {
 			switch val {
 			case EMPTY:
-				count := countOccupied(source, i, j)
-				if count == 0 {
+				hasOccupied := checkOccupiedForEmpty(source, i, j)
+				if !hasOccupied {
 					(*target)[i][j] = OCCUPIED
 					modified = true
 					occupiedCount += 1
@@ -98,21 +98,65 @@ func countOccupied(source *[][]uint8, i int, j int) int {
 	}
 	if j + 1 < width && (*source)[i][j + 1] == OCCUPIED {
 		count += 1
+		if count >= 4 {
+			return count
+		}
 	}
 	if i - 1 >= 0 && j - 1 >= 0 && (*source)[i - 1][j - 1] == OCCUPIED {
 		count += 1
+		if count >= 4 {
+			return count
+		}
 	}
 	if i + 1 < depth && j - 1 >= 0 && (*source)[i + 1][j - 1] == OCCUPIED {
 		count += 1
+		if count >= 4 {
+			return count
+		}
 	}
 	if i - 1 >= 0 && j + 1 < width && (*source)[i - 1][j + 1] == OCCUPIED {
 		count += 1
+		if count >= 4 {
+			return count
+		}
 	}
 	if i + 1 < depth && j + 1 < width && (*source)[i + 1][j + 1] == OCCUPIED {
 		count += 1
+		if count >= 4 {
+			return count
+		}
 	}
 
 	return count
+}
+
+func checkOccupiedForEmpty(source *[][]uint8, i int, j int) bool {
+	if i - 1 >= 0 && (*source)[i - 1][j] == OCCUPIED {
+		return true
+	}
+	if i + 1 < depth && (*source)[i + 1][j] == OCCUPIED {
+		return true
+	}
+	if j - 1 >= 0 && (*source)[i][j - 1] == OCCUPIED {
+		return true
+	}
+	if j + 1 < width && (*source)[i][j + 1] == OCCUPIED {
+		return true
+	}
+	if i - 1 >= 0 && j - 1 >= 0 && (*source)[i - 1][j - 1] == OCCUPIED {
+		return true
+	}
+	if i + 1 < depth && j - 1 >= 0 && (*source)[i + 1][j - 1] == OCCUPIED {
+		return true
+	}
+	if i - 1 >= 0 && j + 1 < width && (*source)[i - 1][j + 1] == OCCUPIED {
+		return true
+	}
+	if i + 1 < depth && j + 1 < width && (*source)[i + 1][j + 1] == OCCUPIED {
+		return true
+	}
+
+	return false
 }
 
 func main() {
