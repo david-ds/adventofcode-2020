@@ -1,59 +1,33 @@
 from tool.runners.python import SubmissionPy
+import numpy as np
+from scipy.signal import convolve2d
 
 dirs = {(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)}
+char_int_map = {
+    'L': 1,
+    '#': -1,
+    '.': 0
+}
 
 
 class YouyounSubmission(SubmissionPy):
 
     def run(self, s):
-        adjacency = {}
-        values = {}
-        s = s.splitlines()
-        for i, l in enumerate(s):
-            for j, c in enumerate(l):
-                values[i * 100 + j] = c
-                adjacency[i * 100 + j] = set()
-                for dx, dy in dirs:
-                    adj = find_adjacent_seat(s, i, j, dx, dy)
-                    if adj is not None:
-                        adjacency[i * 100 + j].add(adj[0] * 100 + adj[1])
+        m = np.array([[char_int_map[x] for x in list(l)] for l in s.splitlines()])
+        ker = np.ones((3, 3))
+        ker[1, 1] = 0
+        adj_seats = convolve2d(np.abs(m), ker, mode='same') * np.abs(m)
+        adj_seats[adj_seats == 0] = -1000
         while True:
-            changed = {}
-            counter = 0
-            for pos, v in values.items():
-                if v == '.':
-                    continue
-                adjacent_seats = adjacency[pos]
-                if v == 'L':
-                    free = 0
-                    for adj in adjacent_seats:
-                        adj_s = values[adj]
-                        if adj_s == 'L':
-                            free += 1
-                    if free == len(adjacent_seats):
-                        changed[pos] = '#'
-                elif v == '#':
-                    counter += 1
-                    occupied = 0
-                    for adj in adjacent_seats:
-                        adj_s = values[adj]
-                        if adj_s == '#':
-                            occupied += 1
-                    if occupied >= 4:
-                        changed[pos] = 'L'
-            if len(changed) == 0:
+            free = m == 1
+            occ = m == -1
+            m2 = convolve2d(free, ker, mode='same') * free - convolve2d(occ, ker, mode='same') * occ
+            if (m2 <= -4).sum() == 0 and (m2 == adj_seats).sum() == 0:
                 break
-            else:
-                values.update(changed)
-        return counter
-
-
-def find_adjacent_seat(s, x, y, d_x, d_y):
-    vis_x, vis_y = x + d_x, y + d_y
-    if 0 <= vis_x <= len(s) - 1 and 0 <= vis_y <= len(s[0]) - 1 and s[vis_x][vis_y] != '.':
-        return vis_x, vis_y
-    else:
-        return None
+            m[m2 <= -4] = 1
+            m[m2 == adj_seats] = -1
+            m = m * free + m * occ
+        return np.sum(m == -1)
 
 
 if __name__ == '__main__':
