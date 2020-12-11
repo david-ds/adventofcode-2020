@@ -14,10 +14,13 @@ fn main() {
 
 fn run(input: &str) -> usize {
     let mut grid = Grid::init(input);
+    let mut grid2 = grid.clone();
     loop {
-        match grid.round() {
-            (_, false) => return grid.count_ocuppied(),
-            (g, true) => grid = g,
+        if !grid.round(&mut grid2) {
+            return grid2.count_ocuppied()
+        }
+        if !grid2.round(&mut grid) {
+            return grid.count_ocuppied()
         }
     }
 }
@@ -60,17 +63,16 @@ impl Grid {
         }
     }
 
-    fn round(&self) -> (Grid, bool) {
-        let mut grid = self.clone();
+    fn round(&self, other: &mut Grid) -> bool {
         let mut updated = false;
         for x in 1..self.width {
             for y in 1..self.length {
-                if grid[(x, y)].update(self.iter(x, y)) {
+                if other[(x, y)].update(self.iter(x, y)) {
                     updated = true;
                 }
             }
         }
-        (grid, updated)
+        updated
     }
 
     fn count_ocuppied(&self) -> usize {
@@ -94,6 +96,12 @@ struct AdjacentSeats<'a> {
     x_diff: isize,
     y_diff: isize,
     grid: &'a Grid,
+}
+
+impl<'a> AdjacentSeats<'a> {
+    fn get_center(&self) -> &'a Seat {
+        &self.grid[(self.x_center as usize, self.y_center as usize)]
+    }
 }
 
 impl<'a> Iterator for AdjacentSeats<'a> {
@@ -163,8 +171,8 @@ impl Seat {
         }
     }
 
-    fn update<'a, T: Iterator<Item = &'a Seat>>(&mut self, mut adjacent: T) -> bool {
-        let new = match self {
+    fn update(&mut self, mut adjacent: AdjacentSeats) -> bool {
+        let new = match adjacent.get_center() {
             Self::Floor => (Self::Floor, false),
             Self::Empty => {
                 if adjacent.any(|&s| s == Self::Occupied) {
