@@ -18,28 +18,37 @@ func puzzle(numbers []int) int64 {
     copy(sortedNumbers[1:], numbers)
     sortedNumbers[len(sortedNumbers)-1] = sortedNumbers[len(sortedNumbers)-2] + 3
 
-    return countPossibleRemoves(sortedNumbers, 1)
+    return countPossibleRemoves(sortedNumbers)
 }
 
-func countPossibleRemoves(numbers []int, startPoint int) int64 {
-    // fmt.Printf("Possible removes of %v\n", numbers)
+func countPossibleRemoves(numbers []int) int64 {
     if len(numbers) <= 1 {
         return 0
     }
 
     var count int64 = 1
-    for i := startPoint; i < len(numbers)-1; i++ {
+    var currentLength int64
+
+    var count1, count7 int64
+
+    for i := 1; i < len(numbers)-1; i++ {
         
         previous := numbers[i-1]
-        // current := numbers[i]
         next := numbers[i+1]
 
-        if next - previous <= 3 {
-            // current can be removed
-            newNumbers := make([]int, len(numbers)-1)
-            copy(newNumbers, numbers[0:i])
-            copy(newNumbers[i:], numbers[i+1:])
-            count += countPossibleRemoves(newNumbers, i)
+        diff := next - previous
+
+        if diff == 2 {
+            currentLength += 1
+        } else {
+            if currentLength == 1 || currentLength == 2 {
+                count1 += currentLength 
+                count *= (2 * currentLength)
+            } else if currentLength == 3 {
+                count7 += 1
+                count *= 7
+            }
+            currentLength = 0
         }
     }
     return count
