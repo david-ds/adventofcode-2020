@@ -5,7 +5,7 @@ const stdout = std.io.getStdOut().writer(); //prepare stdout to write in
 
 const PREAMBLE_SIZE: usize = 25;
 
-fn check_valid(window: [25]u64, target: u64) bool {
+fn check_valid(window: []u64, target: u64) bool {
     for (window) |elt1, idx| {
         for (window[idx..]) |elt2| {
             if (elt1 + elt2 == target) {
@@ -18,21 +18,20 @@ fn check_valid(window: [25]u64, target: u64) bool {
 
 fn run(input: [:0]u8) u64 {
     var all_lines_it = std.mem.tokenize(input, "\n");
-    var window = [_]u64{0} ** PREAMBLE_SIZE;
-    var window_counter: usize = 0;
+    var parsed = [_]u64{0} ** 1000;
+    var counter: usize = 0;
     var i: usize = 0;
     while (i < 25) : (i += 1) {
-        window[window_counter] = std.fmt.parseInt(u64, all_lines_it.next().?, 10) catch unreachable;
-        window_counter += 1;
+        parsed[counter] = std.fmt.parseInt(u64, all_lines_it.next().?, 10) catch unreachable;
+        counter += 1;
     }
     while (all_lines_it.next()) |line| {
         const target: u64 = std.fmt.parseInt(u64, line, 10) catch unreachable;
-        if (!check_valid(window, target)) {
+        if (!check_valid(parsed[counter - PREAMBLE_SIZE .. counter], target)) {
             return target;
         }
-        window_counter %= 25;
-        window[window_counter] = target;
-        window_counter += 1;
+        parsed[counter] = target;
+        counter += 1;
     }
     return 0;
 }
