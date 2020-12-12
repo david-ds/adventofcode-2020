@@ -39,7 +39,7 @@ class SubmissionOCaml(SubmissionWrapper):
         name = os.path.splitext(os.path.basename(self.file))[0]
         dune = f"""(executable
     (name {name})
-    (libraries angstrom fmt str)
+    (libraries angstrom fmt str stdio)
     (ocamlopt_flags -O3)
     (preprocess (pps ppx_deriving.std)))
         """
@@ -50,7 +50,11 @@ class SubmissionOCaml(SubmissionWrapper):
 
     def exec(self, input):
         try:
-            return subprocess.check_output([self.executable, input]).decode()
+            p = subprocess.Popen([self.executable, input], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = p.communicate(input.encode())
+            if stderr.decode() != "":
+                raise RuntimeError(stderr.decode())
+            return stdout.decode()
         except OSError as e:
             if e.errno == errno.ENOENT:
                 # executable not found
