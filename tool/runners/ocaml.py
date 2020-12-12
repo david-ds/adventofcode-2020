@@ -1,22 +1,18 @@
 import errno
 import os
 import subprocess
-import tempfile
 
 from tool.runners.exceptions import CompilationError, RuntimeError
 from tool.runners.wrapper import SubmissionWrapper
 
 
-
 class SubmissionOCaml(SubmissionWrapper):
-    
+
     file = None
-    
+
     def __init__(self, file):
-        DEVNULL = open(os.devnull, "wb")
         self.file = file
         SubmissionWrapper.__init__(self)
-        dirname = os.path.dirname(file)
         exe = file.replace(".ml", ".exe")
         self.cleanup()
         with open(self.dune_path(), "w") as f:
@@ -30,11 +26,11 @@ class SubmissionOCaml(SubmissionWrapper):
     def cleanup(self):
         if os.path.exists(self.dune_path()):
             os.remove(self.dune_path())
-        
+
     def dune_path(self):
         dirname = os.path.dirname(self.file)
         return dirname + "/dune"
-        
+
     def dune(self):
         name = os.path.splitext(os.path.basename(self.file))[0]
         dune = f"""(executable
@@ -50,7 +46,12 @@ class SubmissionOCaml(SubmissionWrapper):
 
     def exec(self, input):
         try:
-            p = subprocess.Popen([self.executable, input], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            p = subprocess.Popen(
+                [self.executable, input],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
             stdout, stderr = p.communicate(input.encode())
             if stderr.decode() != "":
                 raise RuntimeError(stderr.decode())

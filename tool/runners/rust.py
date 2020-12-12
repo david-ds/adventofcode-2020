@@ -22,7 +22,11 @@ class SubmissionRs(SubmissionWrapper):
 
         p = subprocess.Popen(
             ["cargo", "build", "--release", "--bin", file.replace("/", "-")[:-3]],
-            env={**os.environ, "CARGO_TARGET_DIR": tmpdir.name, "RUSTFLAGS": "-C target-cpu=native"},
+            env={
+                **os.environ,
+                "CARGO_TARGET_DIR": tmpdir.name,
+                "RUSTFLAGS": "-C target-cpu=native",
+            },
             stdout=DEVNULL,
             stderr=DEVNULL,
         ).wait()

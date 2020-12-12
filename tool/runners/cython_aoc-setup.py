@@ -10,7 +10,7 @@ CYTHON_DEBUG = bool(os.getenv("CYTHON_DEBUG", ""))
 build_dir = sys.argv.pop()
 script_name = sys.argv.pop()
 
-os.environ['CFLAGS'] = os.environ.get('CFLAGS', '') + ' -O3'
+os.environ["CFLAGS"] = os.environ.get("CFLAGS", "") + " -O3"
 
 setup(
     ext_modules=cythonize(
