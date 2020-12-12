@@ -56,13 +56,18 @@ let rec step (state : state) (a : action) : state =
   | Right, i -> { state with facing = right i state.facing }
   | Forward, i -> step state (Card state.facing, i)
 
-let run input =
-  let parsed = parse input in
-  parsed |> List.fold_left step init_state |> manhattan
+let fold_lines ~init ~f =
+  let rec loop ac =
+    try loop (f ac (input_line stdin)) with End_of_file -> ac
+  in
+  loop init
+
+let run () =
+  fold_lines ~init:init_state ~f:(fun state line -> step state (parse_one line))
+  |> manhattan
 
 let () =
-  let input = Sys.argv.(1) in
   let start = Sys.time () *. 1000. in
-  let result = run input in
+  let result = run () in
   let end_ = Sys.time () *. 1000. in
   Printf.printf "_duration:%f\n%d\n" (end_ -. start) result

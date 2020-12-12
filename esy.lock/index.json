@@ -1,5 +1,5 @@
 {
-  "checksum": "371226a32a5c31fc907b77fa59197167",
+  "checksum": "046bda7bb5ae04e86dc22fae46fbe060",
   "root": "adventofcode-2020@link-dev:./esy.json",
   "node": {
     "yarn-pkg-config@github:esy-ocaml/yarn-pkg-config#db3a0b63883606dd57c54a7158d560d6cba8cd79@d41d8cd9": {
@@ -54,6 +54,7 @@
       "overrides": [],
       "dependencies": [
         "ocaml@github:esy-ocaml/ocaml#c72768d@d41d8cd9",
+        "@opam/stdio@opam:v0.14.0@a624e254",
         "@opam/ppx_deriving@opam:5.2@f72dce6d",
         "@opam/fmt@opam:0.8.9@e0843a5b", "@opam/dune@opam:2.7.1@f5f493bc",
         "@opam/angstrom@opam:0.15.0@48ede9cb"

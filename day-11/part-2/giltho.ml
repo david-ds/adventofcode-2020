@@ -1,6 +1,4 @@
-let get_lsize str =
-  let rec loop i = match str.[i] with '\n' -> i | _ -> loop (i + 1) in
-  loop 0
+let get_lsize str = String.index str '\n'
 
 let get_exn ~lsize b i j = Bytes.get b (((lsize + 1) * i) + j)
 

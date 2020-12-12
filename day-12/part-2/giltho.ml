@@ -58,11 +58,18 @@ let step (state : state) (a : action) : state =
         north = state.north + (i * state.waypoint.wnorth);
       }
 
-let run input = input |> parse |> List.fold_left step init_state |> manhattan
+let fold_lines ~init ~f =
+  let rec loop ac =
+    try loop (f ac (input_line stdin)) with End_of_file -> ac
+  in
+  loop init
+
+let run () =
+  fold_lines ~init:init_state ~f:(fun state line -> step state (parse_one line))
+  |> manhattan
 
 let () =
-  let input = Sys.argv.(1) in
   let start = Sys.time () *. 1000. in
-  let result = run input in
+  let result = run () in
   let end_ = Sys.time () *. 1000. in
   Printf.printf "_duration:%f\n%d\n" (end_ -. start) result
