@@ -22,53 +22,45 @@ fn run(input: &str) -> isize {
         })
         .for_each(|instruction| ship.next(instruction));
 
-    ship.x.abs() + ship.y.abs()
+    ship.pos.0.abs() + ship.pos.1.abs()
 }
 
 struct Ship {
-    x: isize,
-    y: isize,
-    wx: isize,
-    wy: isize,
+    pos: (isize, isize),
+    waypoint: (isize, isize),
 }
 
 impl Ship {
     fn new() -> Self {
         Self {
-            x: 0,
-            y: 0,
-            wx: 10,
-            wy: 1,
+            pos: (0, 0),
+            waypoint: (10, 1),
         }
     }
 
     fn next(&mut self, instruction: (char, isize)) {
         match instruction.0 {
             'N' => {
-                self.wy += instruction.1;
+                self.waypoint.1 += instruction.1;
             }
             'S' => {
-                self.wy -= instruction.1;
+                self.waypoint.1 -= instruction.1;
             }
             'W' => {
-                self.wx -= instruction.1;
+                self.waypoint.0 -= instruction.1;
             }
             'E' => {
-                self.wx += instruction.1;
+                self.waypoint.0 += instruction.1;
             }
             'L' => {
-                let (new_wx, new_wy) = rotate(-instruction.1, (self.wx, self.wy));
-                self.wx = new_wx;
-                self.wy = new_wy;
+                self.waypoint = rotate(-instruction.1, self.waypoint);
             }
             'R' => {
-                let (new_wx, new_wy) = rotate(instruction.1, (self.wx, self.wy));
-                self.wx = new_wx;
-                self.wy = new_wy;
+                self.waypoint = rotate(instruction.1, self.waypoint);
             }
             'F' => {
-                self.x += instruction.1 * self.wx;
-                self.y += instruction.1 * self.wy;
+                self.pos.0 += instruction.1 * self.waypoint.0;
+                self.pos.1 += instruction.1 * self.waypoint.1;
             }
             _ => {}
         }

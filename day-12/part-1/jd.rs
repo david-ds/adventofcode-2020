@@ -22,175 +22,57 @@ fn run(input: &str) -> isize {
         })
         .for_each(|instruction| ship.next(instruction));
 
-    ship.x.abs() + ship.y.abs()
+    ship.pos.0.abs() + ship.pos.1.abs()
 }
 
 struct Ship {
-    x: isize,
-    y: isize,
-    orientation: char,
+    pos: (isize, isize),
+    orientation: (isize, isize),
 }
 
 impl Ship {
     fn new() -> Self {
         Self {
-            x: 0,
-            y: 0,
-            orientation: 'E',
+            pos: (0, 0),
+            orientation: (1, 0),
         }
     }
 
     fn next(&mut self, instruction: (char, isize)) {
         match instruction.0 {
             'N' => {
-                self.y += instruction.1;
+                self.pos.1 += instruction.1;
             }
             'S' => {
-                self.y -= instruction.1;
+                self.pos.1 -= instruction.1;
             }
             'W' => {
-                self.x -= instruction.1;
+                self.pos.0 -= instruction.1;
             }
             'E' => {
-                self.x += instruction.1;
-            }
-            'F' => {
-                self.forward(instruction.1);
+                self.pos.0 += instruction.1;
             }
             'L' => {
-                self.rotate(false, instruction.1);
+                self.orientation = rotate(-instruction.1, self.orientation);
             }
             'R' => {
-                self.rotate(true, instruction.1);
+                self.orientation = rotate(instruction.1, self.orientation);
+            }
+            'F' => {
+                self.pos.0 += instruction.1 * self.orientation.0;
+                self.pos.1 += instruction.1 * self.orientation.1;
             }
             _ => {}
         };
     }
+}
 
-    fn forward(&mut self, moves: isize) {
-        match self.orientation {
-            'N' => {
-                self.y += moves;
-            }
-            'S' => {
-                self.y -= moves;
-            }
-            'W' => {
-                self.x -= moves;
-            }
-            'E' => {
-                self.x += moves;
-            }
-            _ => {}
-        }
-    }
-
-    fn rotate(&mut self, direction: bool, degrees: isize) {
-        if direction {
-            match self.orientation {
-                'N' => match degrees {
-                    90 => {
-                        self.orientation = 'E';
-                    }
-                    180 => {
-                        self.orientation = 'S';
-                    }
-                    270 => {
-                        self.orientation = 'W';
-                    }
-                    _ => {}
-                },
-                'S' => match degrees {
-                    90 => {
-                        self.orientation = 'W';
-                    }
-                    180 => {
-                        self.orientation = 'N';
-                    }
-                    270 => {
-                        self.orientation = 'E';
-                    }
-                    _ => {}
-                },
-                'W' => match degrees {
-                    90 => {
-                        self.orientation = 'N';
-                    }
-                    180 => {
-                        self.orientation = 'E';
-                    }
-                    270 => {
-                        self.orientation = 'S';
-                    }
-                    _ => {}
-                },
-                'E' => match degrees {
-                    90 => {
-                        self.orientation = 'S';
-                    }
-                    180 => {
-                        self.orientation = 'W';
-                    }
-                    270 => {
-                        self.orientation = 'N';
-                    }
-                    _ => {}
-                },
-                _ => {}
-            }
-        } else {
-            match self.orientation {
-                'N' => match degrees {
-                    90 => {
-                        self.orientation = 'W';
-                    }
-                    180 => {
-                        self.orientation = 'S';
-                    }
-                    270 => {
-                        self.orientation = 'E';
-                    }
-                    _ => {}
-                },
-                'S' => match degrees {
-                    90 => {
-                        self.orientation = 'E';
-                    }
-                    180 => {
-                        self.orientation = 'N';
-                    }
-                    270 => {
-                        self.orientation = 'W';
-                    }
-                    _ => {}
-                },
-                'W' => match degrees {
-                    90 => {
-                        self.orientation = 'S';
-                    }
-                    180 => {
-                        self.orientation = 'E';
-                    }
-                    270 => {
-                        self.orientation = 'N';
-                    }
-                    _ => {}
-                },
-                'E' => match degrees {
-                    90 => {
-                        self.orientation = 'N';
-                    }
-                    180 => {
-                        self.orientation = 'W';
-                    }
-                    270 => {
-                        self.orientation = 'S';
-                    }
-                    _ => {}
-                },
-                _ => {}
-            }
-        }
+fn rotate(angle: isize, point: (isize, isize)) -> (isize, isize) {
+    match angle {
+        90 | -270 => (point.1, -point.0),
+        180 | -180 => (-point.0, -point.1),
+        270 | -90 => (-point.1, point.0),
+        _ => point,
     }
 }
 
