@@ -53,7 +53,6 @@ func run(s string) interface{} {
 		}
 	}
 
-	println(x, ", ", y)
 	return math.Abs(float64(x)) + math.Abs(float64(y))
 }
 
