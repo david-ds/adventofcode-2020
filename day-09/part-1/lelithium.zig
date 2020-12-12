@@ -5,11 +5,13 @@ const stdout = std.io.getStdOut().writer(); //prepare stdout to write in
 
 const PREAMBLE_SIZE: usize = 25;
 
-fn check_valid(window: []u64, target: u64) bool {
-    for (window) |elt1, idx| {
-        for (window[idx..]) |elt2| {
-            if (elt1 + elt2 == target) {
-                return true;
+fn check_valid(window: []?u64, target: u64) bool {
+    for (window) |elt1_opt, idx| {
+        if (elt1_opt) |elt1| {
+            for (window[idx..]) |elt2| {
+                if (elt1 + elt2.? == target) {
+                    return true;
+                }
             }
         }
     }
@@ -18,7 +20,7 @@ fn check_valid(window: []u64, target: u64) bool {
 
 fn run(input: [:0]u8) u64 {
     var all_lines_it = std.mem.tokenize(input, "\n");
-    var parsed = [_]u64{0} ** 1000;
+    var parsed = [_]?u64{null} ** 1000;
     var counter: usize = 0;
     var i: usize = 0;
     while (i < 25) : (i += 1) {
