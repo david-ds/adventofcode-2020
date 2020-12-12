@@ -16,9 +16,11 @@ _PART_PATH_PATTERN = "part-[0-9]*"
 supported_languages = []
 RANDOM_LANGUAGE = "random"
 
+
 def get_accepted_languages_references():
     # We add random to permit this possibility in the CLI
     return get_supported_languages() + [RANDOM_LANGUAGE]
+
 
 def get_supported_languages():
     global supported_languages
