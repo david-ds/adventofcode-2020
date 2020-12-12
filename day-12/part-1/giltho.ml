@@ -56,9 +56,14 @@ let rec step (state : state) (a : action) : state =
   | Right, i -> { state with facing = right i state.facing }
   | Forward, i -> step state (Card state.facing, i)
 
+let fold_lines ~init ~f =
+  let rec loop ac =
+    try loop (f ac (input_line stdin)) with End_of_file -> ac
+  in
+  loop init
+
 let run () =
-  Stdio.In_channel.fold_lines stdin ~init:init_state ~f:(fun state line ->
-      step state (parse_one line))
+  fold_lines ~init:init_state ~f:(fun state line -> step state (parse_one line))
   |> manhattan
 
 let () =
