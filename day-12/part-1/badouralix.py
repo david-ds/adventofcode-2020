@@ -1,6 +1,6 @@
 from tool.runners.python import SubmissionPy
 
-from functools import cache
+from functools import lru_cache
 
 
 class BadouralixSubmission(SubmissionPy):
@@ -28,7 +28,7 @@ class BadouralixSubmission(SubmissionPy):
 
         return abs(moves["N"] - moves["S"]) + abs(moves["E"] - moves["W"])
 
-    @cache
+    @lru_cache(maxsize=None)
     def rotation(self, direction, action, degrees):
         if direction == "E":
             orientation = 0

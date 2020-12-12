@@ -1,6 +1,6 @@
 from tool.runners.python import SubmissionPy
 
-from functools import cache
+from functools import lru_cache
 
 
 class BadouralixSubmission(SubmissionPy):
@@ -38,7 +38,7 @@ class BadouralixSubmission(SubmissionPy):
 
         return abs(position[0]) + abs(position[1])
 
-    @cache
+    @lru_cache(maxsize=None)
     def rotation(self, action, degrees):
         if action == "R":
             degrees = -degrees
