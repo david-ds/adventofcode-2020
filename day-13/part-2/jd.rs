@@ -9,15 +9,15 @@ fn main() {
     println!("{}", output);
 }
 
-fn run(input: &str) -> i64 {
-    let constraints: Vec<(i64, i64)> = input
+fn run(input: &str) -> i128 {
+    let constraints: Vec<(i128, i128)> = input
         .lines()
         .nth(1)
         .unwrap()
         .split(',')
         .enumerate()
         .filter(|(_, item)| *item != "x")
-        .map(|(idx, id)| (idx as i64, id.parse::<i64>().unwrap()))
+        .map(|(idx, id)| (idx as i128, id.parse::<i128>().unwrap()))
         .collect();
 
     let n = constraints.iter().fold(1, |acc, (_, id)| acc * id);
@@ -33,11 +33,11 @@ fn run(input: &str) -> i64 {
     }
 }
 
-fn inverse(x: i64, n: i64) -> i64 {
+fn inverse(x: i128, n: i128) -> i128 {
     bezout(x, n).1
 }
 
-fn bezout(a: i64, b: i64) -> (i64, i64, i64) {
+fn bezout(a: i128, b: i128) -> (i128, i128, i128) {
     if b == 0 {
         (a, 1, 0)
     } else {
