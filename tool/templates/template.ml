@@ -2,6 +2,7 @@ let run _input = 0
 
 let () =
   let input = Sys.argv.(1) in
+  (* Input is also being given in stdin *)
   let start = Sys.time () *. 1000. in
   let result = run input in
   let end_ = Sys.time () *. 1000. in
