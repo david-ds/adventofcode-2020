@@ -23,16 +23,12 @@ jobs:
       - uses: jiro4989/setup-nim-action@v1
         with:
           nim-version: 1.4.2
+      - uses: nocturlab/setup-vlang-action@v1
+        with:
+          v-version: latest
       - uses: goto-bus-stop/setup-zig@v1
         with:
           version: 0.7.0
-      # TODO: switch back to nocturlab/setup-vlang-action@v1 once https://github.com/nocturlab/setup-vlang-action/issues/72 is fixed
-      - name: Install vlang
-        run: |
-          wget -P /tmp https://github.com/vlang/v/releases/latest/download/v_linux.zip
-          unzip -d /tmp /tmp/v_linux.zip
-          sudo /tmp/v/v symlink
-          # We can not remove /tmp/v/ as /usr/local/bin/v needs some files in there
 
       # Install missing dependencies
 
