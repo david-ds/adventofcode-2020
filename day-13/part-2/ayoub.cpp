@@ -8,10 +8,10 @@ using namespace std;
 // Returns modulo inverse of a with respect to m using extended 
 // Euclid Algorithm. Refer below post for details: 
 // https://www.geeksforgeeks.org/multiplicative-inverse-under-modulo-m/ 
-long long inv(long long a, long long m) 
+long long int inv(long long int a, long long int m) 
 { 
-    long long m0 = m, t, q; 
-    long long x0 = 0, x1 = 1; 
+    long long int m0 = m, t, q; 
+    long long int x0 = 0, x1 = 1; 
   
     if (m == 1) 
        return 0; 
@@ -50,34 +50,34 @@ long long inv(long long a, long long m)
 //  x % num[k-2] = rem[k-1] 
 // Assumption: Numbers in num[] are pairwise coprime 
 // (gcd for every pair is 1) 
-long long findMinX(long long num[], long long rem[], int k) 
+long long int findMinX(long long int num[], long long int rem[], int k) 
 { 
     // Compute product of all numbers 
-    long long prod = 1; 
+    long long int prod = 1; 
     for (int i = 0; i < k; i++) 
         prod *= num[i]; 
   
     // Initialize result 
-    long long result = 0; 
+    long long int result = 0; 
   
     // Apply above formula 
     for (int i = 0; i < k; i++) 
     { 
-        long long pp = prod / num[i]; 
+        long long int pp = prod / num[i]; 
         result += rem[i] * inv(pp, num[i]) * pp; 
     } 
   
     return result % prod; 
 }
 
-long long sanitize_modulo(long long x, long long y) {
+long long int sanitize_modulo(long long int x, long long int y) {
     int a = (int)x; a *= -1;
     int b = (int)y;
-    return (long long)(((a % b) + b) % b);
+    return (long long int)(((a % b) + b) % b);
 }
 
-long long run(char* s) {
-    long long f[MAX_SIZE], p[MAX_SIZE], curr_p = 0;
+long long int run(char* s) {
+    long long int f[MAX_SIZE], p[MAX_SIZE], curr_p = 0;
     int i = 0, n = 0;
 
     while (s[i] != '\n') i++;
@@ -90,7 +90,7 @@ long long run(char* s) {
             continue;
         }
         while (s[i] >= '0' && s[i] <= '9') {
-            f[n] = f[n]*10LL + (long long)(s[i] - '0');
+            f[n] = f[n]*10LL + (long long int)(s[i] - '0');
             i++;
         }
         p[n] = curr_p; curr_p++;
@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
     }
 
     clock_t start = clock();
-    long long answer = run(argv[1]);
+    long long int answer = run(argv[1]);
     
     cout << "_duration:" << float( clock () - start ) * 1000.0 /  CLOCKS_PER_SEC << "\n";
     cout << answer << "\n";
