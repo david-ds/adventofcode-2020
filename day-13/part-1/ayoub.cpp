@@ -5,12 +5,12 @@
 
 using namespace std;
 
-uint64_t run(char* s) {
-    uint64_t start = 0, f[MAX_SIZE];
+long run(char* s) {
+    long start = 0, f[MAX_SIZE];
     int i = 0, n = 0;
 
     while (s[i] >= '0' && s[i] <= '9') {
-        start = start*10 + (uint64_t)(s[i] - '0');
+        start = start*10L + (long)(s[i] - '0');
         i++;
     }
     i++;
@@ -21,14 +21,14 @@ uint64_t run(char* s) {
             continue;
         }
         while (s[i] >= '0' && s[i] <= '9') {
-            f[n] = f[n]*10 + (uint64_t)(s[i] - '0');
+            f[n] = f[n]*10L + (long)(s[i] - '0');
             i++;
         }
         n++;
         if (s[i] == ',') i++;
     }
 
-    uint64_t x = start;
+    long x = start;
     while (1) {
         for (i = 0; i < n; i++) {
             if (x % f[i] == 0) return (x-start)*f[i];
@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
     }
 
     clock_t start = clock();
-    uint64_t answer = run(argv[1]);
+    long answer = run(argv[1]);
     
     cout << "_duration:" << float( clock () - start ) * 1000.0 /  CLOCKS_PER_SEC << "\n";
     cout << answer << "\n";

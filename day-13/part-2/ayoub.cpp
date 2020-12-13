@@ -6,9 +6,9 @@
 using namespace std;
 
 // To compute x^y under modulo m 
-int64_t power(int64_t x, int64_t y, int64_t m) {
+long long power(long long x, long long y, long long m) {
     if (y == 0) return 1;
-    int64_t p = power(x, y / 2, m) % m;
+    long long p = power(x, y / 2, m) % m;
     p = (p * p) % m;
   
     return (y % 2 == 0) ? p : (x * p) % m;
@@ -16,7 +16,7 @@ int64_t power(int64_t x, int64_t y, int64_t m) {
   
 // Function to find modular inverse of a under modulo m 
 // Assumption: m is prime 
-int64_t modInverse(int64_t a, int64_t m) {
+long long modInverse(long long a, long long m) {
     return power(a, m - 2, m);
 }
 
@@ -28,29 +28,29 @@ int64_t modInverse(int64_t a, int64_t m) {
 //  x % num[k-2] = rem[k-1]
 // Assumption: Numbers in num[] are pairwise coprime
 // (gcd for every pair is 1)
-int64_t findMinX(int64_t num[], int64_t rem[], int k) {
+long long findMinX(long long num[], long long rem[], int k) {
     // Compute product of all numbers
-    int64_t prod = 1;
+    long long prod = 1;
     for (int i = 0; i < k; i++) prod *= num[i];
 
     // Initialize result
-    int64_t result = 0;
+    long long result = 0;
 
     // Apply above formula
     for (int i = 0; i < k; i++) {
-        int64_t pp = prod / num[i];
+        long long pp = prod / num[i];
         result += rem[i] * modInverse(pp, num[i]) * pp;
     }
 
     return result % prod;
 }
 
-int64_t sanitize_modulo(int64_t x, int64_t y) {
+long long sanitize_modulo(long long x, long long y) {
     return (y - (x % y)) % y;
 }
 
-int64_t run(char* s) {
-    int64_t f[MAX_SIZE], p[MAX_SIZE], curr_p = 0;
+long long run(char* s) {
+    long long f[MAX_SIZE], p[MAX_SIZE], curr_p = 0;
     int i = 0, n = 0;
 
     while (s[i] != '\n') i++;
@@ -63,7 +63,7 @@ int64_t run(char* s) {
             continue;
         }
         while (s[i] >= '0' && s[i] <= '9') {
-            f[n] = f[n]*10 + (int64_t)(s[i] - '0');
+            f[n] = f[n]*10LL + (long long)(s[i] - '0');
             i++;
         }
         p[n] = curr_p; curr_p++;
@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
     }
 
     clock_t start = clock();
-    int64_t answer = run(argv[1]);
+    long long answer = run(argv[1]);
 
     cout << "_duration:" << float( clock () - start ) * 1000.0 /  CLOCKS_PER_SEC << "\n";
     cout << answer << "\n";
