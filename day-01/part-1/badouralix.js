@@ -1,4 +1,4 @@
-const { entries } = require("lodash");
+const { performance } = require('perf_hooks');
 const _ = require("lodash")
 
 /**
@@ -17,8 +17,8 @@ const run = s => {
   }
 };
 
-let start = Date.now();
-let answer = run(process.argv[2]);
+const start = performance.now();
+const answer = run(process.argv[2]);
 
-console.log("_duration:" + (Date.now() - start).toString());
+console.log(`_duration:${performance.now() - start}`);
 console.log(answer);
