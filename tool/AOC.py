@@ -3,10 +3,11 @@
 import argparse
 import sys
 
-from tool.config import config, CONFIG
-from tool.run import run
-from tool.create import create
 import tool.discovery as discovery
+
+from tool.config import config, CONFIG
+from tool.create import create
+from tool.run import run
 from tool.utils import to_ints
 
 COMMAND_RUN = "run"
@@ -81,9 +82,9 @@ aoc commands are:
             default=False,
         )
         parser.add_argument(
-            "-s",
-            "--silent",
-            help="disable debug mode",
+            "-n",
+            "--no-debug",
+            help="fail if a submission outputs debug lines",
             action="store_true",
             default=False,
         )
@@ -103,7 +104,7 @@ aoc commands are:
             args.ignore_author,
             args.language,
             args.force,
-            args.silent,
+            args.no_debug,
             args.all,
             args.restricted,
             args.expand,

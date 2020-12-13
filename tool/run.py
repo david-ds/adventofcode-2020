@@ -2,17 +2,23 @@
 
 import sys
 import time
-from collections import defaultdict
 
+from collections import defaultdict
 from tabulate import tabulate
 
 import tool.discovery as discovery
+
 from tool.config import CONFIG
 from tool.model import Result, Submission
+from tool.runners.wrapper import SubmissionWrapper
 from tool.utils import BColor
 
 
 class DifferentAnswersException(Exception):
+    pass
+
+
+class UnexpectedDebugLinesException(Exception):
     pass
 
 
@@ -23,7 +29,7 @@ def run(
     ignored_authors,
     languages,
     force,
-    silent,
+    no_debug,
     all_days_parts,
     restricted,
     expand,
@@ -53,11 +59,15 @@ def run(
                 if restricted and input.author != submission.author.split(".")[0]:
                     continue
                 try:
-                    result = run_submission(problem, submission, input, previous)
+                    result = run_submission(
+                        problem, submission, input, previous, no_debug
+                    )
                     results_by_author[submission.author].append(result)
                     results_by_input[input.author].append(result)
                     previous = result
                 except DifferentAnswersException as e:
+                    errors.append("{}ERROR: {}{}".format(BColor.RED, e, BColor.ENDC))
+                except UnexpectedDebugLinesException as e:
                     errors.append("{}ERROR: {}{}".format(BColor.RED, e, BColor.ENDC))
 
         for submission in submissions:
@@ -78,12 +88,30 @@ def run(
         exit(1)
 
 
-def run_submission(problem, submission, input, previous=None):
+def run_submission(problem, submission, input, previous, no_debug):
     start = time.perf_counter()
-    answer = str(submission.runnable.run(input.content))
+    output = submission.runnable.run(input.content)
     end = time.perf_counter()
     msecs = (end - start) * 1000
-    answer, msecs = duration_from_answer(answer, msecs)
+
+    # TODO: SubmissionPy and SubmissionWrapper are fairly asymmetrical and need to be unified
+    if isinstance(submission.runnable, SubmissionWrapper):
+        answer, duration_line, debug_lines = output
+
+        if duration_line is not None:
+            msecs = float(duration_line[len("_duration:") :])
+
+        if len(debug_lines) != 0:
+            if no_debug:
+                raise UnexpectedDebugLinesException(
+                    f"unexpected debug lines in {submission.path()}:\n"
+                    + "\n".join(debug_lines)
+                )
+            else:
+                print("\n".join(debug_lines))
+    else:
+        answer = str(output)
+
     if problem.parser():
         answer = problem.parser().parse(answer)
     if previous is not None and answer != previous.answer:
@@ -225,15 +253,3 @@ def print_part_header(problem):
     print(
         "\n" + BColor.MAGENTA + BColor.BOLD + "* part %d:" % problem.part + BColor.ENDC
     )
-
-
-def duration_from_answer(answer, msec):
-    DURATION_HEADER_PREFIX = "_duration:"
-    split = answer.split("\n")
-    if len(split) < 2 or (not split[0].startswith(DURATION_HEADER_PREFIX)):
-        return answer, msec
-    try:
-        return "\n".join(split[1:]), float(split[0][len(DURATION_HEADER_PREFIX) :])
-    except ValueError:
-        pass
-    return answer, msec
