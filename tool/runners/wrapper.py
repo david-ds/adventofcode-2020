@@ -25,7 +25,7 @@ class SubmissionWrapper(SubmissionPy):
                 break
         lines = [line for line in lines if not line.startswith("_duration:")]
 
-        try:
-            return lines[-1], duration_line, lines[:-1]
-        except:
+        if len(lines) == 0:
             return None, duration_line, []
+
+        return lines[-1], duration_line, lines[:-1]
