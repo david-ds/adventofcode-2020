@@ -10,7 +10,7 @@ uint64_t run(char* s) {
     int i = 0, n = 0;
 
     while (s[i] >= '0' && s[i] <= '9') {
-        start = start*10ULL + (uint64_t)(s[i] - '0');
+        start = start*10 + (uint64_t)(s[i] - '0');
         i++;
     }
     i++;
@@ -21,7 +21,7 @@ uint64_t run(char* s) {
             continue;
         }
         while (s[i] >= '0' && s[i] <= '9') {
-            f[n] = f[n]*10ULL + (uint64_t)(s[i] - '0');
+            f[n] = f[n]*10 + (uint64_t)(s[i] - '0');
             i++;
         }
         n++;
