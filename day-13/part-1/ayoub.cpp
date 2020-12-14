@@ -31,14 +31,12 @@ int run(char* s) {
     int min = 1<<30, x, r = 0;
     for (i = 0; i < n; i++) {
         x = start - (start % f[i]);
-        cout << x << " ";
         while (x <= start) x += f[i];
         if (x < min) {
             min = x;
             r = (x-start)*f[i];
         }
     }
-    cout << "\n";
 
     return r;
 }
