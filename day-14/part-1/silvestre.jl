@@ -22,9 +22,9 @@ function run(s)
         if startswith(line, "mask")
             (zero_mask, one_mask) = update_mask(line, one_mask, zero_mask)
         else
-            idx = findfirst('=', line)
-            addr = parse(Int, SubString(line, 5, idx - 3))
-            value = parse(Int, SubString(line, idx + 2, lastindex(line)))
+            parts = split(line, " = ", limit=2)
+            addr = parse(Int, SubString(parts[1], 5, lastindex(parts[1]) - 1))
+            value = parse(Int, parts[2])
             memory[addr] = (value | one_mask) & ~zero_mask 
         end
     end
