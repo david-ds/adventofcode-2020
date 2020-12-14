@@ -94,6 +94,13 @@ aoc commands are:
             action="store_true",
             default=False,
         )
+        parser.add_argument(
+            "-t",
+            "--times",
+            help="prints time distrubtion of solutions",
+            action="store_true",
+            default=False,
+        )
 
         args = parser.parse_args(argv)
 
@@ -108,6 +115,7 @@ aoc commands are:
             args.all,
             args.restricted,
             args.expand,
+            args.times,
         )
 
     @staticmethod

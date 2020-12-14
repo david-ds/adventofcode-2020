@@ -90,6 +90,7 @@ class Result(object):
         self.input = input
         self.answer = answer
         self.duration = duration
+        self.all_durations = []
 
     def __repr__(self):
         return "Result{%s, %s, %s, %s}" % (
