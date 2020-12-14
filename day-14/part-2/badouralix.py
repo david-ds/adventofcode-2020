@@ -14,24 +14,34 @@ class BadouralixSubmission(SubmissionPy):
         for line in s.split("\n"):
             if line.startswith("mask"):
                 mask = line[7:]
+                xindices = [i for i, c in enumerate(mask) if c == "X"]
             elif line.startswith("mem"):
                 rawaddress, rawdata = line.split(" = ")
                 address = f"{int(rawaddress[4:-1]):036b}"
                 data = int(rawdata)
 
-                for patch in product(["0", "1"], repeat=mask.count("X")):
-                    index = 0
-                    override = ""
+                # Pray for the very first line to start with a mask
+                assert len(address) == len(mask)
+                maskedaddress = ""
+                for i in range(len(address)):
+                    if mask[i] == "0":
+                        maskedaddress += address[i]
+                    else:
+                        maskedaddress += mask[i]
 
-                    for i in range(36):
-                        if mask[i] == "0":
-                            override += address[i]
-                        elif mask[i] == "1":
-                            override += "1"
+                # Assume there is at least one X
+                for patch in product(["0", "1"], repeat=len(xindices)):
+                    override = maskedaddress[: xindices[0]]
+
+                    for i, p in enumerate(patch):
+                        override += p
+
+                        if i == len(patch) - 1:
+                            override += "".join(maskedaddress[xindices[i] + 1 :])
                         else:
-                            override += patch[index]
-                            index += 1
-
+                            override += "".join(
+                                maskedaddress[xindices[i] + 1 : xindices[i + 1]]
+                            )
                     mem[override] = data
 
         return sum(mem[address] for address in mem)
