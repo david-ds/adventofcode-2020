@@ -5,8 +5,8 @@
 
 using namespace std;
 
-int64_t run(char* s) {
-    int64_t start = 0, f[MAX_SIZE];
+int run(char* s) {
+    int start = 0, f[MAX_SIZE];
     int i = 0, n = 0;
 
     while (s[i] >= '0' && s[i] <= '9') {
@@ -28,7 +28,7 @@ int64_t run(char* s) {
         if (s[i] == ',') i++;
     }
 
-    int64_t min = 1LL<<62, x, r = 0;
+    int min = 1<<30, x, r = 0;
     for (i = 0; i < n; i++) {
         x = start - (start % f[i]);
         while (x <= start) x += f[i];
