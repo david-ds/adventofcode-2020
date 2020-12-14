@@ -22,26 +22,16 @@ class BadouralixSubmission(SubmissionPy):
 
                 # Pray for the very first line to start with a mask
                 assert len(address) == len(mask)
-                maskedaddress = ""
+                override = list()
                 for i in range(len(address)):
                     if mask[i] == "0":
-                        maskedaddress += address[i]
+                        override.append(address[i])
                     else:
-                        maskedaddress += mask[i]
+                        override.append(mask[i])
 
-                # Assume there is at least one X
                 for patch in product(["0", "1"], repeat=len(xindices)):
-                    override = maskedaddress[: xindices[0]]
-
                     for i, p in enumerate(patch):
-                        override += p
-
-                        if i == len(patch) - 1:
-                            override += "".join(maskedaddress[xindices[i] + 1 :])
-                        else:
-                            override += "".join(
-                                maskedaddress[xindices[i] + 1 : xindices[i + 1]]
-                            )
-                    mem[override] = data
+                        override[xindices[i]] = p
+                    mem["".join(override)] = data
 
         return sum(mem[address] for address in mem)
