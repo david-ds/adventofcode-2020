@@ -25,7 +25,7 @@ int count_floating(bool floating[]) {
 
 uint64_t run(char* s) {
     unordered_map<uint64_t, uint64_t> m;
-    uint64_t mask_or, key, val;
+    uint64_t mask_or = 0, key = 0, val = 0;
     int i = 0, k;
     bool floating[36] = {false};
     while (s[i]) {

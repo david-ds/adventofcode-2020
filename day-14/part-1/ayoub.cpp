@@ -8,7 +8,7 @@ const uint64_t ALL1 = 68719476735ULL;
 
 uint64_t run(char* s) {
     unordered_map<uint64_t, uint64_t> m;
-    uint64_t mask_and, mask_or, key, val;
+    uint64_t mask_and = ALL1, mask_or = 0, key = 0, val = 0;
     int i = 0, k;
     while (s[i]) {
         if (s[i] == '\n') {
