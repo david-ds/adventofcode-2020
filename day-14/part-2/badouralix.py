@@ -1,5 +1,6 @@
 from tool.runners.python import SubmissionPy
 
+from collections import defaultdict
 from itertools import product
 
 
@@ -13,25 +14,24 @@ class BadouralixSubmission(SubmissionPy):
 
         for line in s.split("\n"):
             if line.startswith("mask"):
-                mask = line[7:]
-                xindices = [i for i, c in enumerate(mask) if c == "X"]
+                mask = defaultdict(list)
+                for i, c in enumerate(line[7:]):
+                    mask[c].append(i)
             elif line.startswith("mem"):
                 rawaddress, rawdata = line.split(" = ")
                 address = f"{int(rawaddress[4:-1]):036b}"
                 data = int(rawdata)
 
                 # Pray for the very first line to start with a mask
-                assert len(address) == len(mask)
-                override = list()
-                for i in range(len(address)):
-                    if mask[i] == "0":
-                        override.append(address[i])
-                    else:
-                        override.append(mask[i])
+                override = list(address)
+                for i in mask["1"]:
+                    override[i] = "1"
+                for i in mask["X"]:
+                    override[i] = "X"
 
-                for patch in product(["0", "1"], repeat=len(xindices)):
+                for patch in product(["0", "1"], repeat=len(mask["X"])):
                     for i, p in enumerate(patch):
-                        override[xindices[i]] = p
+                        override[mask["X"][i]] = p
                     mem["".join(override)] = data
 
         return sum(mem[address] for address in mem)
