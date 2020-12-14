@@ -14,10 +14,10 @@ fn run(input: &str) -> usize {
     let mut grid2 = grid.clone();
     loop {
         if !grid.round(&mut grid2) {
-            return grid2.count_ocuppied()
+            return grid2.count_ocuppied();
         }
         if !grid2.round(&mut grid) {
-            return grid.count_ocuppied()
+            return grid.count_ocuppied();
         }
     }
 }
@@ -60,7 +60,11 @@ impl Grid {
         let mut updated = false;
         for x in 0..self.width {
             for y in 0..self.length {
-                if other.index_mut(x as isize, y as isize).unwrap().update(self.iter(x, y)) {
+                if other
+                    .index_mut(x as isize, y as isize)
+                    .unwrap()
+                    .update(self.iter(x, y))
+                {
                     updated = true;
                 }
             }
