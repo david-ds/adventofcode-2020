@@ -28,7 +28,7 @@ int run(char* s) {
         if (s[i] == ',') i++;
     }
 
-    int min = -1, x, r = 0;
+    int min = 1<<30, x, r = 0;
     for (i = 0; i < n; i++) {
         x = start - (start % f[i]);
         while (x <= start) x += f[i];
