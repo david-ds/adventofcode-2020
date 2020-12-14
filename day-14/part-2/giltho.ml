@@ -23,7 +23,7 @@ let rec pow x n =
 
 let ( ** ) = pow
 
-type instr = Mem of int64 * int | Mask of (int64 * int64) list
+type instr = Mem of int64 * int64 | Mask of (int64 * int64) list
 
 let parse_line l =
   match l.[1] with
@@ -32,7 +32,7 @@ let parse_line l =
       let addr = String.sub l 4 (eq_index - 6) |> Int64.of_string in
       let value =
         String.sub l (eq_index + 2) (String.length l - eq_index - 2)
-        |> int_of_string
+        |> Int64.of_string
       in
       Mem (addr, value)
   | _ ->
@@ -62,7 +62,7 @@ let iter_input ~f () =
 
 let heap = Hashtbl.create 200
 
-let final_sum () = Hashtbl.fold (fun (_ : int64) v acc -> v + acc) heap 0
+let final_sum () = Hashtbl.fold (fun (_ : int64) v acc -> v +$ acc) heap 0L
 
 let apply_mask v (ones, zeros) = v |$ ones &$ zeros
 
@@ -82,4 +82,4 @@ let () =
   let start = Sys.time () *. 1000. in
   let result = run () in
   let end_ = Sys.time () *. 1000. in
-  Printf.printf "_duration:%f\n%d\n" (end_ -. start) result
+  Printf.printf "_duration:%f\n%Ld\n" (end_ -. start) result
