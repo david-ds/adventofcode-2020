@@ -17,10 +17,10 @@ fn run(input: &str) -> usize {
     let mut grid2 = grid.clone();
     loop {
         if !grid.round(&mut grid2) {
-            return grid2.count_ocuppied()
+            return grid2.count_ocuppied();
         }
         if !grid2.round(&mut grid) {
-            return grid.count_ocuppied()
+            return grid.count_ocuppied();
         }
     }
 }
