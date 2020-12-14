@@ -22,4 +22,4 @@ function main()
     println(res)
 end
 
-# main()
+main()
