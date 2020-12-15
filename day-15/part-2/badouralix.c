@@ -17,10 +17,8 @@ uint32_t run(char *s)
 	uint32_t *memory = malloc(MAXSIZE * sizeof(uint32_t));
 
 	// Parse input and store both the step i ( starting at 1 so that it works ) and the latest number seen
-	do
-	{
-		switch (*c)
-		{
+	do {
+		switch (*c) {
 		case ',':
 		case '\0':
 			memory[last = atoi(buf)] = i++;
@@ -34,16 +32,12 @@ uint32_t run(char *s)
 
 	// Decrease i before starting the loop so that 0 = i - j and it magically works
 	// This assumes that the input last number has not appeared in the sequence yet
-	for (i--; i < MAXLOOP; i++)
-	{
-		if (memory[last] != 0)
-		{
+	for (i--; i < MAXLOOP; i++) {
+		if (memory[last] != 0) {
 			j = memory[last];
 			memory[last] = i;
 			last = i - j;
-		}
-		else
-		{
+		} else {
 			memory[last] = i;
 			last = 0;
 		}
@@ -54,8 +48,7 @@ uint32_t run(char *s)
 
 int main(int argc, char **argv)
 {
-	if (argc < 2)
-	{
+	if (argc < 2) {
 		printf("Missing one argument\n");
 		exit(1);
 	}
