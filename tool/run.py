@@ -9,6 +9,7 @@ from tabulate import tabulate
 import tool.discovery as discovery
 
 from tool.config import CONFIG
+from tool.distribution import get_time_distribution
 from tool.model import Result, Submission
 from tool.runners.wrapper import SubmissionWrapper
 from tool.utils import BColor
@@ -33,6 +34,7 @@ def run(
     all_days_parts,
     restricted,
     expand,
+    print_time_dist,
 ):
     problems = discovery.get_problems(days, parts, all_days_parts)
     printed_day_header = set()
@@ -80,7 +82,7 @@ def run(
         elif expand:
             print_expanded_results(problem, results_by_input)
         else:
-            print_aggregated_results(problem, results_by_author)
+            print_aggregated_results(problem, results_by_author, print_time_dist)
 
     for err in errors:
         print(err, file=sys.stderr)
@@ -99,7 +101,7 @@ def run_submission(problem, submission, input, previous, no_debug):
         answer, duration_line, debug_lines = output
 
         if duration_line is not None:
-            msecs = float(duration_line[len("_duration:") :])
+            msecs = float(duration_line[len("_duration:"):])
 
         if len(debug_lines) != 0:
             if no_debug:
@@ -132,7 +134,7 @@ input: {}
     return Result(problem, submission, input, answer, msecs)
 
 
-def print_results(results):
+def print_results(results, print_time_dist=False):
     results.sort(key=lambda x: x.duration)
     print(
         tabulate(
@@ -168,6 +170,15 @@ def print_results(results):
                         language=result.submission.language,
                         end=BColor.ENDC,
                     ),
+                    "  {color}{time_distribution}{end}".format(
+                        color=(
+                            BColor.BOLD
+                            if result.submission.author == CONFIG.user
+                            else ""
+                        ),
+                        time_distribution=get_time_distribution(result.all_durations),
+                        end=BColor.ENDC,
+                    ) if print_time_dist else None,
                 ]
                 for result in results
             ]
@@ -201,7 +212,7 @@ def print_restrict_results(problem, results_by_author):
     print_results(results)
 
 
-def print_aggregated_results(problem, results_by_author):
+def print_aggregated_results(problem, results_by_author, print_time_dist=False):
     print("---------------------------------------------------")
     print("Avg over all inputs")
     print("---------------------------------------------------")
@@ -210,6 +221,7 @@ def print_aggregated_results(problem, results_by_author):
     for author, results_by_input in results_by_author.items():
         res_by_language = {}
         count_by_language = defaultdict(int)
+        durations_by_language = defaultdict(list)
         # The results can be made by different languages. Make a virtual result (storing total duration) by language
         for result in results_by_input:
             result_language = result.submission.language
@@ -231,12 +243,14 @@ def print_aggregated_results(problem, results_by_author):
                 res_by_language[result_language].submission = result.submission
             # Add up the duration of this result
             res_by_language[result_language].duration += result.duration
+            durations_by_language[result_language].append(result.duration)
         # For each language of the author, make the average and store the final result
         for lang, res in res_by_language.items():
             if count_by_language[lang] > 0:
                 res.duration /= count_by_language[lang]
+            res.all_durations = durations_by_language[result_language]
             results.append(res)
-    print_results(results)
+    print_results(results, print_time_dist)
 
 
 def print_day_header(problem):
