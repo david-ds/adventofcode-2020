@@ -26,7 +26,6 @@ fn run(input: &str, max: u16) -> u16 {
         };
         memory[last_spoken as usize] = i;
         i += 1;
-        dbg!(new_nb);
         last_spoken = new_nb;
     }
     last_spoken
