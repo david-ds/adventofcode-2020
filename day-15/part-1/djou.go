@@ -11,57 +11,34 @@ import (
 
 const NUMBER = 2021
 
-type Memory struct {
-	last int
-	secondToLast int
-}
-
 func run(s string) interface{} {
 	input := strings.Split(s, ",")
-	memory := make(map[int]Memory)
+	memory := [NUMBER]int32{0}
 
-	i := 1
-	lastSpoken := 0
+	var i int32 = 1
+	var lastSpoken int32 = 0
+	var newNumber int32 = 0
 	for _, in := range input {
 		val, _ := strconv.Atoi(in)
-		if _, ok := memory[val]; !ok {
-			lastSpoken = 0
-			memory[val] = Memory{
-				last: i,
-				secondToLast: 0,
-			}
+		if memory[val] == 0 {
+			newNumber = int32(val)
 		} else {
-			if memory[val].secondToLast == 0 {
-				lastSpoken = 0
-			} else {
-				lastSpoken = memory[val].last - memory[val].secondToLast
-			}
-			memory[lastSpoken] = Memory {
-				last: i,
-				secondToLast: memory[val].last,
-			}
+			newNumber = i - memory[val] - 1
 		}
+
+		memory[lastSpoken] = i - 1
+		lastSpoken = newNumber
 		i++
 	}
 
 	for {
-		if _, ok := memory[lastSpoken]; !ok {
-			lastSpoken = 0
-			memory[lastSpoken] = Memory{
-				last: i,
-				secondToLast: 0,
-			}
+		if memory[lastSpoken] == 0 {
+			newNumber = 0
 		} else {
-			if memory[lastSpoken].secondToLast == 0 {
-				lastSpoken = 0
-			} else {
-				lastSpoken = memory[lastSpoken].last - memory[lastSpoken].secondToLast
-			}
-			memory[lastSpoken] = Memory {
-				last: i,
-				secondToLast: memory[lastSpoken].last,
-			}
+			newNumber = i - memory[lastSpoken] - 1
 		}
+		memory[lastSpoken] = i - 1
+		lastSpoken = newNumber
 		i++
 		if i == NUMBER {
 			return lastSpoken
