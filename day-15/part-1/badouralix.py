@@ -12,15 +12,15 @@ class BadouralixSubmission(SubmissionPy):
 
         for i in range(len(start)):
             memory[start[i]] = i
-        current = start[-1]
+        last = start[-1]
 
         for i in range(len(start) - 1, 2020 - 1):
-            if current in memory:
-                j = memory[current]
-                memory[current] = i
-                current = i - j
+            if last in memory:
+                j = memory[last]
+                memory[last] = i
+                last = i - j
             else:
-                memory[current] = i
-                current = 0
+                memory[last] = i
+                last = 0
 
-        return current
+        return last
