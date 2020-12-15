@@ -2,14 +2,15 @@
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #define N_TURNS 2020
 
-unsigned long run(char *s)
+uint32_t run(char *s)
 {
-    unsigned long turn = 1;
-    unsigned long n = 0;
-    static unsigned long last_seen[N_TURNS + 1] = {0};
+    static uint32_t last_seen[N_TURNS + 1] = {0};
+    uint32_t turn = 1;
+    uint32_t n = 0;
 
     char *c = strtok(s, ",");
     while (c != NULL)
@@ -21,10 +22,9 @@ unsigned long run(char *s)
     }
     turn--;
 
-    unsigned long last;
     while (turn < N_TURNS)
     {
-        last = last_seen[n];
+        uint32_t last = last_seen[n];
         last_seen[n] = turn;
         if (last != 0)
         {
