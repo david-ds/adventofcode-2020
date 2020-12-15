@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -7,13 +8,13 @@
 #define MAXLOOP 30000000
 #define MAXSIZE 30000000
 
-int run(char *s)
+uint32_t run(char *s)
 {
-	int i = 1, j = 0, last = 0;
+	uint32_t i = 1, j = 0, last = 0;
 	char *c = s, *buf = s;
 
-	// At this point we cannot really initialize with `int memory[MAXSIZE];` without a segfault
-	int *memory = malloc(MAXSIZE * sizeof(int));
+	// At this point we cannot really initialize with `uint32_t memory[MAXSIZE];` without a segfault
+	uint32_t *memory = malloc(MAXSIZE * sizeof(uint32_t));
 
 	// Parse input and store both the step i ( starting at 1 so that it works ) and the latest number seen
 	do
