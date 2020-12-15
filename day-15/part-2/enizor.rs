@@ -1,5 +1,5 @@
+use std::env::args;
 use std::time::Instant;
-use std::{collections::HashMap, env::args};
 
 fn main() {
     let now = Instant::now();
@@ -9,38 +9,23 @@ fn main() {
     println!("{}", output);
 }
 
-const CACHE_SIZE: usize = 2048 * 64 * 8;
+const CACHE_SIZE: usize = 30_000_000;
 fn run(input: &str, max: u32) -> u32 {
-    let mut memory = HashMap::new();
-    let mut cache = [0u32; CACHE_SIZE];
+    let mut memory = vec![0u32; CACHE_SIZE]; // TIL array can only go to ~4 Mo, needs a vec for a larger cache
     let mut i = 0;
     let mut last_spoken = 0;
     for s in input.split(',') {
         i += 1;
         let new_nb: u32 = s.parse().expect("cannot parse input");
-        if (new_nb as usize) < CACHE_SIZE {
-            cache[new_nb as usize] = i;
-        } else {
-            memory.insert(new_nb, i);
-        };
+        memory[new_nb as usize] = i;
         last_spoken = new_nb;
     }
     while i < max {
-        let new_nb = if (last_spoken as usize) < CACHE_SIZE {
-            let v = match cache[last_spoken as usize] {
-                0 => 0,
-                x => i - x,
-            };
-            cache[last_spoken as usize] = i;
-            v
-        } else {
-            let v = match memory.get(&last_spoken) {
-                None => 0,
-                Some(&x) => i - x,
-            };
-            memory.insert(last_spoken, i);
-            v
+        let new_nb = match memory[last_spoken as usize] {
+            0 => 0,
+            x => i - x,
         };
+        memory[last_spoken as usize] = i;
         i += 1;
         last_spoken = new_nb;
     }
