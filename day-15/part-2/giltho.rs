@@ -1,6 +1,6 @@
-use std::collections::HashMap;
 use std::env::args;
 use std::time::Instant;
+use std::vec::Vec;
 fn main() {
     let now = Instant::now();
     let output = run(&args().nth(1).expect("Please provide an input"));
@@ -10,7 +10,7 @@ fn main() {
 }
 
 fn run(input: &str) -> usize {
-    let mut mem: HashMap<usize, usize> = HashMap::with_capacity(2021);
+    let mut mem: Vec<Option<usize>> = vec![None; 30000000];
     let mut last_spoken = 0;
     let mut number_spoken = 0;
     for (i, x) in input
@@ -19,22 +19,22 @@ fn run(input: &str) -> usize {
         .map(|(i, x)| (i, x.parse::<usize>().unwrap()))
     {
         if number_spoken >= 1 {
-            mem.insert(last_spoken, i);
+            mem[last_spoken] = Some(i);
         };
         last_spoken = x;
         number_spoken += 1;
     }
     for i in (number_spoken)..30000000 {
         let prev_spoken = last_spoken;
-        match mem.get_key_value(&prev_spoken) {
+        match mem[prev_spoken] {
             None => {
                 last_spoken = 0;
             }
-            Some((_, v)) => {
+            Some(v) => {
                 last_spoken = i - v;
             }
         }
-        mem.insert(prev_spoken, i);
+        mem[prev_spoken] = Some(i);
     }
     last_spoken
 }

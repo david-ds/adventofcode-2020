@@ -1,16 +1,14 @@
-let mem = Hashtbl.create 30000000
-
 let max_value = 30000000
+
+let mem = Array.make max_value None
 
 let rec loop last_spoken number_spoken =
   if number_spoken = max_value then last_spoken
   else
     let next_spoken =
-      match Hashtbl.find_opt mem last_spoken with
-      | None -> 0
-      | Some v -> number_spoken - v
+      match mem.(last_spoken) with None -> 0 | Some v -> number_spoken - v
     in
-    Hashtbl.replace mem last_spoken number_spoken;
+    mem.(last_spoken) <- Some number_spoken;
     loop next_spoken (number_spoken + 1)
 
 let run input =
@@ -18,7 +16,7 @@ let run input =
   let number_spoken, last_spoken =
     List.fold_left
       (fun (i, l) n ->
-        if i >= 1 then Hashtbl.replace mem l i;
+        if i >= 1 then mem.(l) <- Some i;
         (i + 1, int_of_string n))
       (0, 0) l
   in

@@ -1,6 +1,6 @@
-use std::collections::HashMap;
 use std::env::args;
 use std::time::Instant;
+use std::vec::Vec;
 fn main() {
     let now = Instant::now();
     let output = run(&args().nth(1).expect("Please provide an input"));
@@ -10,7 +10,7 @@ fn main() {
 }
 
 fn run(input: &str) -> usize {
-    let mut mem: HashMap<usize, usize> = HashMap::with_capacity(2021);
+    let mut mem: Vec<Option<usize>> = vec![None; 2020];
     let mut last_spoken = 0;
     let mut number_spoken = 0;
     for (i, x) in input
@@ -19,22 +19,22 @@ fn run(input: &str) -> usize {
         .map(|(i, x)| (i, x.parse::<usize>().unwrap()))
     {
         if number_spoken >= 1 {
-            mem.insert(last_spoken, i);
+            mem[last_spoken] = Some(i);
         };
         last_spoken = x;
         number_spoken += 1;
     }
     for i in (number_spoken)..2020 {
         let prev_spoken = last_spoken;
-        match mem.get_key_value(&prev_spoken) {
+        match mem[prev_spoken] {
             None => {
                 last_spoken = 0;
             }
-            Some((_, v)) => {
+            Some(v) => {
                 last_spoken = i - v;
             }
         }
-        mem.insert(prev_spoken, i);
+        mem[prev_spoken] = Some(i);
     }
     last_spoken
 }
@@ -44,19 +44,19 @@ mod tests {
     use super::*;
 
     #[test]
-    fn giltho_d15_p1_1() {
-        assert_eq!(run("1,3,2"), 1)
+    fn giltho_d15_p2_1() {
+        assert_eq!(run("0,3,6"), 175594)
     }
     #[test]
-    fn giltho_d15_p1_2() {
-        assert_eq!(run("2,1,3"), 10)
+    fn giltho_d15_p2_2() {
+        assert_eq!(run("1,3,2"), 2578)
     }
     #[test]
-    fn giltho_d15_p1_3() {
-        assert_eq!(run("1,2,3"), 27)
+    fn giltho_d15_p2_3() {
+        assert_eq!(run("2,1,3"), 3544142)
     }
     #[test]
-    fn giltho_d15_p1_4() {
-        assert_eq!(run("2,3,1"), 78)
+    fn giltho_d15_p2_4() {
+        assert_eq!(run("1,2,3"), 261214)
     }
 }
