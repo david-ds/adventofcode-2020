@@ -45,7 +45,7 @@ function run(s)
     mode::Int = RULES_MODE
     possibilities::Array{Int,2} = zeros(Int, (0, 0))
     myticket::Array{Int,1} = zeros(Int, (0))
-    for (idx, line) in enumerate(readlines(IOBuffer(s)))
+    for line in readlines(IOBuffer(s))
         if length(line) < 20
             if length(line) == 0
                 if mode == RULES_MODE
@@ -55,9 +55,9 @@ function run(s)
             end
             continue
         elseif mode == RULES_MODE
-            add_rule(line, idx, rules)
-            push!(rules_mask, startswith(line, "departure"))
             n_rules += 1
+            add_rule(line, n_rules, rules)
+            push!(rules_mask, startswith(line, "departure"))
         elseif mode == MY_TICKET_MODE
             myticket = parse.(Int, split(line, ","))
             update_possibilities(possibilities, rules, myticket, n_rules)
