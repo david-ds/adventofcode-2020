@@ -59,14 +59,12 @@ class CocoSubmission(SubmissionPy):
 
         # print(applicable_fields_for_rule)
         for rule_id in rule_ids:
-            print(len(applicable_fields_for_rule[rule_id]))
             field_id = list(applicable_fields_for_rule[rule_id])[0]
             field_for_rule[rule_id] = field_id
             # remove it from other places
             for rid2 in rule_ids:
                 applicable_fields_for_rule[rid2].discard(field_id)
 
-        print(field_for_rule)
         RULE_IDS_DEPARTURES = list(range(6))
         result = 1
         for rule_id in RULE_IDS_DEPARTURES:
