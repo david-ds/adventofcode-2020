@@ -7,7 +7,7 @@ export PATH=$PATH:~/.cargo/bin:$GOROOT/bin
 export PYENV_VERSION=3.8
 
 run() {
-    echo "$1" | grep "day-" | cut -d "/" -f1 | cut -d "-" -f2 | sort | uniq | xargs -I{} ./aoc run -fnd {}
+    echo "$1" | grep "day-" | cut -d "/" -f1 | cut -d "-" -f2 | sort | uniq | xargs -I{} ./aoc run -fntd {}
 }
 
 

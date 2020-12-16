@@ -97,7 +97,7 @@ aoc commands are:
         parser.add_argument(
             "-t",
             "--times",
-            help="prints time distrubtion of solutions",
+            help="prints time distribution of solutions",
             action="store_true",
             default=False,
         )
