@@ -1,7 +1,3 @@
-const RULES_MODE = 0
-const MY_TICKET_MODE = 1
-const NEARBY_TICKETS_MODE = 2
-
 function add_rule(line::String, line_idx::Int, rules::Array{Int,2})
     first_idx = findnext(':', line, 1) + 1
     second_idx = findnext('-', line, first_idx + 1) - 1
@@ -42,30 +38,28 @@ function run(s)
     rules_mask::Array{Bool,1} = zeros(Bool, (0))
     n_rules::Int = 0
     
-    mode::Int = RULES_MODE
-    possibilities::Array{Int,2} = zeros(Int, (0, 0))
     myticket::Array{Int,1} = zeros(Int, (0))
-    for line in readlines(IOBuffer(s))
-        if length(line) < 20
-            if length(line) == 0
-                if mode == RULES_MODE
-                    possibilities = ones(Int, (n_rules, n_rules))
-                end
-                mode += 1
-            end
-            continue
-        elseif mode == RULES_MODE
-            n_rules += 1
-            add_rule(line, n_rules, rules)
-            push!(rules_mask, startswith(line, "departure"))
-        elseif mode == MY_TICKET_MODE
-            myticket = parse.(Int, split(line, ","))
-            update_possibilities(possibilities, rules, myticket, n_rules)
-        elseif mode == NEARBY_TICKETS_MODE
-            values = parse.(Int, split(line, ","))
-            if is_valid_ticket(values, rules, n_rules)
-                update_possibilities(possibilities, rules, values, n_rules)
-            end
+    lines = eachline(IOBuffer(s))
+    for line in lines
+        if isempty(line)
+            break
+        end
+        n_rules += 1
+        add_rule(line, n_rules, rules)
+        push!(rules_mask, startswith(line, "departure"))
+    end
+    possibilities::Array{Int,2} = ones(Int, (n_rules, n_rules))
+    for line in Iterators.drop(lines, 1)
+        if isempty(line)
+            break
+        end
+        myticket = parse.(Int, split(line, ","))
+        update_possibilities(possibilities, rules, myticket, n_rules)
+    end
+    for line in Iterators.drop(lines, 1)
+        values = parse.(Int, split(line, ","))
+        if is_valid_ticket(values, rules, n_rules)
+            update_possibilities(possibilities, rules, values, n_rules)
         end
     end
     while sum(possibilities) > n_rules

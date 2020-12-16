@@ -1,7 +1,15 @@
-const RULES_MODE = 0
-const MY_TICKET_MODE = 1
-const NEARBY_TICKETS_MODE = 2
-
+function parse_split(line::String, sep::Char)
+    ret = Int[]
+    i::Int = 1
+    j::Union{Nothing,Int} = findnext(sep, line, i + 1)
+    while j !== nothing
+        push!(ret, parse(Int, SubString(line, i, j - 1)))
+        i = j + 1
+        j = findnext(sep, line, i + 1)
+    end
+    push!(ret, parse(Int, SubString(line, i, lastindex(line))))
+    return ret
+end
 
 function add_rule(line::String, line_idx::Int, rules::Array{Int,2})
     first_idx = findnext(':', line, 1) + 1
@@ -27,23 +35,25 @@ function run(s)
     n_rules::Int = 0
     
     counter::Int = 0
-    mode::Int = RULES_MODE
-    for line in readlines(IOBuffer(s))
-        if length(line) < 20
-            if length(line) == 0
-                mode += 1
-            end
-            continue
-        elseif mode == RULES_MODE
-            n_rules += 1
-            add_rule(line, n_rules, rules)
-        elseif mode == NEARBY_TICKETS_MODE
-            values = parse.(Int, split(line, ","))
-            for v in values
-                if !is_valid(v, rules, n_rules)
-                    counter += v
-                    break
-                end
+    lines = eachline(IOBuffer(s))
+    for line in lines
+        if isempty(line)
+            break
+        end
+        n_rules += 1
+        add_rule(line, n_rules, rules)
+    end
+    for line in lines
+        if isempty(line)
+            break
+        end
+    end
+    for line in Iterators.drop(lines, 1)
+        values = parse_split(line, ',')
+        for v in values
+            if !is_valid(v, rules, n_rules)
+                counter += v
+                break
             end
         end
     end
