@@ -1,5 +1,4 @@
 from tool.runners.python import SubmissionPy
-from tqdm import tqdm
 
 class CocoSubmission(SubmissionPy):
     def run(self, s, N=30000000):
