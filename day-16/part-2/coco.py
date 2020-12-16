@@ -13,7 +13,6 @@ class CocoSubmission(SubmissionPy):
         :param s: input in string format
         :return: solution flag
         """
-        # Your code goes here
 
         #### PARSING
         rules, myticket, other_tickets = s.strip().split("\n\n")
@@ -35,44 +34,37 @@ class CocoSubmission(SubmissionPy):
         other_tickets = [list(map(int, t.split(","))) for t in other_tickets]
 
         valid_tickets = []
+
         for ticket in other_tickets:
+            ticket_is_valid = True
             for val in ticket:
-                if any(self.is_valid(val, r) for r in rules):
-                    valid_tickets.append(ticket)
-        
-        # apply greedy procedure. 
-        # For each field, put it in the place where it has maximum validity.
-        # To do this, we construct a matrix containing the number of valid values for each rule and field id.
+                if all(not self.is_valid(val, r) for r in rules):
+                    ticket_is_valid = False
+                    break
+            if ticket_is_valid:
+                valid_tickets.append(ticket)
 
         num_fields = len(rules)
-        validity_matrix = [[0 for _ in range(num_fields)] for _ in range(num_fields)]
 
+        applicable_fields_for_rule = [set(range(num_fields)) for _ in range(num_fields)]
         for rule_id, r in enumerate(rules):
             for field_id in range(num_fields):
                 values = [ticket[field_id] for ticket in valid_tickets]
-                num_valid = sum(1 for v in values if self.is_valid(v, r))
-                validity_matrix[rule_id][field_id] = num_valid
+                if any(not self.is_valid(v, r) for v in values):
+                    applicable_fields_for_rule[rule_id].remove(field_id)
 
-        validity_matrix = np.array(validity_matrix)
+        # start to pick rules that have few possibilities
+        rule_ids = sorted(list(range(num_fields)), key=lambda rule_id: len(applicable_fields_for_rule[rule_id]))
+        field_for_rule = [-1]*(num_fields)
 
-        while True:
-            indexes = np.argmax(validity_matrix)
-            np.max()
-            breakpoint()
-
-        # indexes np.argmax(validity_matrix)
-        # field_for_rule = []
-        # for rule_id in range(num_fields):
-        #     # pick best field
-        #     field_values = validity_matrix[rule_id]
-        #     best_field = np.argmax(field_values)
-        #     if Counter(field_values)[field_values[best_field]] > 1:
-        #         print("two choices")
-        #         # breakpoint()
-        #     field_for_rule.append(best_field)
-        #     # put -1 to discard field
-        #     for rid in range(num_fields):
-        #         validity_matrix[rid][best_field] = -1
+        # print(applicable_fields_for_rule)
+        for rule_id in rule_ids:
+            print(len(applicable_fields_for_rule[rule_id]))
+            field_id = list(applicable_fields_for_rule[rule_id])[0]
+            field_for_rule[rule_id] = field_id
+            # remove it from other places
+            for rid2 in rule_ids:
+                applicable_fields_for_rule[rid2].discard(field_id)
 
         print(field_for_rule)
         RULE_IDS_DEPARTURES = list(range(6))
@@ -81,3 +73,18 @@ class CocoSubmission(SubmissionPy):
             field_id = field_for_rule[rule_id]
             result *= myticket[field_id]
         return result
+
+
+def test_coco():
+    input = """class: 0-1 or 4-19
+row: 0-5 or 8-19
+seat: 0-13 or 16-19
+
+your ticket:
+11,12,13
+
+nearby tickets:
+3,9,18
+15,1,5
+5,14,9"""
+    assert CocoSubmission().run(input) ==  11*12*13
