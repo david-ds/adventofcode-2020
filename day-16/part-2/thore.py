@@ -1,5 +1,6 @@
 from itertools import chain
 from math import prod
+from typing import List, Dict, Tuple
 
 from tool.runners.python import SubmissionPy
 
@@ -36,7 +37,7 @@ class ThoreSubmission(SubmissionPy):
         }
         return prod(my_ticket[i] for i in departure_indices)
 
-    def is_valid_ticket(self, ticket: list[int]) -> bool:
+    def is_valid_ticket(self, ticket: List[int]) -> bool:
         for v in ticket:
             if not any(x <= v <= y for x, y in chain(*self.valid_ranges.values())):
                 return False
@@ -55,7 +56,7 @@ class ThoreSubmission(SubmissionPy):
             self.clear_positions(other_field)
 
     @staticmethod
-    def parse_ranges(ranges_str: str) -> dict[str, list[tuple[str]]]:
+    def parse_ranges(ranges_str: str) -> Dict[str, List[Tuple[str]]]:
         ranges = {}
         for line in ranges_str.split("\n"):
             field, field_ranges = line.split(": ")
@@ -65,5 +66,5 @@ class ThoreSubmission(SubmissionPy):
         return ranges
 
     @staticmethod
-    def parse_ints(s: str) -> tuple[int]:
+    def parse_ints(s: str) -> Tuple[int]:
         return tuple(int(c) for c in s.split(","))
