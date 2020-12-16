@@ -28,15 +28,15 @@ function run(s)
     
     counter::Int = 0
     mode::Int = RULES_MODE
-    for (idx, line) in enumerate(readlines(IOBuffer(s)))
+    for line in readlines(IOBuffer(s))
         if length(line) < 20
             if length(line) == 0
                 mode += 1
             end
             continue
         elseif mode == RULES_MODE
-            add_rule(line, idx, rules)
             n_rules += 1
+            add_rule(line, n_rules, rules)
         elseif mode == NEARBY_TICKETS_MODE
             values = parse.(Int, split(line, ","))
             for v in values
@@ -53,7 +53,6 @@ end
 #########################################
 
 function main()
-    run(ARGS[1])
     res, time, memory = @timed run(ARGS[1])
     println("_duration:$(time * 1000)")
     println(res)
