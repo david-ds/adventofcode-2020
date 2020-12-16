@@ -241,3 +241,11 @@ path = "./day-15/part-1/giltho.rs"
 [[bin]]
 name = "day-15-part-2-giltho"
 path = "./day-15/part-2/giltho.rs"
+
+[[bin]]
+name = "day-16-part-1-giltho"
+path = "./day-16/part-1/giltho.rs"
+
+[[bin]]
+name = "day-16-part-2-giltho"
+path = "./day-16/part-2/giltho.rs"
