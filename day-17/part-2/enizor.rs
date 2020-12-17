@@ -20,14 +20,14 @@ fn run(input: &str) -> usize {
     let mut round = 0;
     loop {
         round += 1;
-        grid.round(&mut grid2, round);
+        let count = grid.round(&mut grid2, round, round == ROUNDS);
         if round == ROUNDS {
-            return grid2.count_active();
+            return count;
         }
         round += 1;
-        grid2.round(&mut grid, round);
+        let count = grid2.round(&mut grid, round, round == ROUNDS);
         if round == ROUNDS {
-            return grid.count_active();
+            return count;
         }
     }
 }
@@ -76,45 +76,27 @@ impl Grid {
         }
     }
 
-    fn round(&self, other: &mut Grid, nb: usize) {
-        for w in 0..=nb {
-            for z in 0..=w {
-                for y in (1 + ROUNDS - nb)..(self.length - 1) {
-                    for x in (1 + ROUNDS - nb)..(self.width - 1) {
-                        other[(x, y, z as isize, w as isize)]
-                            .update(self.iter(x, y, z, w), &self);
-                    }
-                }
-            }
-            for z in (w+1)..=nb {
-                for y in (1 + ROUNDS - nb)..(self.length - 1) {
-                    for x in (1 + ROUNDS - nb)..(self.width - 1) {
-                        other[(x, y, z as isize, w as isize)] =
-                            other[(x, y, w as isize, z as isize)]
-                    }
-                }
-            }
-        }
-    }
-
-    fn count_active(&self) -> usize {
+    fn round(&self, other: &mut Grid, nb: usize, should_count: bool) -> usize {
         let mut count = 0;
-        for w in 0..self.hyperside {
-            for z in 0..=w {
-                for y in 0..self.length {
-                    for x in 0..self.width {
-                        if self[(x, y, z as isize, w as isize)] == Cube::Active {
-                            let mut c = if w == 0 && z == 0 {
-                                1
+        for w in 0..=nb {
+            for z in 0..=nb {
+                for y in (1 + ROUNDS - nb)..(self.length - 1) {
+                    for x in (1 + ROUNDS - nb)..(self.width - 1) {
+                        if z < w {
+                            other[(x, y, z as isize, w as isize)] =
+                                other[(x, y, w as isize, z as isize)]
+                        } else {
+                            other[(x, y, z as isize, w as isize)]
+                                .update(self.iter(x, y, z, w), &self);
+                        };
+                        if should_count && other[(x, y, z as isize, w as isize)] == Cube::Active {
+                            if w == 0 && z == 0 {
+                                count +=1
                             } else if w == 0 || z == 0 {
-                                2
+                                count +=2
                             } else {
-                                4
+                                count +=4
                             };
-                            if w != z {
-                                c *= 2;
-                            }
-                            count += c;
                         }
                     }
                 }
