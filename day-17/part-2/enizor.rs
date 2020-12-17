@@ -83,7 +83,7 @@ impl Grid {
 
     fn round(&self, other: &mut Grid, nb: usize) {
         for w in 0..=nb {
-            for z in 0..=nb {
+            for z in 0..=w {
                 for y in (1 + ROUNDS - nb)..(self.length - 1) {
                     for x in (1 + ROUNDS - nb)..(self.width - 1) {
                         if w > z {
@@ -101,33 +101,25 @@ impl Grid {
 
     fn count_active(&self) -> usize {
         let mut count = 0;
-        // for (i, &c) in self.cubes.iter().enumerate() {
-        //     if c == Cube::Active {
-        //         if i < self.width * self.length {
-        //             count += 1;
-        //         } else {
-        //             count += 4;
-        //         }
-        //     }
-        // }
         for w in 0..self.hyperside {
-            for z in 0..self.height {
-                // println!("z={} w={}", z, w);
+            for z in 0..=w {
                 for y in 0..self.length {
                     for x in 0..self.width {
                         if self[(x, y, z as isize, w as isize)] == Cube::Active {
-                            if w == 0 && z == 0 {
-                                count += 1;
+                            let mut c = if w == 0 && z == 0 {
+                                1
                             } else if w == 0 || z == 0 {
-                                count += 2;
+                                2
                             } else {
-                                count += 4;
+                                4
+                            };
+                            if w != z {
+                                c *= 2;
                             }
+                            count += c;
                         }
                     }
-                    // println!("{}",s);
                 }
-                // println!();
             }
         }
         count
