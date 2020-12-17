@@ -15,7 +15,7 @@ class ThoreSubmission(SubmissionPy):
         :param s: input in string format
         :return: solution flag
         """
-        pocket_dim = PocketDimension()
+        pocket_dim = PocketDimension(n_dim=4)
         pocket_dim.parse_input(s)
 
         if debug:
@@ -32,31 +32,33 @@ class ThoreSubmission(SubmissionPy):
 
 
 class PocketDimension:
-    def __init__(self):
+    def __init__(self, n_dim=3):
         self.active = set()
         self.n_neighbors = defaultdict(int)
         self.candidates = set()
+        self.n_dim = n_dim
 
     def parse_input(self, s):
         lines = s.replace(ACTIVE, "1").replace(INACTIVE, "0").splitlines()
         for x, line in enumerate(lines):
             for y, c in enumerate(line):
                 if c == "1":
-                    self.activate(x, y, 0, 0)
+                    cube = (x, y) + (0,) * (self.n_dim - 2)
+                    self.activate(cube)
 
-    def activate(self, x, y, z, w):
-        self.active.add((x, y, z, w))
-        self.candidates.discard((x, y, z, w))
-        for neighbor in self.get_neighbours(x, y, z, w):
+    def activate(self, cube):
+        self.active.add((cube))
+        self.candidates.discard((cube))
+        for neighbor in self.get_neighbours(cube):
             self.n_neighbors[neighbor] += 1
             if self.n_neighbors[neighbor] == 3:
                 self.candidates.add(neighbor)
             elif self.n_neighbors[neighbor] == 4:
                 self.candidates.discard(neighbor)
 
-    def deactivate(self, x, y, z, w):
-        self.active.discard((x, y, z, w))
-        for neighbor in self.get_neighbours(x, y, z, w):
+    def deactivate(self, cube):
+        self.active.discard((cube))
+        for neighbor in self.get_neighbours(cube):
             self.n_neighbors[neighbor] -= 1
             if self.n_neighbors[neighbor] == 3:
                 self.candidates.add(neighbor)
@@ -70,33 +72,31 @@ class PocketDimension:
 
         for cube in old_active:
             if old_n_neighbors[cube] not in [2, 3]:
-                self.deactivate(*cube)
+                self.deactivate(cube)
         for cube in old_candidates - old_active:
-            self.activate(*cube)
+            self.activate(cube)
 
     def get_activated_count(self):
         return len(self.active)
 
     @staticmethod
-    def get_neighbours(x, y, z, w):
-        for dx, dy, dz, dw in product((-1, 0, 1), repeat=4):
-            if (dx, dy, dz, dw) != (0, 0, 0, 0):
-                yield x + dx, y + dy, z + dz, w + dw
+    def get_neighbours(coords):
+        n_dim = len(coords)
+        for delta in product((-1, 0, 1), repeat=n_dim):
+            if delta != (0,) * n_dim:
+                yield tuple(coords[i] + delta[i] for i in range(n_dim))
 
     def __str__(self):
-        x_coords, y_coords, z_coords, w_coords = zip(*self.active)
-        x_range = (min(x_coords), max(x_coords) + 1)
-        y_range = (min(y_coords), max(y_coords) + 1)
-        z_range = (min(z_coords), max(z_coords) + 1)
-        w_range = (min(w_coords), max(w_coords) + 1)
+        coords_by_dim = zip(*self.active)
+        ranges = [(min(coords), max(coords) + 1) for coords in coords_by_dim]
         lines = []
-        for z, w in zip(range(*z_range), range(*w_range)):
-            lines.append(f"z={z} w={w}")
-            for x in range(*x_range):
+        for coords in zip(*[range(*r) for r in ranges[2:]]):
+            lines.append(f"(X,X,{','.join([str(c) for c in coords])})")
+            for x in range(*ranges[0]):
                 lines.append(
                     "".join(
-                        ACTIVE if (x, y, z, w) in self.active else INACTIVE
-                        for y in range(*y_range)
+                        ACTIVE if (x, y, *coords) in self.active else INACTIVE
+                        for y in range(*ranges[1])
                     )
                 )
 
