@@ -16,21 +16,16 @@ fn main() {
 
 fn run(input: &str) -> usize {
     let mut grid = Grid::init(input);
-    // grid.pretty_print(0);
     let mut grid2 = grid.clone();
     let mut round = 0;
     loop {
         round += 1;
         grid.round(&mut grid2, round);
-        // println!("Round {}", round);
-        // grid2.pretty_print(round);
         if round == ROUNDS {
             return grid2.count_active();
         }
         round += 1;
         grid2.round(&mut grid, round);
-        // println!("Round {}", round);
-        // grid.pretty_print(round);
         if round == ROUNDS {
             return grid.count_active();
         }
@@ -86,13 +81,16 @@ impl Grid {
             for z in 0..=w {
                 for y in (1 + ROUNDS - nb)..(self.length - 1) {
                     for x in (1 + ROUNDS - nb)..(self.width - 1) {
-                        if w > z {
-                            other[(x, y, z as isize, w as isize)] =
-                                other[(x, y, w as isize, z as isize)]
-                        } else {
-                            other[(x, y, z as isize, w as isize)]
-                                .update(self.iter(x, y, z, w), &self);
-                        }
+                        other[(x, y, z as isize, w as isize)]
+                            .update(self.iter(x, y, z, w), &self);
+                    }
+                }
+            }
+            for z in (w+1)..=nb {
+                for y in (1 + ROUNDS - nb)..(self.length - 1) {
+                    for x in (1 + ROUNDS - nb)..(self.width - 1) {
+                        other[(x, y, z as isize, w as isize)] =
+                            other[(x, y, w as isize, z as isize)]
                     }
                 }
             }
@@ -226,7 +224,6 @@ impl Iterator for AdjacentSeats {
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.w_diff < 2 {
-            // println!("{} {} {} / {} {} {}", self.x_center, self.y_center, self.z_center, self.x_diff, self.y_diff, self.z_diff);
             let out = (
                 (self.x_center + self.x_diff) as usize,
                 (self.y_center + self.y_diff) as usize,
