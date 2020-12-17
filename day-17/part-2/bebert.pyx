@@ -21,16 +21,16 @@ cpdef int run(str s):
                     grid[i][j][k][w] = 0
                     grid_old[i][j][k][w] = 0
 
-    cdef int x_start = NB_CYCLES + 1
-    cdef int y_start = NB_CYCLES + 1
-    cdef int z_start = NB_CYCLES + INPUT_WIDTH // 2 + 1
+    cdef int i_start = NB_CYCLES + 1
+    cdef int j_start = NB_CYCLES + 1
+    cdef int k_start = NB_CYCLES + INPUT_WIDTH // 2 + 1
     cdef int w_start = NB_CYCLES + INPUT_WIDTH // 2 + 1
 
     cdef str line
     cdef str c
-    for dy, line in enumerate(s.strip().splitlines()):
-        for dx, c in enumerate(line):
-            grid[x_start + dx][y_start + dy][z_start][w_start] = c == '#'
+    for dj, line in enumerate(s.strip().splitlines()):
+        for di, c in enumerate(line):
+            grid[i_start + di][j_start + dj][k_start][w_start] = c == '#'
 
     # print("======== step 0 ========")
     # print_grid(grid, GRID_SIZE)
