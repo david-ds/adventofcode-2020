@@ -83,16 +83,10 @@ impl Grid {
 
     fn round(&self, other: &mut Grid, nb: usize) {
         for w in 0..=nb {
-            for z in 0..=nb {
+            for z in 0..=w {
                 for y in (1 + ROUNDS - nb)..(self.length - 1) {
                     for x in (1 + ROUNDS - nb)..(self.width - 1) {
-                        if w > z {
-                            other[(x, y, z as isize, w as isize)] =
-                                other[(x, y, w as isize, z as isize)]
-                        } else {
-                            other[(x, y, z as isize, w as isize)]
-                                .update(self.iter(x, y, z, w), &self);
-                        }
+                        other[(x, y, z as isize, w as isize)].update(self.iter(x, y, z, w), &self);
                     }
                 }
             }
@@ -168,8 +162,8 @@ impl Index<(usize, usize, isize, isize)> for Grid {
     type Output = Cube;
 
     fn index(&self, index: (usize, usize, isize, isize)) -> &Self::Output {
-        let z: usize = index.2.abs() as usize;
-        let w: usize = index.3.abs() as usize;
+        let mut z: usize = index.2.abs() as usize;
+        let mut w: usize = index.3.abs() as usize;
         if index.0 >= self.width {
             panic!("The width is {} but the index is {:?}", self.width, &index);
         }
@@ -191,6 +185,11 @@ impl Index<(usize, usize, isize, isize)> for Grid {
                 self.hyperside, &index
             );
         }
+        if z > w {
+            let t = z;
+            z = w;
+            w = t;
+        }
         &self.cubes[index.0
             + index.1 * self.width
             + z * self.width * self.length
@@ -200,10 +199,17 @@ impl Index<(usize, usize, isize, isize)> for Grid {
 
 impl IndexMut<(usize, usize, isize, isize)> for Grid {
     fn index_mut(&mut self, index: (usize, usize, isize, isize)) -> &mut Self::Output {
+        let mut z = index.2.abs() as usize;
+        let mut w = index.3.abs() as usize;
+        if z > w {
+            let t = z;
+            z = w;
+            w = t;
+        }
         &mut self.cubes[index.0
             + index.1 * self.width
-            + (index.2.abs() as usize) * self.width * self.length
-            + (index.3.abs() as usize) * self.width * self.length * self.height]
+            + z * self.width * self.length
+            + w * self.width * self.length * self.height]
     }
 }
 
