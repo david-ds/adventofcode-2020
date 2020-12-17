@@ -83,19 +83,22 @@ impl Grid {
                 for y in (1 + ROUNDS - nb)..(self.length - 1) {
                     for x in (1 + ROUNDS - nb)..(self.width - 1) {
                         if z < w {
-                            other[(x, y, z as isize, w as isize)] =
-                                other[(x, y, w as isize, z as isize)]
+                            other[(x as isize, y as isize, z as isize, w as isize)] =
+                                other[(x as isize, y as isize, w as isize, z as isize)]
                         } else {
-                            other[(x, y, z as isize, w as isize)]
-                                .update(self.iter(x, y, z, w), &self);
+                            other[(x as isize, y as isize, z as isize, w as isize)]
+                                .update(&self, (x as isize, y as isize, z as isize, w as isize));
                         };
-                        if should_count && other[(x, y, z as isize, w as isize)] == Cube::Active {
+                        if should_count
+                            && other[(x as isize, y as isize, z as isize, w as isize)]
+                                == Cube::Active
+                        {
                             if w == 0 && z == 0 {
-                                count +=1
+                                count += 1
                             } else if w == 0 || z == 0 {
-                                count +=2
+                                count += 2
                             } else {
-                                count +=4
+                                count += 4
                             };
                         }
                     }
@@ -103,19 +106,6 @@ impl Grid {
             }
         }
         count
-    }
-
-    fn iter(&self, x: usize, y: usize, z: usize, w: usize) -> AdjacentSeats {
-        AdjacentSeats {
-            x_center: x as isize,
-            y_center: y as isize,
-            z_center: z as isize,
-            w_center: w as isize,
-            x_diff: -1,
-            y_diff: -1,
-            z_diff: -1,
-            w_diff: -1,
-        }
     }
 
     #[allow(dead_code)]
@@ -126,7 +116,7 @@ impl Grid {
                 for y in 0..self.length {
                     let mut s = String::with_capacity(self.width);
                     for x in 0..self.width {
-                        s.push(self[(x, y, z as isize, w as isize)].to_str())
+                        s.push(self[(x as isize, y as isize, z as isize, w as isize)].to_str())
                     }
                     println!("{}", s);
                 }
@@ -136,16 +126,18 @@ impl Grid {
     }
 }
 
-impl Index<(usize, usize, isize, isize)> for Grid {
+impl Index<(isize, isize, isize, isize)> for Grid {
     type Output = Cube;
 
-    fn index(&self, index: (usize, usize, isize, isize)) -> &Self::Output {
+    fn index(&self, index: (isize, isize, isize, isize)) -> &Self::Output {
+        let x: usize = index.0 as usize;
+        let y: usize = index.1 as usize;
         let z: usize = index.2.abs() as usize;
         let w: usize = index.3.abs() as usize;
-        if index.0 >= self.width {
+        if x >= self.width {
             panic!("The width is {} but the index is {:?}", self.width, &index);
         }
-        if index.1 >= self.length {
+        if y >= self.length {
             panic!(
                 "The length is {} but the index is {:?}",
                 self.length, &index
@@ -163,75 +155,50 @@ impl Index<(usize, usize, isize, isize)> for Grid {
                 self.hyperside, &index
             );
         }
-        &self.cubes[index.0
-            + index.1 * self.width
+        &self.cubes[x
+            + y * self.width
             + z * self.width * self.length
             + w * self.width * self.length * self.height]
     }
 }
 
-impl IndexMut<(usize, usize, isize, isize)> for Grid {
-    fn index_mut(&mut self, index: (usize, usize, isize, isize)) -> &mut Self::Output {
-        &mut self.cubes[index.0
-            + index.1 * self.width
+impl IndexMut<(isize, isize, isize, isize)> for Grid {
+    fn index_mut(&mut self, index: (isize, isize, isize, isize)) -> &mut Self::Output {
+        &mut self.cubes[index.0 as usize
+            + (index.1 as usize) * self.width
             + (index.2.abs() as usize) * self.width * self.length
             + (index.3.abs() as usize) * self.width * self.length * self.height]
     }
 }
 
-struct AdjacentSeats {
-    x_center: isize,
-    y_center: isize,
-    z_center: isize,
-    w_center: isize,
-    x_diff: isize,
-    y_diff: isize,
-    z_diff: isize,
-    w_diff: isize,
-}
+const NEIGHBORS: [(isize, isize, isize, isize); 80] = generate_neighbors();
 
-impl AdjacentSeats {
-    fn get_center(&self) -> (usize, usize, isize, isize) {
-        (
-            self.x_center as usize,
-            self.y_center as usize,
-            self.z_center,
-            self.w_center,
-        )
-    }
-}
-
-impl Iterator for AdjacentSeats {
-    type Item = (usize, usize, isize, isize);
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.w_diff < 2 {
-            let out = (
-                (self.x_center + self.x_diff) as usize,
-                (self.y_center + self.y_diff) as usize,
-                (self.z_center + self.z_diff),
-                (self.w_center + self.w_diff),
-            );
-            let (x, y, z, w) = match (self.x_diff, self.y_diff, self.z_diff, self.w_diff) {
-                (1, 1, 1, w) => (-1, -1, -1, w + 1),
-                (1, 1, z, w) => (-1, -1, z + 1, w),
-                (1, y, z, w) => (-1, y + 1, z, w),
-                (-1, 0, 0, 0) => (1, 0, 0, 0),
-                (x, y, z, w) => (x + 1, y, z, w),
-            };
-            self.x_diff = x;
-            self.y_diff = y;
-            self.z_diff = z;
-            self.w_diff = w;
-            Some(out)
-        } else {
-            None
+const fn generate_neighbors() -> [(isize, isize, isize, isize); 80] {
+    let mut out = [(0, 0, 0, 0); 80];
+    let mut w: isize = -1;
+    while w < 2 {
+        let mut z: isize = -1;
+        while z < 2 {
+            let mut y: isize = -1;
+            while y < 2 {
+                let mut x: isize = -1;
+                while x < 2 {
+                    if x != 0 || y != 0 || z != 0 || w != 0 {
+                        let mut pos = ((x + 1) + (y + 1) * 3 + (z + 1) * 9 + (w + 1) * 27) as usize;
+                        if pos >= 40 {
+                            pos -= 1;
+                        }
+                        out[pos] = (x, y, z, w);
+                    }
+                    x += 1;
+                }
+                y += 1;
+            }
+            z += 1;
         }
+        w += 1;
     }
-
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        (80, Some(80))
-    }
+    out
 }
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
@@ -256,11 +223,13 @@ impl Cube {
         }
     }
 
-    fn update(&mut self, adjacent: AdjacentSeats, grid: &Grid) {
-        let coords = adjacent.get_center();
+    fn update(&mut self, grid: &Grid, coords: (isize, isize, isize, isize)) {
+        let iter = NEIGHBORS
+            .iter()
+            .map(|(x, y, z, w)| (x + coords.0, y + coords.1, z + coords.2, w + coords.3));
         let goal = 3;
         let mut count = 0;
-        for c in adjacent {
+        for c in iter {
             if grid[c] == Self::Active {
                 count += 1;
             }
