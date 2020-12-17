@@ -71,8 +71,8 @@ impl Grid {
     fn round(&self, other: &mut Grid, nb: usize, should_count: bool) -> usize {
         let mut count = 0;
         for z in 0..=nb {
-            for y in (1 + ROUNDS - nb)..(self.length - 1) {
-                for x in (1 + ROUNDS - nb)..(self.width - 1) {
+            for y in (1 + ROUNDS - nb)..(self.length - 1 - ROUNDS + nb) {
+                for x in (1 + ROUNDS - nb)..(self.width - 1 - ROUNDS + nb) {
                     other[(x as isize, y as isize, z as isize)]
                         .update(&self, (x as isize, y as isize, z as isize));
                     if should_count && other[(x as isize, y as isize, z as isize)] == Cube::Active {
@@ -187,13 +187,10 @@ impl Cube {
     }
 
     fn update(&mut self, grid: &Grid, coords: (isize, isize, isize)) {
-        let iter = NEIGHBORS
-            .iter()
-            .map(|(x, y, z)| (x + coords.0, y + coords.1, z + coords.2));
         let goal = 3;
         let mut count = 0;
-        for c in iter {
-            if grid[c] == Self::Active {
+        for (x, y, z) in &NEIGHBORS {
+            if grid[(x + coords.0, y + coords.1, z + coords.2)] == Self::Active {
                 count += 1;
             }
             if count > goal {

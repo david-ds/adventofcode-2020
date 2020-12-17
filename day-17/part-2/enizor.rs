@@ -80,8 +80,8 @@ impl Grid {
         let mut count = 0;
         for w in 0..=nb {
             for z in 0..=nb {
-                for y in (1 + ROUNDS - nb)..(self.length - 1) {
-                    for x in (1 + ROUNDS - nb)..(self.width - 1) {
+                for y in (1 + ROUNDS - nb)..(self.length - 1 - ROUNDS +nb) {
+                    for x in (1 + ROUNDS - nb)..(self.width - 1 - ROUNDS +nb) {
                         if z < w {
                             other[(x as isize, y as isize, z as isize, w as isize)] =
                                 other[(x as isize, y as isize, w as isize, z as isize)]
@@ -224,13 +224,10 @@ impl Cube {
     }
 
     fn update(&mut self, grid: &Grid, coords: (isize, isize, isize, isize)) {
-        let iter = NEIGHBORS
-            .iter()
-            .map(|(x, y, z, w)| (x + coords.0, y + coords.1, z + coords.2, w + coords.3));
         let goal = 3;
         let mut count = 0;
-        for c in iter {
-            if grid[c] == Self::Active {
+        for (x, y, z, w) in &NEIGHBORS {
+            if grid[(x + coords.0, y + coords.1, z + coords.2, w + coords.3)] == Self::Active {
                 count += 1;
             }
             if count > goal {
