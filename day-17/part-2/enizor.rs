@@ -86,7 +86,13 @@ impl Grid {
             for z in 0..=nb {
                 for y in (1 + ROUNDS - nb)..(self.length - 1) {
                     for x in (1 + ROUNDS - nb)..(self.width - 1) {
-                        other[(x, y, z as isize, w as isize)].update(self.iter(x, y, z, w), &self);
+                        if w > z {
+                            other[(x, y, z as isize, w as isize)] =
+                                other[(x, y, w as isize, z as isize)]
+                        } else {
+                            other[(x, y, z as isize, w as isize)]
+                                .update(self.iter(x, y, z, w), &self);
+                        }
                     }
                 }
             }
