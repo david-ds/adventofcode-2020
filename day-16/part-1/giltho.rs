@@ -57,7 +57,7 @@ impl IntvVec for Vec<(u16, u16)> {
                 return false;
             }
         }
-        return true;
+        true
     }
 }
 
@@ -81,25 +81,23 @@ fn run(input: &str) -> u16 {
     for line in input.split('\n') {
         if ignore > 0 {
             ignore -= 1
-        } else {
-            if parsing_fields {
-                match line {
-                    "" => {
-                        ignore = 4;
-                        parsing_fields = false
-                    }
-                    line => {
-                        let (a, b) = parse_field(line);
-                        allowed_ranges.push_intv(a);
-                        allowed_ranges.push_intv(b);
-                    }
+        } else if parsing_fields {
+            match line {
+                "" => {
+                    ignore = 4;
+                    parsing_fields = false
                 }
-            } else {
-                for n in line.split(',') {
-                    let point: u16 = n.parse().unwrap();
-                    if allowed_ranges.invalid(point) {
-                        acc += point
-                    }
+                line => {
+                    let (a, b) = parse_field(line);
+                    allowed_ranges.push_intv(a);
+                    allowed_ranges.push_intv(b);
+                }
+            }
+        } else {
+            for n in line.split(',') {
+                let point: u16 = n.parse().unwrap();
+                if allowed_ranges.invalid(point) {
+                    acc += point
                 }
             }
         }

@@ -31,7 +31,7 @@ mod automata {
             for z in zmin..zmax + 1 {
                 write!(f, "\nz = {}", z)?;
                 for x in xymin..xymax + 1 {
-                    write!(f, "\n")?;
+                    writeln!(f)?;
                     for y in xymin..xymax + 1 {
                         if state.contains(&(x, y, z)) {
                             write!(f, "#")?
@@ -73,7 +73,7 @@ mod automata {
                                 match self.neighbours.get_mut(&(x, y, z)) {
                                     None => (),
                                     Some(p) => {
-                                        *p = (*p) + 1;
+                                        *p += 1;
                                         changed = true
                                     }
                                 }
@@ -99,10 +99,8 @@ mod automata {
                     if val == 2 || val == 3 {
                         cur_state.insert(key);
                     }
-                } else {
-                    if val == 3 {
-                        cur_state.insert(key);
-                    }
+                } else if val == 3 {
+                    cur_state.insert(key);
                 }
             }
         }
