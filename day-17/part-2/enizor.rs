@@ -80,8 +80,8 @@ impl Grid {
         let mut count = 0;
         for w in 0..=nb {
             for z in 0..=nb {
-                for y in (1 + ROUNDS - nb)..(self.length - 1 - ROUNDS +nb) {
-                    for x in (1 + ROUNDS - nb)..(self.width - 1 - ROUNDS +nb) {
+                for y in (1 + ROUNDS - nb)..(self.length - 1 - ROUNDS + nb) {
+                    for x in (1 + ROUNDS - nb)..(self.width - 1 - ROUNDS + nb) {
                         if z < w {
                             other[(x as isize, y as isize, z as isize, w as isize)] =
                                 other[(x as isize, y as isize, w as isize, z as isize)]
