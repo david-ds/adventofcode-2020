@@ -17,35 +17,32 @@ class BadouralixSubmission(SubmissionPy):
             ]
 
             # Yolo parse and evaluate tokens assuming it is syntaxely correct
-            lineresult, _ = self.evaluate(linetokens)
+            # The expression is evaluated left-to-right, and we got the left recursion for free by parsing from the right side
+            lineresult, _ = self.evaluate(linetokens, len(linetokens) - 1)
             result += lineresult
 
         return result
 
-    def evaluate(self, tokens, position=0):
-        # Initialization hack to ensure the left term is always a number
+    def evaluate(self, tokens, position):
+        # Initialization hack to ensure the right term is always a number
         result = 0
-        operation = "+"
 
-        while position != len(tokens):
+        while position >= 0:
             token = tokens[position]
 
             # Do not ask, it works
-            if token == "+" or token == "*":
-                operation = token
+            if token == "+":
+                value, position = self.evaluate(tokens, position - 1)
+                return result + value, position
+            elif token == "*":
+                value, position = self.evaluate(tokens, position - 1)
+                return result * value, position
+            elif token == "(":
+                return result, position - 1
             elif token == ")":
-                return result, position
+                result, position = self.evaluate(tokens, position - 1)
             else:
-                if token == "(":
-                    value, position = self.evaluate(tokens, position + 1)
-                else:
-                    value = token
-
-                if operation == "+":
-                    result += value
-                elif operation == "*":
-                    result *= value
-
-            position += 1
+                result = token
+                position -= 1
 
         return result, position
