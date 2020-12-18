@@ -39,7 +39,7 @@ mod automata {
                                     match self.neighbours.get_mut(&(x, y, z, w)) {
                                         None => (),
                                         Some(p) => {
-                                            *p = (*p) + 1;
+                                            *p += 1;
                                             changed = true
                                         }
                                     }
@@ -66,10 +66,8 @@ mod automata {
                     if val == 2 || val == 3 {
                         cur_state.insert(key);
                     }
-                } else {
-                    if val == 3 {
-                        cur_state.insert(key);
-                    }
+                } else if val == 3 {
+                    cur_state.insert(key);
                 }
             }
         }

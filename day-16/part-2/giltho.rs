@@ -16,10 +16,10 @@ struct Field {
 }
 
 impl Field {
-    fn invalid(&self, p: usize) -> bool {
-        let (a, b) = self.pos_1;
-        let (c, d) = self.pos_2;
-        p < a || (p > b && p < c) || p > d
+    fn invalid(&self, point: usize) -> bool {
+        let (low_a, high_a) = self.pos_1;
+        let (low_b, high_b) = self.pos_2;
+        point < low_a || (point > high_a && point < low_b) || point > high_b
     }
 }
 
@@ -45,17 +45,9 @@ impl std::fmt::Display for IncomplBij {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         for (idx, el) in self.matrix.iter().enumerate() {
             if idx % 20 == 0 {
-                write!(f, "\n").unwrap()
+                writeln!(f)?
             }
-            write!(
-                f,
-                "{}",
-                (|x| match x {
-                    true => 1,
-                    false => 0,
-                })(*el)
-            )
-            .unwrap()
+            write!(f, "{}", if *el { 1 } else { 0 })?
         }
         Ok(())
     }
@@ -122,7 +114,7 @@ impl IncomplBij {
             cont = self.simplify_from_columns() || self.simplify_from_lines()
         }
     }
-    fn result(&self, my_ticket: &Vec<usize>) -> usize {
+    fn result(&self, my_ticket: &[usize]) -> usize {
         let mut acc = 1;
         for i in 0..6 {
             for j in 0..self.nb_field {
@@ -183,7 +175,7 @@ impl IntvVec for Vec<(usize, usize)> {
                 return false;
             }
         }
-        return true;
+        true
     }
 }
 
@@ -199,15 +191,15 @@ fn parse_field(line: &str) -> ((usize, usize), (usize, usize)) {
     ((l1, h1), (l2, h2))
 }
 
-enum State {
-    ParsingFields,
-    ParsingMyTicket,
-    ParsingNearbyTickets,
+enum ParsingState {
+    Fields,
+    MyTicket,
+    NearbyTickets,
 }
 
 fn run(input: &str) -> usize {
     let mut ignore = 0;
-    let mut state = State::ParsingFields;
+    let mut state = ParsingState::Fields;
     let mut allowed_ranges = Vec::with_capacity(50);
     let mut my_ticket = Vec::with_capacity(50);
     let mut fields = Vec::with_capacity(50);
@@ -218,10 +210,10 @@ fn run(input: &str) -> usize {
             continue;
         }
         match state {
-            State::ParsingFields => match line {
+            ParsingState::Fields => match line {
                 "" => {
                     ignore = 1;
-                    state = State::ParsingMyTicket
+                    state = ParsingState::MyTicket
                 }
                 line => {
                     let (a, b) = parse_field(line);
@@ -230,7 +222,7 @@ fn run(input: &str) -> usize {
                     fields.push(Field { pos_1: a, pos_2: b });
                 }
             },
-            State::ParsingMyTicket => {
+            ParsingState::MyTicket => {
                 for n in line.split(',') {
                     my_ticket.push(n.parse::<usize>().unwrap())
                 }
@@ -241,10 +233,10 @@ fn run(input: &str) -> usize {
                         }
                     }
                 }
-                state = State::ParsingNearbyTickets;
+                state = ParsingState::NearbyTickets;
                 ignore = 2
             }
-            State::ParsingNearbyTickets => {
+            ParsingState::NearbyTickets => {
                 if line
                     .split(',')
                     .any(|x| allowed_ranges.invalid(x.parse().unwrap()))
