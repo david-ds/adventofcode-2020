@@ -11,8 +11,8 @@ fn main() {
 
 fn run(input: &str) -> usize {
     let mut res = 0;
-    for l in input.lines() {
-        res += evaluate(l.as_bytes());
+    for line in input.as_bytes().split(|&b| b == b'\n') {
+        res += evaluate(line);
     }
     res
 }
