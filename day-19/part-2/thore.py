@@ -1,5 +1,14 @@
 from functools import lru_cache
-import regex as re
+
+try:
+    import regex as re
+
+    RECURSIVE_REGEX = True
+except ModuleNotFoundError:
+    import re
+
+    RECURSIVE_REGEX = False
+    MAX_RECURSION_DEPTH = 6
 
 from tool.runners.python import SubmissionPy
 
@@ -21,7 +30,11 @@ class ThoreSubmission(SubmissionPy):
             if i == "8":  # replaced by 42 | 42 8
                 return f"({resolve_rule('42')})+"
             elif i == "11":  # replaced by 42 31 | 42 11 31
-                return f"(?P<x>{resolve_rule('42')}(?&x)?{resolve_rule('31')})"
+                l, r = resolve_rule("42"), resolve_rule("31")
+                if RECURSIVE_REGEX:
+                    return f"(?P<x>{l}(?&x)?{r})"
+                else:
+                    return f"({'|'.join(fr'({l}{{{i}}}{r}{{{i}}})' for i in range(1, MAX_RECURSION_DEPTH+1))})"
             elif '"' in rule:
                 return rule.replace('"', "")
             elif "|" in rule:

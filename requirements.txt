@@ -1,7 +1,6 @@
 Cython>=0.29.1
 networkx>=2.5
 numpy>=1.15,<2
-regex>=2020.11.13
 scipy>=1.5
 tabulate>=0.8,<1
 tqdm
