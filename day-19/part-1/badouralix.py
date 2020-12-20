@@ -1,7 +1,7 @@
 from tool.runners.python import SubmissionPy
 
 from collections import defaultdict
-from typing import Set
+from functools import lru_cache
 
 
 class BadouralixSubmission(SubmissionPy):
@@ -10,38 +10,42 @@ class BadouralixSubmission(SubmissionPy):
         :param s: input in string format
         :return: solution flag
         """
-        rules, words = s.split("\n\n")
-        data = defaultdict(list)
+        # We need a class attribute here to pass it to the match method and still benefit from the cache
+        self.rules = defaultdict(list)
+        result = 0
 
-        for rule in rules.split("\n"):
+        metadata, words = s.split("\n\n")
+
+        for rule in metadata.split("\n"):
             rid, rlists = rule.split(": ")
             for rlist in rlists.split(" | "):
-                data[rid].append(rlist.replace('"', "").split(" "))
+                self.rules[rid].append(rlist.replace('"', "").split(" "))
 
-        # Turns out the graph of rule ids is acyclic, which means we can recursively find all accepted words
-        accepted = self.suffixes(data, "0", dict())
+        for word in words.split("\n"):
+            if self.match(word, "0") == len(word):
+                result += 1
 
-        return len(accepted.intersection(words.split("\n")))
+        return result
 
-    def suffixes(self, data, rid, cache):
-        if rid in cache:
-            return cache[rid]
-        elif data[rid] == [["a"]]:
-            cache[rid] = set("a")
-            return cache[rid]
-        elif data[rid] == [["b"]]:
-            cache[rid] = set("b")
-            return cache[rid]
+    @lru_cache(maxsize=None)
+    def match(self, word, rid):
+        if len(word) == 0:
+            return -1
+        elif self.rules[rid] == [["a"]] or self.rules[rid] == [["b"]]:
+            if word[0] == self.rules[rid][0][0]:
+                return 1
+            else:
+                return -1
         else:
-            words: Set[str] = set()
-            for subrule in data[rid]:
-                subwords = set({""})
+            for subrule in self.rules[rid]:
+                position = 0
                 for step in subrule:
-                    subwords = {
-                        subword + suffix
-                        for subword in subwords
-                        for suffix in self.suffixes(data, step, cache)
-                    }
-                words.update(subwords)
-            cache[rid] = words
-            return cache[rid]
+                    progress = self.match(word[position:], step)
+                    if progress == -1:
+                        break
+                    else:
+                        position += progress
+                else:
+                    # Here we assume that the first match is the only match
+                    return position
+            return -1
