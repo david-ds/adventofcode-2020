@@ -11,6 +11,9 @@ class BadouralixSubmission(SubmissionPy):
         :param s: input in string format
         :return: solution flag
         """
+        # Before each run we need to flush the cache to avoid side effects from previous runs
+        self.match.cache_clear()
+
         # We need a class attribute here to pass it to the match method and still benefit from the cache
         self.rules = defaultdict(list)
         result = 0
