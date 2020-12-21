@@ -86,8 +86,6 @@ impl Tile {
         // Parse last line
         let mut line_pos = 0;
         while *pos < input.len() {
-            // dbg!(*pos);
-            // dbg!(input[*pos]);
             if input[*pos] == b'\n' {
                 break;
             }
