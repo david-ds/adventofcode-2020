@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2019",
+    "noImplicitAny": true,
+    "allowJs": true,
+    "strict": true,
+    "noEmit": true
+  }
+}
