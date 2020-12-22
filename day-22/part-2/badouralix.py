@@ -29,17 +29,14 @@ class BadouralixSubmission(SubmissionPy):
         :param decks: players' decks as a tuple
         :return: winner id
         """
-        history = tuple(set() for _ in decks)
+        history = set()
 
         while all(len(deck) != 0 for deck in decks):
             # Check game state against previous game states
-            tupledecks = tuple(tuple(deck) for deck in decks)
-            if any(
-                tupledecks[player] in history[player] for player in range(len(decks))
-            ):
+            state = tuple(tuple(deck) for deck in decks)
+            if state in history:
                 return 0
-            for player in range(len(decks)):
-                history[player].add(tupledecks[player])
+            history.add(state)
 
             # Each player draws the top card
             cards = tuple(deck.popleft() for deck in decks)
