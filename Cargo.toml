@@ -168,6 +168,14 @@ path = "./day-20/part-1/enizor.rs"
 name = "day-20-part-2-enizor"
 path = "./day-20/part-2/enizor.rs"
 
+[[bin]]
+name = "day-21-part-1-enizor"
+path = "./day-21/part-1/enizor.rs"
+
+[[bin]]
+name = "day-21-part-2-enizor"
+path = "./day-21/part-2/enizor.rs"
+
 # jd
 
 [[bin]]
