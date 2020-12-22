@@ -5,7 +5,7 @@ from enum import IntEnum
 from functools import reduce
 from itertools import product
 from math import sqrt
-from typing import Generator
+from typing import Generator, NamedTuple
 
 import numpy as np
 
@@ -52,33 +52,51 @@ def find_pattern(puzzle, pattern):
 
 def solve_puzzle(s):
     # parse the puzzle pieces
-    pieces = list(map(JigsawPiece.from_string, s.split("\n\n")))
-    size = int(sqrt(len(pieces)))  # assumption: square puzzle
-    piece_size = pieces[0].array.shape[0]  # assumption: square pieces
-    pieces_by_id = {p.pid: p for p in pieces}
+    pieces_by_id = {}
+    for piece_str in s.split("\n\n"):
+        piece_lines = piece_str.splitlines()
+        pid = int(piece_lines[0].split(" ")[1][:-1])
+        piece = np.array(
+            [[c == "#" for c in line] for line in piece_lines[1:]], dtype=bool
+        )
+        pieces_by_id[pid] = piece
+    n_pieces = len(pieces_by_id)
+    size = int(sqrt(n_pieces))  # assumption: square puzzle
+    piece_size = next(iter(pieces_by_id.values())).shape[0]  # assumption: square pieces
 
     # list all matching borders
-    matches = defaultdict(lambda: defaultdict(set))
-    n_matches = 0
-    for i in range(len(pieces)):
-        for j in range(i + 1, len(pieces)):
-            p1, p2 = pieces[i], pieces[j]
-            for side1, side2, flipped in product(Side, Side, [False, True]):
-                if np.array_equal(p1.border(side1), p2.border(side2, flipped)):
-                    matches[p1.pid][side1].add((p2.pid, side2, flipped))
-                    matches[p2.pid][side2].add((p1.pid, side1, flipped))
-                    n_matches += 1
+    matches = defaultdict(dict)
+    border_index = {}
+    for pid, piece in pieces_by_id.items():
+        for side, border in enumerate(
+            [
+                tuple(piece[:, 0]),
+                tuple(piece[0]),
+                tuple(piece[:, -1]),
+                tuple(piece[-1]),
+            ]
+        ):
+            if border in border_index:
+                other_pid, other_side = border_index[border]
+                matches[pid][side] = Match(other_pid, other_side, False)
+                matches[other_pid][other_side] = Match(pid, side, False)
+            elif border[::-1] in border_index:
+                other_pid, other_side = border_index[border[::-1]]
+                matches[pid][side] = Match(other_pid, other_side, True)
+                matches[other_pid][other_side] = Match(pid, side, True)
+            border_index[border] = (pid, side)
 
-    corners = [p.pid for p in pieces if len(matches[p.pid]) == 2]
+    corners = [pid for pid in matches if len(matches[pid]) == 2]
 
     # check the assumption that there isn't any "extra" match, and some sanity checks
-    assert n_matches == 2 * (size - 1) * size, "Wrong number of matches"
+    n_matches = sum(len(d) for d in matches.values())
+    assert n_matches == 4 * (size - 1) * size, "Wrong number of matches"
     assert len(corners) == 4, "Wrong number of corner pieces"
-    assert len([p.pid for p in pieces if len(matches[p.pid]) == 3]) == 4 * (
+    assert len([pid for pid in matches if len(matches[pid]) == 3]) == 4 * (
         size - 2
     ), "Wrong number of side pieces"
     assert (
-        len([p.pid for p in pieces if len(matches[p.pid]) == 4]) == (size - 2) ** 2
+        len([pid for pid in matches if len(matches[pid]) == 4]) == (size - 2) ** 2
     ), "Wrong number of inner pieces"
 
     # take a corner, transform it as necessary and put it at the top left
@@ -89,68 +107,34 @@ def solve_puzzle(s):
     )
 
     # put the pieces one by one, from left to right and top to bottom
-    for i in range(1, len(pieces)):
+    for i in range(1, n_pieces):
         if i % size == 0:
             # new row: match the bottom side of the first piece of the previous row
             pid, transformation = solution[i - size]
             original_side, flipped = transformation.get_side_after(Side.BOTTOM)
-            matching_sides = matches[pid][original_side]
-            p, s, f = next(iter(matching_sides))
-            # rotate/transpose the candidates so that the matched side is at the top
+            matching_side = matches[pid][original_side]
+            p, s, f = matching_side
+            # rotate/transpose the candidate so that the matched side is at the top
             solution.append((p, Transformation.from_target(s, Side.TOP, flipped ^ f)))
         else:
             # continue the row: match the right side of the previous piece
             pid, transformation = solution[i - 1]
             original_side, flipped = transformation.get_side_after(Side.RIGHT)
-            matching_sides = matches[pid][original_side]
-            p, s, f = next(iter(matching_sides))
-            # rotate/transpose the candidates so that the matched side is at the left
+            matching_side = matches[pid][original_side]
+            p, s, f = matching_side
+            # rotate/transpose the candidate so that the matched side is at the left
             solution.append((p, Transformation.from_target(s, Side.LEFT, flipped ^ f)))
 
     # reconstruct the puzzle by stitching the border
     puzzle = np.zeros(((piece_size - 2) * size,) * 2, dtype=bool)
     for i, (pid, transformation) in enumerate(solution):
         x, y = i // size, i % size  # piece coordinates
-        transformed_piece = transformation.apply_array(pieces_by_id[pid].array)
+        transformed_piece = transformation.apply_array(pieces_by_id[pid])
         puzzle[
             (piece_size - 2) * x : (piece_size - 2) * (x + 1),
             (piece_size - 2) * y : (piece_size - 2) * (y + 1),
         ] = transformed_piece[1:-1, 1:-1]
     return puzzle
-
-
-@dataclass
-class JigsawPiece:
-    pid: int
-    array: np.ndarray
-
-    @classmethod
-    def from_string(cls, s):
-        lines = s.splitlines()
-        pid = int(lines[0].split(" ")[1][:-1])
-        array = np.array([[c == "#" for c in line] for line in lines[1:]], dtype=bool)
-        return cls(pid, array)
-
-    def border(self, side: Side, flipped: bool = False):
-        if side == Side.LEFT:
-            border = self.array[:, 0]
-        elif side == Side.TOP:
-            border = self.array[0]
-        elif side == Side.RIGHT:
-            border = self.array[:, -1]
-        elif side == Side.BOTTOM:
-            border = self.array[-1]
-
-        if flipped:
-            border = border[::-1]
-
-        return border
-
-    def __str__(self):
-        res = []
-        res.append(f"Tile {self.pid}:")
-        res.extend(["".join(["#" if c else "." for c in line]) for line in self.array])
-        return "\n".join(res)
 
 
 class Side(IntEnum):
@@ -164,6 +148,12 @@ class Side(IntEnum):
 
     def __sub__(self, rotation):
         return Side((int(self) - rotation) % 4)
+
+
+class Match(NamedTuple):
+    pid: int
+    side: Side
+    flipped: bool
 
 
 @dataclass(frozen=True)
