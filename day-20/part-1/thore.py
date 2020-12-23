@@ -1,10 +1,5 @@
 from collections import defaultdict
-from dataclasses import dataclass
-from enum import Enum
-from itertools import product
 from math import prod
-
-import numpy as np
 
 from tool.runners.python import SubmissionPy
 
@@ -15,61 +10,32 @@ class ThoreSubmission(SubmissionPy):
         :param s: input in string format
         :return: solution flag
         """
-        pieces = list(map(JigsawPiece.from_string, s.split("\n\n")))
+        matched_sides = defaultdict(int)
+        border_index = {}
+        for piece_str in s.split("\n\n"):
+            piece_lines = piece_str.splitlines()
+            pid = int(piece_lines[0].split(" ")[1][:-1])
+            piece = [[c == "#" for c in line] for line in piece_lines[1:]]
 
-        matched_sides = defaultdict(set)
-        for i in range(len(pieces)):
-            for j in range(i + 1, len(pieces)):
-                p1, p2 = pieces[i], pieces[j]
-                for side1, side2, flipped in product(Side, Side, [False, True]):
-                    if np.array_equal(p1.border(side1), p2.border(side2, flipped)):
-                        matched_sides[p1.pid].add(side1)
-                        matched_sides[p2.pid].add(side2)
+            for border in [
+                tuple(row[0] for row in piece),
+                tuple(piece[0]),
+                tuple(row[-1] for row in piece),
+                tuple(piece[-1]),
+            ]:
+                if border in border_index:
+                    matched_sides[pid] += 1
+                    other_pid = border_index[border]
+                    matched_sides[other_pid] += 1
+                elif border[::-1] in border_index:
+                    matched_sides[pid] += 1
+                    other_pid = border_index[border[::-1]]
+                    matched_sides[other_pid] += 1
+                border_index[border] = pid
 
         # We assume that two sides don't match if they shouldn't be stitched together
-        corners = [p for p, ms in matched_sides.items() if len(ms) == 2]
+        corners = [p for p, ms in matched_sides.items() if ms == 2]
         return prod(corners)
-
-
-class Side(Enum):
-    LEFT = 0
-    TOP = 1
-    RIGHT = 2
-    BOTTOM = 3
-
-
-@dataclass
-class JigsawPiece:
-    pid: int
-    image: np.ndarray
-
-    @classmethod
-    def from_string(cls, s):
-        lines = s.splitlines()
-        pid = int(lines[0].split(" ")[1][:-1])
-        image = np.array([[c == "#" for c in line] for line in lines[1:]], dtype=bool)
-        return cls(pid, image)
-
-    def border(self, side: Side, flipped: bool = False):
-        if side == Side.LEFT:
-            border = self.image[:, 0]
-        elif side == Side.TOP:
-            border = self.image[0]
-        elif side == Side.RIGHT:
-            border = self.image[:, -1]
-        elif side == Side.BOTTOM:
-            border = self.image[-1]
-
-        if flipped:
-            border = border[::-1]
-
-        return border
-
-    def __str__(self):
-        res = []
-        res.append(f"Tile {self.pid}:")
-        res.extend(["".join(["#" if c else "." for c in line]) for line in self.image])
-        return "\n".join(res)
 
 
 def test_day20_part1():
