@@ -45,11 +45,16 @@ def create_submission(author, path, language):
     # Extract submission template
     if language == "py":
         # Create a dedicated class with the author name
+        author_name = "".join(x if x.isalnum() else "_" for x in author)
         class_name = "".join(x for x in f"{author} submission".title() if x.isalnum())
         submission_content = (
             open(os.path.join(TEMPLATES_PATH, "template.py"))
             .read()
-            .format(class_name=class_name)
+            .format(
+                author_name=author_name,
+                class_name=class_name,
+                submission_file=submission_file,
+            )
         )
     else:
         submission_content = open(
