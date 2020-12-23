@@ -2,7 +2,6 @@ from collections import defaultdict
 from typing import  List
 from tool.runners.python import SubmissionPy
 from copy import copy
-from tqdm import tqdm
 
 class CocoSubmission(SubmissionPy):
 
