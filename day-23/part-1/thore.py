@@ -1,8 +1,6 @@
-from collections import deque
+from itertools import chain
 
 from tool.runners.python import SubmissionPy
-
-N_CUPS = 9
 
 
 class ThoreSubmission(SubmissionPy):
@@ -11,32 +9,43 @@ class ThoreSubmission(SubmissionPy):
         :param s: input in string format
         :return: solution flag
         """
-        cups = deque([int(c) for c in s], maxlen=N_CUPS)
-        for _ in range(moves):
+        cups = [int(c) for c in s]
+        n_cups = len(cups)
+        next_cup = [0] * (n_cups + 1)
+        for i in range(len(cups) - 1):
+            next_cup[cups[i]] = cups[i + 1]
+        next_cup[cups[-1]] = cups[0]
+
+        current_cup = cups[0]
+        for it in range(moves):
             # take the three cups after the current one (indices 1,2,3)
-            cups.rotate(-1)
-            pick_up = [cups.popleft() for _ in range(3)]
-            cups.rotate(1)
+            pickup1 = next_cup[current_cup]
+            pickup2 = next_cup[pickup1]
+            pickup3 = next_cup[pickup2]
+            next_cup[current_cup] = next_cup[pickup3]
 
             # find the destination cup and its index
-            dest_label = cups[0] - 1 if cups[0] > 1 else N_CUPS
-            while dest_label in pick_up:
-                dest_label -= 1
-                if dest_label == 0:
-                    dest_label = N_CUPS
-            dest_idx = cups.index(dest_label)
+            dest_cup = current_cup - 1 if current_cup > 1 else n_cups
+            while dest_cup in [pickup1, pickup2, pickup3]:
+                dest_cup -= 1
+                if dest_cup == 0:
+                    dest_cup = n_cups
 
             # place the picked up cups after the destination cup
-            cups.rotate(-dest_idx - 1)
-            cups.extendleft(reversed(pick_up))
+            next_cup[dest_cup], next_cup[pickup3] = (
+                pickup1,
+                next_cup[dest_cup],
+            )
 
             # update the current cup: immediately after the current current cup
-            cups.rotate(dest_idx)
+            current_cup = next_cup[current_cup]
 
-        cup_one_idx = cups.index(1)
-        cups.rotate(-cup_one_idx)
-        cups.popleft()
-        return "".join(map(str, cups))
+        cup = next_cup[1]
+        res = []
+        while not cup == 1:
+            res.append(str(cup))
+            cup = next_cup[cup]
+        return "".join(res)
 
 
 def test_thore():
