@@ -1,7 +1,5 @@
 from tool.runners.python import SubmissionPy
 
-from functools import lru_cache
-
 
 class BadouralixSubmission(SubmissionPy):
     def run(self, s):
@@ -15,25 +13,29 @@ class BadouralixSubmission(SubmissionPy):
         A, B = tuple(map(int, s.split("\n")))
         a, b = None, None
 
-        for n in range(p):
-            if self.pow(g, n, p) == A:
+        n, t = 0, 1
+        while True:
+            t = (t * g) % p
+            n += 1
+
+            if t == A:
                 a = n
-            if self.pow(g, n, p) == B:
+            if t == B:
                 b = n
 
             if a is not None and b is not None:
                 break
 
-        return self.pow(g, a * b, p)
+        # Implement square-and-multiply exponentiation
+        gg, n = g, a * b
+        result = 1
+        while n != 0:
+            if n % 2 == 1:
+                result *= gg
+            gg = (gg ** 2) % p
+            n = n // 2
 
-    @lru_cache(maxsize=None)
-    def pow(self, g, n, p):
-        if n == 0:
-            return 1
-        elif n % 2 == 0:
-            return (self.pow(g, n // 2, p) * self.pow(g, n // 2, p)) % p
-        else:
-            return (g * self.pow(g, n - 1, p)) % p
+        return result % p
 
 
 def test_badouralix():
