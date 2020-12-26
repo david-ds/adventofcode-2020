@@ -11,28 +11,26 @@ class BadouralixSubmission(SubmissionPy):
         """
         g, p = 7, 20201227
         A, B = tuple(map(int, s.split("\n")))
-        a, b = None, None
 
+        # Extract the smallest loop size and the other public key
         n, t = 0, 1
         while True:
             t = (t * g) % p
             n += 1
 
             if t == A:
-                a = n
-            if t == B:
-                b = n
-
-            if a is not None and b is not None:
+                m = B
+                break
+            elif t == B:
+                m = A
                 break
 
         # Implement square-and-multiply exponentiation
-        gg, n = g, a * b
         result = 1
         while n != 0:
             if n % 2 == 1:
-                result *= gg
-            gg = (gg ** 2) % p
+                result *= m
+            m = (m ** 2) % p
             n = n // 2
 
         return result % p
