@@ -9,12 +9,9 @@ class CocoSubmission(SubmissionPy):
         """
         # Your code goes here
         cups = [int(x) for x in list(s.strip())]
-        # print("cups", cups)
         N = len(cups)
         position = 0
         for k in range(100):
-            print(f"move {k+1}")
-            print(" ".join(map(str, cups)))
             item = cups[position]
             removed = [cups[(position + k) % N] for k in range(1, 4)]
             remaining = [cups[(position + k) % N] for k in range(4, len(cups) + 1)]

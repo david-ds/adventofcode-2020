@@ -1,6 +1,4 @@
 from tool.runners.python import SubmissionPy
-from tqdm import tqdm
-
 
 class LinkedListNode:
     def __init__(self, value) -> None:
@@ -35,7 +33,7 @@ class CocoSubmission(SubmissionPy):
         }
 
         node = nodes[0]
-        for _ in tqdm(range(int(1e7))):
+        for _ in (range(int(1e7))):
             next_three = [node.next, node.next.next, node.next.next.next]
             node.next = node.next.next.next.next  # 4th
 
