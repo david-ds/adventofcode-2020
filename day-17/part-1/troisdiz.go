@@ -115,11 +115,6 @@ func run(s string) interface{} {
 			}
 		}
 	}
-	fmt.Println("Initial state")
-	mp.display()
-
-	fmt.Println("Tests")
-	fmt.Println(mp.getOccupiedNeighborsCount(2,0,0))
 
 	var nbRounds int = 6
 	for r:= 0; r < nbRounds; r++ {
@@ -142,8 +137,8 @@ func run(s string) interface{} {
 				}
 			}
 		}
-		fmt.Println("End of round ", r+1)
-		newMap.display()
+		//fmt.Println("End of round ", r+1)
+		//newMap.display()
 		mp = newMap
 	}
 	return mp.size()
