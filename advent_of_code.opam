@@ -6,10 +6,11 @@ description: """
 """
 maintainer: ["_"]
 depends: [
-  "dune" {>= "2.7"}
+  "dune" {>= "2.8"}
   "angstrom"
   "ppx_deriving"
   "fmt"
+  "stdio"
   "ocaml" {>= "4.11"}
   "odoc" {with-doc}
 ]
