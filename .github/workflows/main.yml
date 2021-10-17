@@ -60,15 +60,15 @@ jobs:
 
       # Install ocaml packages if not cached
       - name: install-esy
-        run: sudo npm install -g esy@0.6.7 --unsafe-perm
+        run: sudo npm install -g esy@0.6.11 --unsafe-perm
       - name: cache-esy
-        uses: actions/cache@v1
+        uses: actions/cache@v2
         id: cache-esy
         with:
           path: _export
-          key: ${{ runner.os }}-esy-0.6.7-${{ hashFiles('esy.lock/index.json') }}
+          key: ${{ runner.os }}-esy-0.6.11-${{ hashFiles('esy.lock/index.json') }}
           restore-keys: |
-            ${{ runner.os }}-esy-0.6.7-
+            ${{ runner.os }}-esy-0.6.11-
       - name: install-esy-again-but-not-the-same
         run: "esy install"
       - name: import-esy
