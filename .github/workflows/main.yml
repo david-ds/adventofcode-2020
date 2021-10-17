@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
 
       # Install missing language compilers and interpreters
       # The default image natively supports bash, c/c++, go, java, julia, node, python, ruby, rust
@@ -58,13 +58,30 @@ jobs:
         if: steps.cache-python.outputs.cache-hit != 'true'
         run: sudo apt-get install python3-setuptools && python3 -m pip install --user wheel && python3 -m pip install --user -r requirements.txt
 
-      - name: setup-ocaml
-        uses: ocaml/setup-ocaml@v2
+      # Install ocaml packages if not cached
+      - name: install-esy
+        run: sudo npm install -g esy@0.6.7 --unsafe-perm
+      - name: cache-esy
+        uses: actions/cache@v1
+        id: cache-esy
         with:
-          ocaml-compiler: 4.11.1
-      - name: install-ocaml-deps
-        run: opam install . --deps-only
-      
+          path: _export
+          key: ${{ runner.os }}-esy-0.6.7-${{ hashFiles('esy.lock/index.json') }}
+          restore-keys: |
+            ${{ runner.os }}-esy-0.6.7-
+      - name: install-esy-again-but-not-the-same
+        run: "esy install"
+      - name: import-esy
+        run: |
+          esy import-dependencies _export
+          rm -rf _export
+      - name: deps-esy
+        run: "esy build"
+      - name: export-esy
+        if: steps.cache-esy.outputs.cache-hit != 'true'
+        run: |
+          esy cleanup .
+          esy export-dependencies
 
       # Install rust if not cached TODO
       # - name: cache-cargo
