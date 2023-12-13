@@ -17,7 +17,7 @@ class SubmissionCpp(SubmissionWrapper):
                 "-Wall",
                 "-Wno-sign-compare",
                 "-O3",
-                "-std=c++20",
+                "-std=c++2a",
                 "-o",
                 tmp.name,
                 file,
