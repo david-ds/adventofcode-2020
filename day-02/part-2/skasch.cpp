@@ -9,7 +9,7 @@ bool IsValid(const std::string& line) {
   int space = line.find(' ', dash);
   int second = atoi(line.substr(dash + 1, space - dash - 1).c_str());
   char c = line[space + 1];
-  return (line[space + 3 + first] == c) + (line[space + 3 + second] == c) == 1;
+  return (line[space + 3 + first] == c) != (line[space + 3 + second] == c);
 }
 
 std::string run(const std::string& input) {
