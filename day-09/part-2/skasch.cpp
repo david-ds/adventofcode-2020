@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <array>
+#include <cstdint>
 #include <ctime>
 #include <deque>
 #include <iostream>
@@ -55,7 +56,7 @@ std::string run(const std::string& input) {
   int invalid = FindInvalidValue(input);
   std::istringstream iss(input);
   std::deque<int> window;
-  int window_sum = 0;
+  std::int64_t window_sum = 0;
   for (std::string line; std::getline(iss, line);) {
     int value = std::atoi(line.c_str());
     window.push_back(value);
