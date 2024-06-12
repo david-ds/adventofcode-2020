@@ -34,6 +34,7 @@ end
 #########################################
 
 function main()
+    run(ARGS[1])
     res, time, memory = @timed run(ARGS[1])
     println("_duration:$(time * 1000)")
     println(res)
