@@ -25,7 +25,7 @@ jobs:
           nim-version: 1.4.8
       - uses: goto-bus-stop/setup-zig@v1
         with:
-          version: 0.7.0
+          version: 0.13.0
       # TODO: switch back to nocturlab/setup-vlang-action@v1 once https://github.com/nocturlab/setup-vlang-action/issues/72 is fixed
       - name: Install vlang
         run: |
@@ -56,7 +56,9 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('requirements.txt') }}
       - name: deps-python
         if: steps.cache-python.outputs.cache-hit != 'true'
-        run: sudo apt-get install python3-setuptools && python3 -m pip install --user wheel && python3 -m pip install --user -r requirements.txt
+        run:
+          sudo apt-get install python3-setuptools && python3 -m pip install --user wheel && python3 -m pip install
+          --user -r requirements.txt
 
       # Install ocaml packages if not cached
       - name: install-esy
