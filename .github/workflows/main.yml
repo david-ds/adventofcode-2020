@@ -23,9 +23,9 @@ jobs:
       - uses: jiro4989/setup-nim-action@v1
         with:
           nim-version: 1.4.8
-      - uses: goto-bus-stop/setup-zig@v1
+      - uses: goto-bus-stop/setup-zig@v2
         with:
-          version: 0.13.0
+          version: 0.7.0
       # TODO: switch back to nocturlab/setup-vlang-action@v1 once https://github.com/nocturlab/setup-vlang-action/issues/72 is fixed
       - name: Install vlang
         run: |
