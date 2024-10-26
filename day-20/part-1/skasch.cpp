@@ -49,20 +49,6 @@ std::string run(const std::string &input) {
     pos += kTileCharSize;
   }
   int64_t result = 1;
-  for (auto &[edge_bits, tiles] : kEdgeBitsToTiles) {
-    std::cerr << "kEdgeBitsToTiles[" << edge_bits << "]: ";
-    for (int tile : tiles) {
-      std::cerr << tile << ",";
-    }
-    std::cerr << "\n";
-  }
-  for (auto &[tile_id, edge_bits] : kTileToEdgeBits) {
-    std::cerr << "kTileToEdgeBits[" << tile_id << "]: ";
-    for (int edge_bit : edge_bits) {
-      std::cerr << edge_bit << ",";
-    }
-    std::cerr << "\n";
-  }
   for (auto &[tile_id, edge_bits] : kTileToEdgeBits) {
     int count_edges = 0;
     for (int edge_bit : edge_bits) {
@@ -71,7 +57,6 @@ std::string run(const std::string &input) {
       }
     }
     if (count_edges == 2) {
-      std::cerr << "Found " << count_edges << " edges for: " << tile_id << "\n";
       result *= tile_id;
     }
   }
