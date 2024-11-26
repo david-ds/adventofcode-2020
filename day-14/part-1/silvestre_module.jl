@@ -1,3 +1,7 @@
+module Test
+
+export run
+
 function update_mask(line, one_mask, zero_mask)
     one_mask = 0
     zero_mask = 0
@@ -31,7 +35,10 @@ function run(s)
     return sum(values(memory))
 end
 
+end 
+
 #########################################
+using .Test: run
 
 function main()
     res, time, memory = @timed run(ARGS[1])
